@@ -1,0 +1,54 @@
+{
+	"version": "0.0.0.1",
+	"name": "cloudSkyMonster",
+	"manifest_version": 2,
+	"description": "toolsBox--1.调用有道的翻译api,看英文技术文档的一个插件;2.当前网址生成二维码;--author:scoful",
+	"background": {
+		"scripts": [
+			"background.js"
+		]
+	},
+	"permissions": [
+		"<all_urls>",
+		"tabs"
+	],
+	"browser_action": {
+		"default_icon": "favicon.png",
+		"default_title": "cloudSkyMonster",
+		"default_popup": "popup.html"
+	},
+	"content_scripts": [
+		{
+			"matches": [
+				"<all_urls>"
+			],
+			"js": [
+				"jquery-2.2.2.min.js",
+				"content_script.js"
+			]
+		}
+	]
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
