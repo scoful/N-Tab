@@ -1,10 +1,10 @@
 # cloudSkyMonster
 ## 说明：插件箱(有待完善) ##
+
 1. 调用有道的翻译api,专用于看英文技术文档的一个基于chrome内核的插件;
 
 2. 当前网址生成二维码,方便手机扫描,比如天猫购物页,扫描到app端购买;
 
---author:scoful
 
 ## 安装方法： ##
 
@@ -31,3 +31,36 @@
 ②、当前页面，文字翻译，用法如下：
 
 双击或是鼠标滑动选择文字，自动弹框，得到翻译结果；
+
+## To Do List ##
+
+- 优化代码，修改bug
+
+- 根据需求再添加新功能
+
+- 其他待续
+
+
+
+
+## CHANGELOG ##
+
+- [更新日志](https://github.com/scoful/cloudSkyMonster/releases "更新日志")
+
+
+
+
+
+
+
+## Discussing ##
+- [在github上提问](https://github.com/scoful/cloudSkyMonster/issues/new "在github上提问")
+
+- wechat：
+
+- QQ：1269717999
+
+- email：1269717999@qq.com
+
+
+
