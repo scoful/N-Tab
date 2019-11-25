@@ -1,54 +1,50 @@
 {
-	"version": "0.0.0.1",
-	"name": "cloudSkyMonster",
-	"manifest_version": 2,
-	"description": "toolsBox--1.调用有道的翻译api,看英文技术文档的一个插件;2.当前网址生成二维码;--author:scoful",
-	"background": {
-		"scripts": [
-			"background.js"
-		]
-	},
-	"permissions": [
-		"<all_urls>",
-		"tabs"
-	],
-	"browser_action": {
-		"default_icon": "favicon.png",
-		"default_title": "cloudSkyMonster",
-		"default_popup": "popup.html"
-	},
-	"content_scripts": [
-		{
-			"matches": [
-				"<all_urls>"
-			],
-			"js": [
-				"jquery-2.2.2.min.js",
-				"content_script.js"
-			]
-		}
-	]
+    "version": "0.0.0.2",
+    "name": "cloudSkyMonster-2",
+    "manifest_version": 2,
+    "description": "toolsBox--1.调用有道的翻译api,看英文技术文档的一个插件;2.当前网址生成二维码;--author:scoful",
+    "background": {
+        "scripts": [
+            "js/background.js"
+        ]
+    },
+    "icons": {
+        "16": "images/get_started16.png",
+        "48": "images/get_started48.png",
+        "128": "images/get_started128.png"
+    },
+    "permissions": [
+        "<all_urls>",
+        "tabs",
+        "contextMenus",
+        "storage",
+        "notifications",
+        "<all_urls>"
+    ],
+    "browser_action": {
+        "default_icon": "images/favicon.png",
+        "default_title": "cloudSkyMonster",
+        "default_popup": "popup.html"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "<all_urls>"
+            ],
+            "js": [
+                "js/jquery-2.2.2.min.js",
+                "js/contentscript.js"
+            ],
+            "css": [
+                "css/custom.css"
+            ],
+            "run_at": "document_start"
+        }
+    ],
+    "options_ui": {
+        "page": "options.html",
+        "chrome_style": true
+    },
+    "homepage_url": "https://www.baidu.com"
+    // "default_locale": "zh_CN"
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

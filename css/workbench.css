@@ -1,0 +1,110 @@
+/**/
+/* GENERAL STYLES */
+/**/
+
+body {
+	background: #fefefe;
+	color: #333;
+	font-size: 16px;
+	line-height: 1.4;
+}
+
+#container {
+	margin: 3%;
+	padding: 5px;
+	font-family: Liberation Sans, sans-serif;
+}
+
+/**/
+/* GROUPS RELATED STYLES */
+/**/
+
+#groups {
+	margin: 10px 0;
+	padding-left: 10px;
+}
+
+.group:first-of-type {
+	margin-top: 10px;
+}
+.group {
+	margin-top: 20px;
+}
+
+.group-amount {
+	font-size: 2em;
+}
+
+.group-date {
+	opacity: 0.7;
+}
+
+.restore-all {
+	margin-left: 5px;
+	cursor: pointer;
+}
+.restore-all:hover {
+	color: blue;
+	text-decoration: underline;
+}
+
+ul {
+	margin-left: 2em;
+}
+
+li {
+	list-style-type: none;
+}
+
+.delete-link {
+	font-size: .9em;
+	font-weight: bold;
+	background: #eee;
+	color: white;
+
+	display: inline-block;
+	border-radius: 1em;
+	padding: 0 .3em;
+	margin-right: 10px;
+}
+.delete-link:before {
+	content: "X";
+}
+*:hover > .delete-link {
+	background: #aaa;
+}
+.delete-link:hover {
+	background: red;
+	cursor: pointer;
+}
+
+.link, .link:visited {
+	color: blue;
+	text-decoration: none;
+	padding: .2em;
+}
+.link:hover {
+	cursor: pointer;
+	text-decoration: underline;
+}
+
+/**/
+/* HEADER STYLES */
+/**/
+
+h1 {
+	font-size: 3em;
+}
+
+header {
+	border-bottom: 1px solid #f6f6f6;
+}
+
+/**/
+/* FOOTER STYLES */
+/**/
+
+footer {
+	border-top: 1px solid #f6f6f6;
+	padding: 5px 0;
+}

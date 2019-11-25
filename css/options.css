@@ -1,0 +1,69 @@
+/**/
+/* GENERAL STYLES */
+/**/
+
+body {
+	background: #fefefe;
+	color: #333;
+	font-size: 16px;
+	line-height: 1.4;
+}
+
+#container {
+	margin: 3%;
+	padding: 5px;
+	font-family: Liberation Sans, sans-serif;
+}
+
+/**/
+/* OPTIONS RELATED STYLES */
+/**/
+
+#options {
+	padding: 20px 0;
+}
+
+.option {
+	margin: 15px 0;
+}
+.option:first-of-type {
+	margin-top: 0;
+}
+
+/* .option > */
+.desc {
+	font-size: 1.1em;
+	margin-bottom: 5px;
+}
+.choices {
+	font-size: .9em;
+}
+
+#saved {
+	display: none;
+	background: green;
+	color: white;
+	width: 300px;
+	margin-top: 15px;
+}
+
+/**/
+/* HEADER STYLES */
+/**/
+
+h1 {
+	font-size: 3em;
+}
+
+header {
+	border-bottom: 1px solid #f6f6f6;
+}
+
+/**/
+/* FOOTER STYLES */
+/**/
+
+footer {
+	border-top: 1px solid #f6f6f6;
+	padding: 5px 0;
+}

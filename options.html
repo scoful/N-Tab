@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Tabulator Options</title>
+    <link rel="stylesheet" href="css/reset.min.css">
+    <link rel="stylesheet" href="css/options.css">
+    <script src="js/prefixfree.min.js"></script>
+</head>
+
+<body>
+    <div id="container">
+        <header>
+            <h1>Tabulator <span style="font-size: .6em;">Options</span></h1>
+        </header>
+
+        <div id="options">
+            <div class="option">
+                <div class="desc">
+                    <p>On clicking "Restore group" or restoring a single tab:</p>
+                </div>
+                <div class="choices">
+                    <p><label for="deleteTabOnOpen"><input type="radio" name="deleteTabOnOpen" value="yes"> Delete
+                            opened links from tab groups</label></p>
+                    <p><label for="deleteTabOnOpen"><input type="radio" name="deleteTabOnOpen" value="no"> Leave the
+                            links alone</label></p>
+                </div>
+            </div>
+            <button name="save">Save options</button>
+            <div id="saved">Options saved.</div>
+        </div>
+
+        <footer role="contentinfo">
+            The source code for Tabulator is available at <a
+                href="https://github.com/Greduan/chrome-ext-tabulator">GitHub</a>.
+        </footer>
+    </div>
+
+    <script src="js/jquery-2.2.2.min.js"></script>
+    <script src="js/options.js"></script>
+</body>
+
+</html>
