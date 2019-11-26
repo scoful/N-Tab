@@ -1,8 +1,8 @@
 {
-    "version": "0.0.0.2",
-    "name": "cloudSkyMonster-2",
+    "version": "0.0.2",
+    "name": "cloudSkyMonster",
     "manifest_version": 2,
-    "description": "toolsBox--1.调用有道的翻译api,看英文技术文档的一个插件;2.当前网址生成二维码;--author:scoful",
+    "description": "多功能插件，说明书请看github https://github.com/scoful/cloudSkyMonster",
     "background": {
         "scripts": [
             "js/background.js"
@@ -46,6 +46,5 @@
         "page": "options.html",
         "chrome_style": true
     },
-    "homepage_url": "https://www.baidu.com"
-    // "default_locale": "zh_CN"
+    "homepage_url": "https://github.com/scoful/cloudSkyMonster"
 }
