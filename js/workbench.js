@@ -15,25 +15,25 @@
     document.addEventListener('DOMContentLoaded', function () {
         console.log("load完workbench了")
         checkGitHubStatus();
-        chrome.storage.sync.get(null, function (items) {
+        chrome.storage.local.get(null, function (items) {
             var total = new Array();
             for (var i = 0; i < 100; i++) {
                 total.push("tabGroups_" + i)
             }
-            chrome.storage.sync.getBytesInUse(total, function (bytes) {
+            chrome.storage.local.getBytesInUse(total, function (bytes) {
                 console.log("total is " + bytes);
             });
         });
     });
 
-
+    // 检查跟github的通讯是否正常
     function checkGitHubStatus() {
         $.ajax({
             type: "GET",
             url: gitHubApiUrl,
             success: function (data, status) {
                 if (status == "success") {
-                    console.log("通的！");
+                    console.log("跟github通讯正常！");
                     document.getElementById('githubStatus').innerHTML = "API status : AWESOME"
                 } else {
                     document.getElementById('githubStatus').innerHTML = "API status : SAD"
@@ -109,9 +109,7 @@
             console.log("no")
         }
     });
-    document.getElementById('pushToGiteeGist').addEventListener('click', function () {
 
-    });
 
     function updateGithubGist(content) {
         pushToGithubGistStatus = "已经创建了gist，直接开始更新"
@@ -156,7 +154,7 @@
         } else if (action == "pull_github") {
             pullFromGithubGistStatus = "开始检查gistId有没有保存"
         }
-        chrome.storage.sync.get("githubGistId", function (storage) {
+        chrome.storage.local.get("githubGistId", function (storage) {
             console.log(storage.githubGistId)
             if (storage.githubGistId) {
                 console.log("gistId有保存")
@@ -164,10 +162,9 @@
                 if (action == "push_github") {
                     getShardings(function (callback) {
                         if (!callback || typeof callback == 'undefined' || callback == undefined) {
-                            console.log("没有值")
+                            console.log("本地storage里没有内容")
                             updateGithubGist([])
                         } else {
-                            console.log(callback)
                             updateGithubGist(callback)
                         }
                     })
@@ -189,7 +186,6 @@
             url: gitHubApiUrl + "/gists/" + githubGistId,
             success: function (data, status) {
                 if (status == "success") {
-                    console.log(data)
                     saveShardings(data.files['brower_Tabs.json'].content, "string")
                 } else {
                     alert("根据gistId拉取gist失败了")
@@ -202,9 +198,8 @@
                 //do something
                 pullFromGithubGistStatus = undefined
                 chrome.tabs.query({ active: true, currentWindow: true }, function (tabsArr) {
-                    // chrome.tabs.reload(tabsArr[0].id, {}, function (tab) {
-                    //     console.log("刷新一下！")
-                    // });
+                    chrome.tabs.reload(tabsArr[0].id, {}, function (tab) {
+                    });
                 });
             }
         })
@@ -224,14 +219,13 @@
             success: function (data, status) {
                 if (status == "success") {
                     console.log("查到所有gists！");
-                    console.log(data)
                     var i;
                     var flag;
                     for (i = 0; i < data.length; i += 1) {
                         if (data[i].description == "myCloudSkyMonster") {
                             console.log("已经创建了gist")
                             githubGistId = data[i].id
-                            chrome.storage.sync.set({ githubGistId: data[i].id });
+                            chrome.storage.local.set({ githubGistId: data[i].id });
                             console.log("获取gistId并保存完毕")
                             console.log(githubGistId)
                             flag = true;
@@ -245,10 +239,9 @@
                         if (action == "push_github") {
                             getShardings(function (callback) {
                                 if (!callback || typeof callback == 'undefined' || callback == undefined) {
-                                    console.log("没有值")
+                                    console.log("本地storage里没有内容")
                                     createGithubGist([])
                                 } else {
-                                    console.log(callback)
                                     createGithubGist(callback)
                                 }
                             })
@@ -260,10 +253,9 @@
                         if (action == "push_github") {
                             getShardings(function (callback) {
                                 if (!callback || typeof callback == 'undefined' || callback == undefined) {
-                                    console.log("没有值")
+                                    console.log("本地storage里没有内容")
                                     updateGithubGist([])
                                 } else {
-                                    console.log(callback)
                                     updateGithubGist(callback)
                                 }
                             })
@@ -291,7 +283,7 @@
         } else if (action == "pull_github") {
             pullFromGithubGistStatus = "开始检查githubtoken有没有保存"
         }
-        chrome.storage.sync.get("githubGistToken", function (storage) {
+        chrome.storage.local.get("githubGistToken", function (storage) {
             console.log(storage.githubGistToken)
             if (storage.githubGistToken) {
                 console.log("githubtoken有保存")
@@ -301,7 +293,7 @@
                 console.log("githubtoken没有保存")
                 var token = prompt('请输入权限token：', "******");
                 githubGistToken = token
-                chrome.storage.sync.set({ githubGistToken: token });
+                chrome.storage.local.set({ githubGistToken: token });
                 console.log("githubtoken保存完毕")
                 isStoredGithubGistIdLocal(action)
             }
@@ -347,7 +339,7 @@
     }
 
     function getShardings(cb) {
-        chrome.storage.sync.get(null, function (items) {
+        chrome.storage.local.get(null, function (items) {
             var tabGroupsStr = "";
             if (items.tabGroups_num >= 1) {
                 // 把分片数据组成字符串
@@ -363,12 +355,12 @@
     }
 
     function removeShardings(cb) {
-        chrome.storage.sync.get(null, function (items) {
+        chrome.storage.local.get(null, function (items) {
             if (items.tabGroups_num >= 1) {
                 for (var i = 0; i < items.tabGroups_num; i++) {
-                    chrome.storage.sync.remove("tabGroups_" + i, function callback() { });
+                    chrome.storage.local.remove("tabGroups_" + i, function callback() { });
                 }
-                chrome.storage.sync.remove("tabGroups_num", function callback() { });
+                chrome.storage.local.remove("tabGroups_num", function callback() { });
             }
         });
         cb("ok")
@@ -382,7 +374,7 @@
             tabGroupStr = tabGroup
         }
         var length = tabGroupStr.length;
-        var sliceLength = chrome.storage.sync.QUOTA_BYTES_PER_ITEM / 2; // 简单设置每个分片最大长度，保证能存储到
+        var sliceLength = 102400; 
         var tabGroupSlices = {}; // 保存分片数据
         var i = 0; // 分片序号
 
@@ -397,14 +389,11 @@
         tabGroupSlices["tabGroups_num"] = i;
 
         // 写入Storage
-        chrome.storage.sync.set(tabGroupSlices);
-
-        console.log(tabGroupSlices);
+        chrome.storage.local.set(tabGroupSlices);
 
     }
 
-    chrome.storage.sync.get(function (storage) {
-        console.log(storage)
+    chrome.storage.local.get(function (storage) {
         var bridge = [];
         if (storage.tabGroups_num) {
             var tabGroupsStr = "";
@@ -412,14 +401,12 @@
             for (var i = 0; i < storage.tabGroups_num; i++) {
                 tabGroupsStr += storage["tabGroups_" + i];
             }
-            console.log(JSON.parse(tabGroupsStr))
             bridge = JSON.parse(tabGroupsStr)
             var i;
             var total = 0;
             for (i = 0; i < bridge.length; i += 1) {
                 total += bridge[i].tabs.length
             }
-            console.log(total)
             document.getElementById('totalTabs').innerHTML = total
         }
         var tabs = {}, // to-be module
@@ -427,10 +414,8 @@
             opts = storage.options || {
                 deleteTabOnOpen: 'no'
             };
-        // console.log(tabGroups)
-        // console.log(JSON.stringify(tabGroups))
         function saveTabGroups(json) {
-            // chrome.storage.sync.set({ tabGroups: json });
+            // chrome.storage.local.set({ tabGroups: json });
             saveShardings(json, "object")
         }
 
@@ -458,7 +443,6 @@
                     // remove from localStorage
                     tabGroups.splice(i, 1)
                     // save
-                    console.log(tabGroups)
                     saveTabGroups(tabGroups);
                 };
 
@@ -468,7 +452,6 @@
                     // remove from localStorage
                     tabGroups[i].tabs.splice(ii, 1);
                     // save
-                    console.log(tabGroups)
                     saveTabGroups(tabGroups);
                 };
             };

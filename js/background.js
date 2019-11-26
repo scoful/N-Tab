@@ -1,8 +1,8 @@
 console.log("background is done!");
 
-// 倒计时文字
+// 定义倒计时文字容器
 var surplusTime;
-// 定义一个一次执行定时器
+// 定义一个 一次执行定时器
 var timeoutId;
 window.onload = function () {
     console.log("load完window了")
@@ -14,17 +14,18 @@ document.addEventListener('DOMContentLoaded', function () {
     var script = document.createElement('script');
     script.src = "js/jquery-2.2.2.min.js";
     document.head.appendChild(script);
+    // 获取tab数量并在pop上显示
     chrome.tabs.query({ currentWindow: true }, function (tab) {
         chrome.browserAction.setBadgeText({ text: tab.length + "" });
         chrome.browserAction.setBadgeBackgroundColor({ color: [255, 0, 0, 255] });
     });
-    chrome.storage.sync.get(function (storage) {
+    chrome.storage.local.get(function (storage) {
         console.log(storage)
     });
 });
 
 
-// 翻译
+// 调用有道翻译api
 function translateFunc(txt) {
     console.log("开始翻译！")
     var url = "https://fanyi.youdao.com/openapi.do?keyfrom=lulua-net&key=620584095&type=data&doctype=json&version=1.1&q=" + txt;
@@ -52,18 +53,16 @@ function translateFunc(txt) {
 chrome.runtime.onMessage.addListener(function (req, sender, sendRes) {
     switch (req.action) {
         case 'translate':
-            console.log(req.message)
             translateFunc(req.message)
             sendRes('ok'); // acknowledge
             break;
         case 'save-all':
-            console.log(req.tabsArr)
             if (req.tabsArr.length > 0) {
                 saveTabs(req.tabsArr);
-                openBackgroundPage(); // opening now so window doesn't close
+                openBackgroundPage();
                 closeTabs(req.tabsArr);
             } else {
-                openBackgroundPage(); // opening now so window doesn't close
+                openBackgroundPage();
             }
             sendRes('ok'); // acknowledge
             break;
@@ -72,24 +71,22 @@ chrome.runtime.onMessage.addListener(function (req, sender, sendRes) {
             sendRes('ok'); // acknowledge
             break;
         case 'save-current':
-            console.log(req.tabsArr)
             if (req.tabsArr.length > 0) {
                 saveTabs(req.tabsArr);
-                openBackgroundPage(); // opening now so window doesn't close
+                openBackgroundPage();
                 closeTabs(req.tabsArr);
             } else {
-                openBackgroundPage(); // opening now so window doesn't close
+                openBackgroundPage();
             }
             sendRes('ok'); // acknowledge
             break;
         case 'save-others':
-            console.log(req.tabsArr)
             if (req.tabsArr.length > 0) {
                 saveTabs(req.tabsArr);
-                openBackgroundPage(); // opening now so window doesn't close
+                openBackgroundPage();
                 closeTabs(req.tabsArr);
             } else {
-                openBackgroundPage(); // opening now so window doesn't close
+                openBackgroundPage();
             }
             sendRes('ok'); // acknowledge
             break;
@@ -106,7 +103,6 @@ chrome.runtime.onMessage.addListener(function (req, sender, sendRes) {
             sendRes('ok'); // acknowledge
             break;
         case 'custom-minute':
-            console.log(req.minute)
             remind(Number(req.minute));
             sendRes('ok'); // acknowledge
             break;
@@ -140,7 +136,7 @@ function sendMessageToContentScript(action, message) {
     });
 }
 
-// 实现在图标上显示当前打开了多少标签
+// 持续监听，当tab被激活，被关闭，被创建的时候都刷新一下tab的数量
 chrome.tabs.onActivated.addListener(function callback() {
     chrome.tabs.query({}, function (tab) {
         chrome.browserAction.setBadgeText({ text: tab.length + "" });
@@ -160,7 +156,7 @@ chrome.tabs.onCreated.addListener(function callback() {
     });
 });
 
-
+// 生成唯一标识
 // refer: https://gist.github.com/solenoid/1372386
 var genObjectId = function () {
     var timestamp = (new Date().getTime() / 1000 | 0).toString(16);
@@ -181,14 +177,11 @@ function saveTabs(tabsArr) {
 function makeTabGroup(tabsArr) {
     var date;
     date = dateFormat("YYYY-mm-dd HH:MM:SS", new Date())
-    console.log(date)
     var tabGroup = {
         date: date,
-        // id: Date.now() // clever way to quickly get a unique ID
         id: genObjectId() // clever way to quickly get a unique ID
     };
     let res = tabsArr.map(({ title, url, favIconUrl }) => ({ title, url, favIconUrl }))
-    console.log(res)
     tabGroup.tabs = res;
 
     return tabGroup;
@@ -203,18 +196,21 @@ function filterTabGroup(tabGroup) {
 function saveTabGroup(tabGroup) {
     getShardings(function (callback) {
         if (!callback || typeof callback == 'undefined' || callback == undefined) {
-            console.log("没有值")
             saveShardings([tabGroup], "object")
         } else {
-            console.log(callback)
+            // TODO 这里做了特别处理，第一个tab当做常用的，永远第一个，可以写很复杂的逻辑，结合列表拖曳，这块还没找到简单的方式。
             var newArr = callback
-            newArr.push(tabGroup);
+            var top = newArr.splice(0, 1)
+            newArr.unshift(tabGroup)
+            newArr.unshift(top[0])
+            // newArr.push(tabGroup);
             // newArr.reverse();
             saveShardings(newArr, "object")
         }
     })
 }
 
+// 打开background页
 function openBackgroundPage() {
     chrome.tabs.query({ url: "chrome-extension://*/workbench.html*", currentWindow: true }, function (tab) {
         if (tab.length >= 1) {
@@ -223,7 +219,6 @@ function openBackgroundPage() {
                 });
             });
             chrome.tabs.reload(tab[0].id, {}, function (tab) {
-                console.log("刷新一下！")
             });
         } else {
             chrome.tabs.create({ index: 0, url: chrome.extension.getURL('workbench.html') });
@@ -247,17 +242,17 @@ function closeTabs(tabsArr) {
     });
 }
 
+// 创建右键菜单，发送当前tab
 chrome.contextMenus.create({
     title: "发射当前tab",
     onclick: function () {
         chrome.tabs.query({ url: ["https://*/*", "http://*/*"], active: true, currentWindow: true }, function (tabsArr) {
-            console.log(tabsArr)
             if (tabsArr.length > 0) {
                 saveTabs(tabsArr);
-                openBackgroundPage(); // opening now so window doesn't close
+                openBackgroundPage();
                 closeTabs(tabsArr);
             } else {
-                openBackgroundPage(); // opening now so window doesn't close
+                openBackgroundPage();
             }
 
         });
@@ -285,6 +280,7 @@ function remind(minute) {
     timeDown(endDateStr)
 }
 
+// 倒计时
 function timeDown(endDateStr) {
     //结束时间
     var endDate = new Date(endDateStr);
@@ -304,7 +300,6 @@ function timeDown(endDateStr) {
     //秒
     var seconds = modulo % 60;
     surplusTime = "还剩:" + days + "天" + hours + "小时" + minutes + "分钟" + seconds + "秒";
-    console.log(surplusTime)
     //延迟一秒执行自己
     timeoutId = setTimeout(function () {
         timeDown(endDateStr);
@@ -338,14 +333,13 @@ function dateFormat(fmt, date) {
 
 function closeCurrentTab() {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabsArr) {
-        chrome.storage.sync.set({ 'xCommandUrl': tabsArr[0].url });
+        chrome.storage.local.set({ 'xCommandUrl': tabsArr[0].url });
         chrome.tabs.remove(tabsArr[0].id, function () { });
     });
 }
 
 function restartLastClosedTab() {
-    chrome.storage.sync.get('xCommandUrl', function (storage) {
-        console.log(storage)
+    chrome.storage.local.get('xCommandUrl', function (storage) {
         if (storage.xCommandUrl) {
             chrome.tabs.create({ index: 0, url: storage.xCommandUrl });
         }
@@ -353,6 +347,7 @@ function restartLastClosedTab() {
 
 }
 
+// 用分片的思想去存storage，因为sync的总量太小了，只有102400，所以改成local。
 function saveShardings(tabGroup, type) {
     var tabGroupStr;
     if (type == "object") {
@@ -361,7 +356,7 @@ function saveShardings(tabGroup, type) {
         tabGroupStr = tabGroup
     }
     var length = tabGroupStr.length;
-    var sliceLength = chrome.storage.sync.QUOTA_BYTES_PER_ITEM / 2; // 简单设置每个分片最大长度，保证能存储到
+    var sliceLength = 102400; 
     var tabGroupSlices = {}; // 保存分片数据
     var i = 0; // 分片序号
 
@@ -376,35 +371,23 @@ function saveShardings(tabGroup, type) {
     tabGroupSlices["tabGroups_num"] = i;
 
     // 写入Storage
-    chrome.storage.sync.set(tabGroupSlices);
+    chrome.storage.local.set(tabGroupSlices);
 
-    console.log(tabGroupSlices);
 }
 
+// 获取storage里的数据
 function getShardings(cb) {
-    chrome.storage.sync.get(null, function (items) {
+    chrome.storage.local.get(null, function (items) {
         var tabGroupsStr = "";
         if (items.tabGroups_num >= 1) {
             // 把分片数据组成字符串
             for (var i = 0; i < items.tabGroups_num; i++) {
                 tabGroupsStr += items["tabGroups_" + i];
             }
-            console.log(JSON.parse(tabGroupsStr))
             cb(JSON.parse(tabGroupsStr))
         } else {
             cb()
         }
-    });
-}
-
-
-
-function test() {
-    chrome.tabs.highlight({ windowId: 1, tabs: [2] }, function callback() {
-        console.log("跳过去！")
-        chrome.tabs.update(388, {}, function (tab) {
-            console.log("刷新一下！")
-        });
     });
 }
 

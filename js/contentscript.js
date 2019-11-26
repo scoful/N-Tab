@@ -30,6 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
         pageY = e.pageY;
 
     });
+    // TODO 本来想实现在空标签页和chrome://extensions/这种特殊页面也可以按x直接关闭，问题：1找不到焦点在哪里，在文本框里输入x也会关闭；2空标签页和chrome://extensions/想实现的话估计要再background里，contentscript需要有dom承载。
     // $(document).keyup(function (event) {
     //     console.log($(document).activeElement)
     //     if (event.key == 'x') {
@@ -57,7 +58,6 @@ function sendMessageToBackground(action, message) {
 chrome.runtime.onMessage.addListener(function (req, sender, sendRes) {
     switch (req.action) {
         case 'translateResult':
-            console.log(req.message)
             sendRes('ok'); // acknowledge
             tip(req.message)
             break;

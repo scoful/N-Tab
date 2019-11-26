@@ -18,6 +18,7 @@
         "tabs",
         "contextMenus",
         "storage",
+        "unlimitedStorage",// 据说是不受限制的存？
         "notifications",
         "<all_urls>"
     ],
