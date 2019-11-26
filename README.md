@@ -77,6 +77,66 @@
 
 
 
+## 特别提醒
+
+1. 正常来说，后台页展示，要支持超级拖曳，但实在是不懂，也暂时没有急迫动力去学，目前的功能也完全能够满足预期。然后在代码里，hard code了一下，第一个tab，认为是常用网址，永远保持在第一个位置，后面新增的再往下按加入时间远近排序，近的在前面。这个功能用超级拖曳更优雅，无奈:dizzy_face:，然后怎么把常用网址放在第一个tab呢，手动修改gist:neutral_face:。
+2. 要从gist pull下来的话，要先push一次上gist创建，不然找不到gistId
+3. 简单说一下，怎么把onetab积年累月收藏的网址导入本插件。onetab提供了功能可以导出网址，有网址和标题，用|隔开，复制到txt文本文件，新建个Excel，导入文本，用|分隔，就能得到url和title了，然后url和title这两列用trim处理一下，这里会发现，onetab导出的内容，tab与tab之间用空行分隔，删掉全部空行，使用以下公式处理一下，`="{""title"":"""&B2&""",""url"":"""&A2&"""},"`B2列是title，A2列是url，生成的内容复制出来，本插件使用的存储数据的json结构是：
+
+```json
+[{
+		"date": "2019-11-26 11:11:11",
+		"id": "5ddccf37c6c66b70bb806bb1(可自己模拟)",
+		"tabs": ["填刚刚生成的内容，第一个tab，hard code保持永远第一，常用的可放这个tab里"]
+	},
+	{
+		"date": "2019-11-26 11:11:11",
+		"id": "5ddccf37c6c66b70bb806bb1(可自己模拟)",
+		"tabs": ["填刚刚生成的内容"]
+	}
+]
+```
+
+tabs里的json结构是：
+
+```json
+{
+	"title": "scoful · GitHub",
+	"url": "https://github.com/scoful"
+},{
+	"title": "煎蛋 - 地球上没有新鲜事",
+	"url": "http://jandan.net/"
+}
+```
+
+把Excel处理过后的内容，复制到txt文本文件后，自己组装json，再复制到gist里，就ok了。
+
+完整的例子：
+
+```json
+[{
+		"date": "2019-11-26 11:11:11",
+		"id": "5ddccf37c6c66b70bb806bb1(可自己模拟)",
+		"tabs": ["填刚刚生成的内容，第一个tab，hard code保持永远第一，常用的可放这个tab里"]
+	},
+	{
+		"date": "2019-11-26 11:11:11",
+		"id": "5ddccf37c6c66b70bb806bb1(可自己模拟)",
+		"tabs": [{
+			"title": "scoful · GitHub",
+			"url": "https://github.com/scoful"
+		}, {
+			"title": "煎蛋 - 地球上没有新鲜事",
+			"url": "http://jandan.net/"
+		}]
+	}
+]
+```
+
+4. 好复杂:sweat:，等有人想用的时候再优化了。
+
+
+
 ## To Do List ##
 
 - 优化代码，修改bug
