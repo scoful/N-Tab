@@ -187,9 +187,9 @@ function makeTabGroup(tabsArr) {
         // id: Date.now() // clever way to quickly get a unique ID
         id: genObjectId() // clever way to quickly get a unique ID
     };
-    let res = tabsArr.map(({ title, url, favIconUrl, pinned }) => ({ title, url, favIconUrl, pinned }))
+    let res = tabsArr.map(({ title, url, favIconUrl }) => ({ title, url, favIconUrl }))
     console.log(res)
-    tabGroup.tabs = tabsArr;
+    tabGroup.tabs = res;
 
     return tabGroup;
 }
@@ -204,12 +204,13 @@ function saveTabGroup(tabGroup) {
     getShardings(function (callback) {
         if (!callback || typeof callback == 'undefined' || callback == undefined) {
             console.log("没有值")
-            saveShardings([tabGroup])
+            saveShardings([tabGroup], "object")
         } else {
             console.log(callback)
             var newArr = callback
             newArr.push(tabGroup);
-            saveShardings(newArr)
+            // newArr.reverse();
+            saveShardings(newArr, "object")
         }
     })
 }
@@ -352,8 +353,13 @@ function restartLastClosedTab() {
 
 }
 
-function saveShardings(tabGroup) {
-    var tabGroupStr = JSON.stringify(tabGroup);
+function saveShardings(tabGroup, type) {
+    var tabGroupStr;
+    if (type == "object") {
+        tabGroupStr = JSON.stringify(tabGroup);
+    } else if (type == "string") {
+        tabGroupStr = tabGroup
+    }
     var length = tabGroupStr.length;
     var sliceLength = chrome.storage.sync.QUOTA_BYTES_PER_ITEM / 2; // 简单设置每个分片最大长度，保证能存储到
     var tabGroupSlices = {}; // 保存分片数据

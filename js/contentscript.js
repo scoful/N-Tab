@@ -30,17 +30,17 @@ document.addEventListener('DOMContentLoaded', function () {
         pageY = e.pageY;
 
     });
-    $(document).keyup(function (event) {
-        console.log("触发不到？？？")
-        if (event.key == 'x') {
-            console.log("按下了小写x")
-            sendMessageToBackground("command-x", "按下了小写x")
-        }
-        if (event.key == 'X') {
-            console.log("按下了大写X")
-            sendMessageToBackground("command-X", "按下了大写x")
-        }
-    });
+    // $(document).keyup(function (event) {
+    //     console.log($(document).activeElement)
+    //     if (event.key == 'x') {
+    //         console.log("按下了小写x")
+    //         // sendMessageToBackground("command-x", "按下了小写x")
+    //     }
+    //     if (event.key == 'X') {
+    //         console.log("按下了大写X")
+    //         // sendMessageToBackground("command-X", "按下了大写x")
+    //     }
+    // });
 });
 
 

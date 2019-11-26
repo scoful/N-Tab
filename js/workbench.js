@@ -7,6 +7,7 @@
     var gitHubApiUrl = "https://api.github.com";
     var giteeApiUrl = "";
     var pushToGithubGistStatus;
+    var pullFromGithubGistStatus;
     var pushToGiteeGistStatus;
     // 定义一个n次循环定时器
     var intervalId;
@@ -14,7 +15,17 @@
     document.addEventListener('DOMContentLoaded', function () {
         console.log("load完workbench了")
         checkGitHubStatus();
+        chrome.storage.sync.get(null, function (items) {
+            var total = new Array();
+            for (var i = 0; i < 100; i++) {
+                total.push("tabGroups_" + i)
+            }
+            chrome.storage.sync.getBytesInUse(total, function (bytes) {
+                console.log("total is " + bytes);
+            });
+        });
     });
+
 
     function checkGitHubStatus() {
         $.ajax({
@@ -38,28 +49,68 @@
     }
 
     document.getElementById('pushToGithubGist').addEventListener('click', function () {
-        console.log(pushToGithubGistStatus)
-        pushToGithubGistStatus = "开始push到github的gist的任务"
-        console.log("开始push到github的gist的任务")
-        if (typeof (pushToGithubGistStatus) != "undefined") {
-            console.log("开始工作")
-            intervalId = setInterval(function () {
-                if (typeof (pushToGithubGistStatus) != "undefined") {
-                    console.log("秒等待");
-                    document.getElementById('pushToGithubGist').innerHTML = pushToGithubGistStatus
-                } else {
-                    clearInterval(intervalId);
-                    document.getElementById('pushToGithubGist').innerHTML = "push到github的gist的任务完成"
-                    console.log("push到github的gist的任务完成")
-                }
-            }, 1000);
-            isStoredGithubTokenLocal()
+        var confirm = prompt('请输入"确定"表示确认：', "小心谨慎思考这操作到底要不要！！！");
+        if (confirm == "确定") {
+            console.log("yes")
+            console.log(pushToGithubGistStatus)
+            pushToGithubGistStatus = "开始push到github的gist的任务"
+            console.log("开始push到github的gist的任务")
+            if (typeof (pushToGithubGistStatus) != "undefined") {
+                console.log("开始工作")
+                intervalId = setInterval(function () {
+                    if (typeof (pushToGithubGistStatus) != "undefined") {
+                        console.log("秒等待");
+                        document.getElementById('pushToGithubGistStatus').innerHTML = pushToGithubGistStatus
+                    } else {
+                        clearInterval(intervalId);
+                        document.getElementById('pushToGithubGistStatus').innerHTML = "push到github的gist的任务完成"
+                        console.log("push到github的gist的任务完成")
+                    }
+                }, 1000);
+                isStoredGithubTokenLocal("push_github")
 
+            } else {
+                console.log("push到github的gist的任务完成")
+                clearInterval(intervalId);
+                document.getElementById('pushToGithubGistStatus').innerHTML = "push到github的gist的任务完成"
+            }
         } else {
-            console.log("push到github的gist的任务完成")
-            clearInterval(intervalId);
-            document.getElementById('pushToGithubGist').innerHTML = "push到github的gist的任务完成"
+            console.log("no")
         }
+    });
+
+    document.getElementById('pullFromGithubGist').addEventListener('click', function () {
+        var confirm = prompt('请输入"确定"表示确认：', "小心谨慎思考这操作到底要不要！！！");
+        if (confirm == "确定") {
+            console.log("yes")
+            console.log(pullFromGithubGistStatus)
+            pullFromGithubGistStatus = "开始pull从github的gist的任务"
+            console.log("开始pull从github的gist的任务")
+            if (typeof (pullFromGithubGistStatus) != "undefined") {
+                console.log("开始工作")
+                intervalId = setInterval(function () {
+                    if (typeof (pullFromGithubGistStatus) != "undefined") {
+                        console.log("秒等待");
+                        document.getElementById('pullFromGithubGistStatus').innerHTML = pullFromGithubGistStatus
+                    } else {
+                        clearInterval(intervalId);
+                        document.getElementById('pullFromGithubGistStatus').innerHTML = "pull从github的gist的任务完成"
+                        console.log("pull从github的gist的任务完成")
+                    }
+                }, 1000);
+                isStoredGithubTokenLocal("pull_github")
+
+            } else {
+                console.log("pull从github的gist的任务完成")
+                clearInterval(intervalId);
+                document.getElementById('pushToGithubGistStatus').innerHTML = "pull从github的gist的任务完成"
+            }
+        } else {
+            console.log("no")
+        }
+    });
+    document.getElementById('pushToGiteeGist').addEventListener('click', function () {
+
     });
 
     function updateGithubGist(content) {
@@ -98,33 +149,75 @@
         })
     }
 
-    function isStoredGithubGistIdLocal() {
+    function isStoredGithubGistIdLocal(action) {
         console.log("开始检查gistId有没有保存")
-        pushToGithubGistStatus = "开始检查gistId有没有保存"
+        if (action == "push_github") {
+            pushToGithubGistStatus = "开始检查gistId有没有保存"
+        } else if (action == "pull_github") {
+            pullFromGithubGistStatus = "开始检查gistId有没有保存"
+        }
         chrome.storage.sync.get("githubGistId", function (storage) {
             console.log(storage.githubGistId)
             if (storage.githubGistId) {
                 console.log("gistId有保存")
                 githubGistId = storage.githubGistId
-                getShardings(function (callback) {
-                    if (!callback || typeof callback == 'undefined' || callback == undefined) {
-                        console.log("没有值")
-                        updateGithubGist([])
-                    } else {
-                        console.log(callback)
-                        updateGithubGist(callback)
-                    }
-                })
+                if (action == "push_github") {
+                    getShardings(function (callback) {
+                        if (!callback || typeof callback == 'undefined' || callback == undefined) {
+                            console.log("没有值")
+                            updateGithubGist([])
+                        } else {
+                            console.log(callback)
+                            updateGithubGist(callback)
+                        }
+                    })
+                } else if (action == "pull_github") {
+                    getGistById()
+                }
             } else {
                 console.log("gistId没有保存")
-                isHadCreateGithubGist()
+                isHadCreateGithubGist(action)
             }
         });
     }
 
-    function isHadCreateGithubGist() {
+    function getGistById() {
+        console.log("根据gistId拉取gist")
+        pullFromGithubGistStatus = "根据gistId拉取gist"
+        $.ajax({
+            type: "GET",
+            url: gitHubApiUrl + "/gists/" + githubGistId,
+            success: function (data, status) {
+                if (status == "success") {
+                    console.log(data)
+                    saveShardings(data.files['brower_Tabs.json'].content, "string")
+                } else {
+                    alert("根据gistId拉取gist失败了")
+                }
+            },
+            error: function (xhr, errorText, errorType) {
+                alert("根据gistId拉取gist报错了")
+            },
+            complete: function () {
+                //do something
+                pullFromGithubGistStatus = undefined
+                chrome.tabs.query({ active: true, currentWindow: true }, function (tabsArr) {
+                    // chrome.tabs.reload(tabsArr[0].id, {}, function (tab) {
+                    //     console.log("刷新一下！")
+                    // });
+                });
+            }
+        })
+    }
+
+
+    function isHadCreateGithubGist(action) {
         console.log("检查是否已经创建了gist")
-        pushToGithubGistStatus = "检查是否已经创建了gist"
+        if (action == "push_github") {
+            pushToGithubGistStatus = "检查是否已经创建了gist"
+        } else if (action == "pull_github") {
+            pullFromGithubGistStatus = "检查是否已经创建了gist"
+        }
         $.ajax({
             type: "GET",
             url: gitHubApiUrl + "/gists?access_token=" + githubGistToken,
@@ -149,25 +242,34 @@
                         }
                     }
                     if (!flag) {
-                        getShardings(function (callback) {
-                            if (!callback || typeof callback == 'undefined' || callback == undefined) {
-                                console.log("没有值")
-                                createGithubGist([])
-                            } else {
-                                console.log(callback)
-                                createGithubGist(callback)
-                            }
-                        })
+                        if (action == "push_github") {
+                            getShardings(function (callback) {
+                                if (!callback || typeof callback == 'undefined' || callback == undefined) {
+                                    console.log("没有值")
+                                    createGithubGist([])
+                                } else {
+                                    console.log(callback)
+                                    createGithubGist(callback)
+                                }
+                            })
+                        } else if (action == "pull_github") {
+                            console.log("还没有创建gist,没有内容可以拉,结束任务")
+                            pullFromGithubGistStatus = undefined
+                        }
                     } else {
-                        getShardings(function (callback) {
-                            if (!callback || typeof callback == 'undefined' || callback == undefined) {
-                                console.log("没有值")
-                                updateGithubGist([])
-                            } else {
-                                console.log(callback)
-                                updateGithubGist(callback)
-                            }
-                        })
+                        if (action == "push_github") {
+                            getShardings(function (callback) {
+                                if (!callback || typeof callback == 'undefined' || callback == undefined) {
+                                    console.log("没有值")
+                                    updateGithubGist([])
+                                } else {
+                                    console.log(callback)
+                                    updateGithubGist(callback)
+                                }
+                            })
+                        } else if (action == "pull_github") {
+                            getGistById()
+                        }
                     }
                 } else {
                     alert("获取所有gists时失败了")
@@ -182,22 +284,26 @@
         })
     }
 
-    function isStoredGithubTokenLocal() {
+    function isStoredGithubTokenLocal(action) {
         console.log("开始检查githubtoken有没有保存")
-        pushToGithubGistStatus = "开始检查githubtoken有没有保存"
+        if (action == "push_github") {
+            pushToGithubGistStatus = "开始检查githubtoken有没有保存"
+        } else if (action == "pull_github") {
+            pullFromGithubGistStatus = "开始检查githubtoken有没有保存"
+        }
         chrome.storage.sync.get("githubGistToken", function (storage) {
             console.log(storage.githubGistToken)
             if (storage.githubGistToken) {
                 console.log("githubtoken有保存")
                 githubGistToken = storage.githubGistToken
-                isStoredGithubGistIdLocal()
+                isStoredGithubGistIdLocal(action)
             } else {
                 console.log("githubtoken没有保存")
                 var token = prompt('请输入权限token：', "******");
                 githubGistToken = token
                 chrome.storage.sync.set({ githubGistToken: token });
                 console.log("githubtoken保存完毕")
-                isStoredGithubGistIdLocal()
+                isStoredGithubGistIdLocal(action)
             }
         });
     }
@@ -256,8 +362,25 @@
         });
     }
 
-    function saveShardings(tabGroup) {
-        var tabGroupStr = JSON.stringify(tabGroup);
+    function removeShardings(cb) {
+        chrome.storage.sync.get(null, function (items) {
+            if (items.tabGroups_num >= 1) {
+                for (var i = 0; i < items.tabGroups_num; i++) {
+                    chrome.storage.sync.remove("tabGroups_" + i, function callback() { });
+                }
+                chrome.storage.sync.remove("tabGroups_num", function callback() { });
+            }
+        });
+        cb("ok")
+    }
+
+    function saveShardings(tabGroup, type) {
+        var tabGroupStr;
+        if (type == "object") {
+            tabGroupStr = JSON.stringify(tabGroup);
+        } else if (type == "string") {
+            tabGroupStr = tabGroup
+        }
         var length = tabGroupStr.length;
         var sliceLength = chrome.storage.sync.QUOTA_BYTES_PER_ITEM / 2; // 简单设置每个分片最大长度，保证能存储到
         var tabGroupSlices = {}; // 保存分片数据
@@ -277,6 +400,7 @@
         chrome.storage.sync.set(tabGroupSlices);
 
         console.log(tabGroupSlices);
+
     }
 
     chrome.storage.sync.get(function (storage) {
@@ -290,6 +414,13 @@
             }
             console.log(JSON.parse(tabGroupsStr))
             bridge = JSON.parse(tabGroupsStr)
+            var i;
+            var total = 0;
+            for (i = 0; i < bridge.length; i += 1) {
+                total += bridge[i].tabs.length
+            }
+            console.log(total)
+            document.getElementById('totalTabs').innerHTML = total
         }
         var tabs = {}, // to-be module
             tabGroups = bridge || [], // tab groups
@@ -300,7 +431,7 @@
         // console.log(JSON.stringify(tabGroups))
         function saveTabGroups(json) {
             // chrome.storage.sync.set({ tabGroups: json });
-            saveShardings(json)
+            saveShardings(json, "object")
         }
 
         // model entity
@@ -327,6 +458,7 @@
                     // remove from localStorage
                     tabGroups.splice(i, 1)
                     // save
+                    console.log(tabGroups)
                     saveTabGroups(tabGroups);
                 };
 
@@ -336,6 +468,7 @@
                     // remove from localStorage
                     tabGroups[i].tabs.splice(ii, 1);
                     // save
+                    console.log(tabGroups)
                     saveTabGroups(tabGroups);
                 };
             };
@@ -381,8 +514,7 @@
 
                                 for (i = 0; i < group.tabs().length; i += 1) {
                                     chrome.tabs.create({
-                                        url: group.tabs()[i].url,
-                                        pinned: group.tabs()[i].pinned
+                                        url: group.tabs()[i].url
                                     });
                                 }
                             }
@@ -390,15 +522,15 @@
                     ]),
 
                     // foreach tab
-                    m('ul', group.tabs().map(function (tab, ii) {
+                    m('ul', { id: "items" }, group.tabs().map(function (tab, ii) {
                         return m('li', [
                             m('span.delete-link', {
                                 onclick: function () {
                                     tabs.vm.rmTab(i, ii);
                                 }
                             }),
-                            m('img', { src: tab.favIconUrl, height: '16', width: '16' }),
-                            ' ',
+                            // m('img', { src: tab.favIconUrl, height: '16', width: '16' }),
+                            // ' ',
                             m('span.link', {
                                 onclick: function () {
                                     if (opts.deleteTabOnOpen === 'yes') {
@@ -406,8 +538,7 @@
                                     }
 
                                     chrome.tabs.create({
-                                        url: tab.url,
-                                        pinned: tab.pinned
+                                        url: tab.url
                                     });
                                 }
                             }, tab.title)

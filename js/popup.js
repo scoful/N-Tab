@@ -81,14 +81,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // test
-    document.getElementById('test').addEventListener('click', function () {
-        chrome.runtime.sendMessage({ action: 'test' }, function (res) {
-            if (res === 'ok') {
-                window.close();
-            }
-        });
-    });
 
     var bg = chrome.extension.getBackgroundPage();
     if (typeof (bg.surplusTime) != "undefined") {

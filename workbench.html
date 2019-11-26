@@ -13,18 +13,33 @@
 <body>
     <div id="container">
         <header>
-            <h1>My Work Bench <span style="font-size: .3em;">v0.0.0.2-alpha </span><span
-                    style="font-size: .5em;">总计：xxx个标签</span></h1>
+            <h1>My Work Bench <span style="font-size: .5em;">总计：<span id="totalTabs"></span>个标签</span></h1>
         </header>
         <div id="menu" class="grid-container">
+            <div>-----------------------------------------------------</div>
             <div class="row">
                 <div id="githubStatus" class="menu-entry"></div>
             </div>
+            <div>-----------------------------------------------------</div>
             <div class="row">
-                <div id="pushToGithubGist" class="menu-entry">点击push到github的gist的任务</div>
+                <div id="pushToGithubGist" class="menu-entry">点击开始push到github的gist的任务,当前状态如下：</div>
+                <div id="pushToGithubGistStatus" class="menu-entry">暂无</div>
+                <div>-----------------------------------------------------</div>
             </div>
             <div class="row">
-                <div id="pushToGiteeGist" class="menu-entry">点击push到gitee的gist</div>
+                <div id="pullFromGithubGist" class="menu-entry">点击开始pull从github的gist的任务,当前状态如下：</div>
+                <div id="pullFromGithubGistStatus" class="menu-entry">暂无</div>
+                <div>-----------------------------------------------------</div>
+            </div>
+            <div class="row">
+                <div id="pushToGiteeGist" class="menu-entry">(TODO)点击开始push到gitee的gist的任务,当前状态如下：</div>
+                <div id="pushToGiteeGistStatus" class="menu-entry">暂无</div>
+                <div>-----------------------------------------------------</div>
+            </div>
+            <div class="row">
+                <div id="pullFromGiteeGist" class="menu-entry">(TODO)点击开始pull从gitee的gist的任务,当前状态如下：</div>
+                <div id="pullFromGiteeGistStatus" class="menu-entry">暂无</div>
+                <div>-----------------------------------------------------</div>
             </div>
         </div>
         <div id="groups">
@@ -37,7 +52,6 @@
     <script src="js/mithril.min.js"></script>
     <script src="js/moment.min.js"></script>
     <script src="js/workbench.js"></script>
-
 </body>
 
 </html>
