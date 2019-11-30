@@ -12,6 +12,7 @@
     // 定义一个n次循环定时器
     var intervalId;
 
+    // 一load完就算一下storage占用了多少空间
     document.addEventListener('DOMContentLoaded', function () {
         console.log("load完workbench了")
         checkGitHubStatus();
@@ -47,7 +48,12 @@
             }
         })
     }
+    // hide show 功能
+    document.getElementById('hideShow').addEventListener('click', function () {
+        $("#menu").slideToggle();
+    });
 
+    // 响应推送到github的gist的动作
     document.getElementById('pushToGithubGist').addEventListener('click', function () {
         var confirm = prompt('请输入"确定"表示确认：', "小心谨慎思考这操作到底要不要！！！");
         if (confirm == "确定") {
@@ -79,6 +85,7 @@
         }
     });
 
+    // 响应从github的gist拉取的动作
     document.getElementById('pullFromGithubGist').addEventListener('click', function () {
         var confirm = prompt('请输入"确定"表示确认：', "小心谨慎思考这操作到底要不要！！！");
         if (confirm == "确定") {
@@ -110,7 +117,7 @@
         }
     });
 
-
+    // 更新github的gist
     function updateGithubGist(content) {
         pushToGithubGistStatus = "已经创建了gist，直接开始更新"
         console.log("已经创建了gist，直接开始更新")
@@ -125,7 +132,6 @@
         $.ajax({
             type: "PATCH",
             url: gitHubApiUrl + "/gists/" + githubGistId + "?access_token=" + githubGistToken,
-            dataType: "json",
             data: JSON.stringify(data),
             success: function (data, status) {
                 if (status == "success") {
@@ -147,6 +153,7 @@
         })
     }
 
+    // 判断是否已经保存了github的gistId
     function isStoredGithubGistIdLocal(action) {
         console.log("开始检查gistId有没有保存")
         if (action == "push_github") {
@@ -178,6 +185,7 @@
         });
     }
 
+    // 通过gistId获取gist
     function getGistById() {
         console.log("根据gistId拉取gist")
         pullFromGithubGistStatus = "根据gistId拉取gist"
@@ -205,7 +213,7 @@
         })
     }
 
-
+    // 判断是否已经创建了github的gist
     function isHadCreateGithubGist(action) {
         console.log("检查是否已经创建了gist")
         if (action == "push_github") {
@@ -276,6 +284,7 @@
         })
     }
 
+    // 判断是否已经保存github的Token
     function isStoredGithubTokenLocal(action) {
         console.log("开始检查githubtoken有没有保存")
         if (action == "push_github") {
@@ -300,8 +309,7 @@
         });
     }
 
-
-
+    // 创建github的gist
     function createGithubGist(content) {
         console.log("还没有创建gist,开始创建")
         pushToGithubGistStatus = "还没有创建gist,开始创建"
@@ -338,6 +346,7 @@
         })
     }
 
+    // 获取local storage
     function getShardings(cb) {
         chrome.storage.local.get(null, function (items) {
             var tabGroupsStr = "";
@@ -354,6 +363,7 @@
         });
     }
 
+    // 移除local storage
     function removeShardings(cb) {
         chrome.storage.local.get(null, function (items) {
             if (items.tabGroups_num >= 1) {
@@ -366,6 +376,7 @@
         cb("ok")
     }
 
+    // 保存local storage
     function saveShardings(tabGroup, type) {
         var tabGroupStr;
         if (type == "object") {
@@ -374,7 +385,7 @@
             tabGroupStr = tabGroup
         }
         var length = tabGroupStr.length;
-        var sliceLength = 102400; 
+        var sliceLength = 102400;
         var tabGroupSlices = {}; // 保存分片数据
         var i = 0; // 分片序号
 
@@ -393,6 +404,7 @@
 
     }
 
+    // 展示保存的tab
     chrome.storage.local.get(function (storage) {
         var bridge = [];
         if (storage.tabGroups_num) {
@@ -402,13 +414,13 @@
                 tabGroupsStr += storage["tabGroups_" + i];
             }
             bridge = JSON.parse(tabGroupsStr)
-            var i;
-            var total = 0;
-            for (i = 0; i < bridge.length; i += 1) {
-                total += bridge[i].tabs.length
-            }
-            document.getElementById('totalTabs').innerHTML = total
         }
+        var i;
+        var total = 0;
+        for (i = 0; i < bridge.length; i += 1) {
+            total += bridge[i].tabs.length
+        }
+        document.getElementById('totalTabs').innerHTML = total
         var tabs = {}, // to-be module
             tabGroups = bridge || [], // tab groups
             opts = storage.options || {
@@ -417,6 +429,12 @@
         function saveTabGroups(json) {
             // chrome.storage.local.set({ tabGroups: json });
             saveShardings(json, "object")
+            var i;
+            var total = 0;
+            for (i = 0; i < json.length; i += 1) {
+                total += json[i].tabs.length
+            }
+            document.getElementById('totalTabs').innerHTML = total
         }
 
         // model entity
@@ -473,6 +491,9 @@
 
             // foreach tab group
             return tabs.vm.list.map(function (group, i) {
+                console.log(tabs.vm.list)
+                console.log(group)
+                console.log(i)
                 // group
                 return m('div.group', [
                     m('div.group-title', [
@@ -515,11 +536,11 @@
                             // m('img', { src: tab.favIconUrl, height: '16', width: '16' }),
                             // ' ',
                             m('span.link', {
+                                title: tab.title + "\n" + tab.url,
                                 onclick: function () {
                                     if (opts.deleteTabOnOpen === 'yes') {
                                         tabs.vm.rmTab(i, ii);
                                     }
-
                                     chrome.tabs.create({
                                         url: tab.url
                                     });

@@ -98,14 +98,6 @@
 	background: #f0f0f0;
 }
 
-#open-background-page {
-	border-top: 1px solid #eee;
-}
-
-/**/
-/* grid stuff */
-/**/
-
 .grid-container {
 	width: 100%;
 }
@@ -119,5 +111,8 @@
 .row:after {
 	content: "";
 	display: table ;
-	clear: both;
+    clear: both;
+}
+.row{
+    border-top: 1px solid #eee;
 }

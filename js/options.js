@@ -4,7 +4,7 @@
     var opts = {};
 
     document.addEventListener('DOMContentLoaded', function () {
-        chrome.storage.sync.get('options', function (storage) {
+        chrome.storage.local.get('options', function (storage) {
             var opts = storage.options || {};
 
             if (opts.deleteTabOnOpen === undefined) {
@@ -18,7 +18,7 @@
     document.getElementsByName('save')[0].addEventListener('click', function () {
         var deleteTabOnOpen = document.querySelector('input[name="deleteTabOnOpen"]:checked').value;
 
-        chrome.storage.sync.set({
+        chrome.storage.local.set({
             options: {
                 deleteTabOnOpen: deleteTabOnOpen
             }

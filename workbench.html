@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>myWorkbench</title>
+    <title>CloudSkyMonster</title>
     <link rel="stylesheet" href="css/reset.min.css">
     <link rel="stylesheet" href="css/workbench.css">
     <script src="js/jquery-2.2.2.min.js"></script>
@@ -13,39 +13,35 @@
 <body>
     <div id="container">
         <header>
-            <h1>My Work Bench <span style="font-size: .5em;">总计：<span id="totalTabs"></span>个标签</span></h1>
+            <h1>CloudSkyMonster
+                <span style="font-size: .5em;">总计：<span id="totalTabs"></span>个标签 </span>
+                <!-- <span id="githubStatus" style="font-size: .4em;"></span> -->
+            </h1>
+            <button id="githubStatus" class="button"></button>
+            <button id="hideShow" class="button">click show or hide gist feature</button>
         </header>
-        <div id="menu" class="grid-container">
-            <div>-----------------------------------------------------</div>
-            <div class="row">
-                <div id="githubStatus" class="menu-entry"></div>
-            </div>
-            <div>-----------------------------------------------------</div>
+        <div id="menu" class="grid-container" style="display:none">
             <div class="row">
                 <div id="pushToGithubGist" class="menu-entry">点击开始push到github的gist的任务,当前状态如下：</div>
                 <div id="pushToGithubGistStatus" class="menu-entry">暂无</div>
-                <div>-----------------------------------------------------</div>
             </div>
             <div class="row">
                 <div id="pullFromGithubGist" class="menu-entry">点击开始pull从github的gist的任务,当前状态如下：</div>
                 <div id="pullFromGithubGistStatus" class="menu-entry">暂无</div>
-                <div>-----------------------------------------------------</div>
             </div>
             <div class="row">
                 <div id="pushToGiteeGist" class="menu-entry">(TODO)点击开始push到gitee的gist的任务,当前状态如下：</div>
                 <div id="pushToGiteeGistStatus" class="menu-entry">暂无</div>
-                <div>-----------------------------------------------------</div>
             </div>
             <div class="row">
                 <div id="pullFromGiteeGist" class="menu-entry">(TODO)点击开始pull从gitee的gist的任务,当前状态如下：</div>
                 <div id="pullFromGiteeGistStatus" class="menu-entry">暂无</div>
-                <div>-----------------------------------------------------</div>
             </div>
         </div>
         <div id="groups">
         </div>
         <footer role="contentinfo">
-            The source code for cloudSkyMonster is available at <a
+            The source code for CloudSkyMonster is available at <a
                 href="https://github.com/scoful/cloudSkyMonster">GitHub</a>.
         </footer>
     </div>

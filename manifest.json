@@ -22,6 +22,7 @@
         "notifications",
         "<all_urls>"
     ],
+    "content_security_policy": "script-src 'self' https://api.github.com; object-src 'self'",
     "browser_action": {
         "default_icon": "images/favicon.png",
         "default_title": "cloudSkyMonster",

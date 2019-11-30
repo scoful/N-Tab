@@ -8,7 +8,7 @@ window.onload = function () {
     console.log("load完window了")
 }
 
-
+// 一load完就加载jq，并获取tab数量显示在pop的badge上
 document.addEventListener('DOMContentLoaded', function () {
     console.log("load完background了")
     var script = document.createElement('script');
@@ -136,19 +136,21 @@ function sendMessageToContentScript(action, message) {
     });
 }
 
-// 持续监听，当tab被激活，被关闭，被创建的时候都刷新一下tab的数量
+// 持续监听，当tab被激活的时候刷新一下pop上badge的tab的数量
 chrome.tabs.onActivated.addListener(function callback() {
     chrome.tabs.query({}, function (tab) {
         chrome.browserAction.setBadgeText({ text: tab.length + "" });
         chrome.browserAction.setBadgeBackgroundColor({ color: [255, 0, 0, 255] });
     });
 });
+// 持续监听，当tab被关闭的时候刷新一下pop上badge的tab的数量
 chrome.tabs.onRemoved.addListener(function callback() {
     chrome.tabs.query({}, function (tab) {
         chrome.browserAction.setBadgeText({ text: tab.length + "" });
         chrome.browserAction.setBadgeBackgroundColor({ color: [255, 0, 0, 255] });
     });
 });
+// 持续监听，当tab被创建的时候刷新一下pop上badge的tab的数量
 chrome.tabs.onCreated.addListener(function callback() {
     chrome.tabs.query({}, function (tab) {
         chrome.browserAction.setBadgeText({ text: tab.length + "" });
@@ -307,10 +309,12 @@ function timeDown(endDateStr) {
 
 }
 
+// 判断是否int
 function isInt(i) {
     return typeof i == "number" && !(i % 1) && !isNaN(i);
 }
 
+// 日期格式化
 function dateFormat(fmt, date) {
     let ret;
     let opt = {
@@ -331,6 +335,7 @@ function dateFormat(fmt, date) {
     return fmt;
 }
 
+// 关闭当前tab
 function closeCurrentTab() {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabsArr) {
         chrome.storage.local.set({ 'xCommandUrl': tabsArr[0].url });
@@ -338,16 +343,16 @@ function closeCurrentTab() {
     });
 }
 
+// 重新打开最后一次关闭的tab
 function restartLastClosedTab() {
     chrome.storage.local.get('xCommandUrl', function (storage) {
         if (storage.xCommandUrl) {
             chrome.tabs.create({ index: 0, url: storage.xCommandUrl });
         }
     });
-
 }
 
-// 用分片的思想去存storage，因为sync的总量太小了，只有102400，所以改成local。
+// 用分片的思想去存storage，因为sync的总量太小了，只有102400byte=8k，所以改成local，有5m。
 function saveShardings(tabGroup, type) {
     var tabGroupStr;
     if (type == "object") {
