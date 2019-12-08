@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var txt;
         txt = window.getSelection();
         if (txt.toString().length > 0) {
-            sendMessageToBackground("translate", txt.toString())
+            sendMessageToBackground("translate", txt.toString());
         }
     });
 
@@ -30,18 +30,6 @@ document.addEventListener('DOMContentLoaded', function () {
         pageY = e.pageY;
 
     });
-    // TODO 本来想实现在空标签页和chrome://extensions/这种特殊页面也可以按x直接关闭，问题：1找不到焦点在哪里，在文本框里输入x也会关闭；2空标签页和chrome://extensions/想实现的话估计要再background里，contentscript需要有dom承载。
-    // $(document).keyup(function (event) {
-    //     console.log($(document).activeElement)
-    //     if (event.key == 'x') {
-    //         console.log("按下了小写x")
-    //         // sendMessageToBackground("command-x", "按下了小写x")
-    //     }
-    //     if (event.key == 'X') {
-    //         console.log("按下了大写X")
-    //         // sendMessageToBackground("command-X", "按下了大写x")
-    //     }
-    // });
 });
 
 
@@ -49,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
 function sendMessageToBackground(action, message) {
     chrome.runtime.sendMessage({ action: action, message: message }, function (res) {
         if (res === 'ok') {
-            console.log("content-->background发送的消息被消费了")
+            console.log("content-->background发送的消息被消费了");
         }
     });
 }
@@ -59,7 +47,7 @@ chrome.runtime.onMessage.addListener(function (req, sender, sendRes) {
     switch (req.action) {
         case 'translateResult':
             sendRes('ok'); // acknowledge
-            tip(req.message)
+            tip(req.message);
             break;
         default:
             sendRes('nope'); // acknowledge
@@ -67,6 +55,7 @@ chrome.runtime.onMessage.addListener(function (req, sender, sendRes) {
     }
 });
 
+// 删除生成的div
 function deleteDiv() {
     var my = document.getElementById("descDiv");
     if (my != null)
@@ -77,7 +66,7 @@ function deleteDiv() {
 function tip(info) {
     info = info || '';
     var ele = document.createElement('div');
-    ele.id = 'descDiv'
+    ele.id = 'descDiv';
     ele.className = 'chrome-plugin-simple-tip';
     ele.style.top = parseInt(pageY - scrollTop) + 20 + 'px';
     ele.style.left = pageX + 'px';
@@ -91,3 +80,5 @@ function tip(info) {
         }, 400);
     }, 3000);
 }
+
+

@@ -6,10 +6,10 @@
 
     // 一打开popup就获取当前tab的地址并生成二维码
     document.addEventListener('DOMContentLoaded', function () {
-        console.log("load完popup了")
+        console.log("load完popup了");
         var data;
         chrome.tabs.query({ active: true, currentWindow: true }, function (tab) {
-            data = tab[0].url
+            data = tab[0].url;
             $("#qr").attr("src", "http://qr.topscan.com/api.php?text=" + data);
         });
 
@@ -60,10 +60,18 @@
             chrome.tabs.create({ index: 0, url: chrome.extension.getURL('json.html') });
         });
 
-        // 打开测试页
-        document.getElementById('open_test_html').addEventListener('click', function () {
-            chrome.tabs.create({ index: 0, url: chrome.extension.getURL('woc.html') });
-        });
+        // 测试用
+        // document.getElementById('open_test_html').addEventListener('click', function () {
+        //     // chrome.tabs.create({ index: 0, url: chrome.extension.getURL('woc.html') });
+        //     chrome.notifications.create(null, {
+        //         type: 'basic',
+        //         iconUrl: 'images/favicon.png',
+        //         title: 'TIME UP',
+        //         message: '分钟时间到了！',
+        //         buttons: [{ "title": "111" }, { "title": "222" }],
+        //         requireInteraction: true
+        //     });
+        // });
 
         // 5分钟定时提醒
         document.getElementById('five-minute').addEventListener('click', function () {
@@ -95,7 +103,7 @@
         // 自定义分钟数的定时提醒
         document.getElementById('custom-minute').addEventListener('click', function () {
             var minute = prompt('请输入指定分钟数：', 120);
-            chrome.runtime.sendMessage({ action: 'custom-minute', minute: minute }, function (res) {
+            chrome.runtime.sendMessage({ action: 'custom-minute', message: minute }, function (res) {
                 if (res === 'ok') {
                     window.close();
                 }
@@ -107,15 +115,15 @@
         if (typeof (bg.surplusTime) != "undefined") {
             intervalId = setInterval(function () {
                 if (typeof (bg.surplusTime) != "undefined") {
-                    document.getElementById('surplusTime').innerHTML = bg.surplusTime
+                    document.getElementById('surplusTime').innerHTML = bg.surplusTime;
                 } else {
                     clearInterval(intervalId);
-                    document.getElementById('surplusTime').innerHTML = "暂无定时任务"
+                    document.getElementById('surplusTime').innerHTML = "暂无定时任务";
                 }
             }, 1000);
         } else {
             clearInterval(intervalId);
-            document.getElementById('surplusTime').innerHTML = "暂无定时任务"
+            document.getElementById('surplusTime').innerHTML = "暂无定时任务";
         }
 
     });
@@ -131,6 +139,10 @@
             vm.init = function () {
                 vm.list = new tabs.TabsList();
             };
+            vm.rmTab = function (index) {
+                chrome.tabs.remove(tabs.vm.list[index].id, function callback() { });
+                tabs.vm.list.splice(index, 1);
+            };
             return vm;
         };
 
@@ -138,20 +150,25 @@
             var i;
             tabs.vm.init();
             for (i = 0; i < allTabs.length; i += 1) {
-                var tab = { "title": allTabs[i].title }
+                var tab = { "title": allTabs[i].title, "id": allTabs[i].id };
                 tabs.vm.list.push(tab);
             }
         };
 
         tabs.view = function () {
             return tabs.vm.list.map(function (tab, i) {
-                return m('div.row', [
-                    m("div", {
-                        class: "menu-entry", onclick: function () {
-                            chrome.tabs.highlight({ tabs: i }, function callback() {
-                            });
+                return m('div.row', {
+                    onclick: function () {
+                        chrome.tabs.highlight({ tabs: i }, function callback() {
+                        });
+                    }
+                }, [
+                    m("div.menu-entry", [m('span.delete-link', {
+                        onclick: function (event) {
+                            tabs.vm.rmTab(i);
+                            event.stopPropagation();
                         }
-                    }, tab.title)
+                    }), m("span", {}, tab.title)])
                 ]);
             });
         };

@@ -1,4 +1,4 @@
-;(function ($) {
+; (function ($) {
     'use strict'
 
     var opts = {};
@@ -27,6 +27,12 @@
             window.setTimeout(function () {
                 document.getElementById('saved').style.display = 'none';
             }, 1000);
+            chrome.tabs.query({ url: "chrome-extension://*/workbench.html*", currentWindow: true }, function (tab) {
+                if (tab.length >= 1) {
+                    chrome.tabs.reload(tab[0].id, {}, function (tab) {
+                    });
+                }
+            });
         });
     });
 

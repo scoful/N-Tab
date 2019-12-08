@@ -4,13 +4,15 @@ console.log("background is done!");
 var surplusTime;
 // 定义一个 一次执行定时器
 var timeoutId;
+// 定义一个桌面通知框id
+var notificationId;
 window.onload = function () {
-    console.log("load完window了")
+    console.log("load完window了");
 }
 
 // 一load完就加载jq，并获取tab数量显示在pop的badge上
 document.addEventListener('DOMContentLoaded', function () {
-    console.log("load完background了")
+    console.log("load完background了");
     var script = document.createElement('script');
     script.src = "js/jquery-2.2.2.min.js";
     document.head.appendChild(script);
@@ -20,14 +22,16 @@ document.addEventListener('DOMContentLoaded', function () {
         chrome.browserAction.setBadgeBackgroundColor({ color: [255, 0, 0, 255] });
     });
     chrome.storage.local.get(function (storage) {
-        console.log(storage)
+        console.log(storage);
     });
+    var intervalId = setInterval(code, delay);// todo
+
 });
 
 
 // 调用有道翻译api
 function translateFunc(txt) {
-    console.log("开始翻译！")
+    console.log("开始翻译！");
     var url = "https://fanyi.youdao.com/openapi.do?keyfrom=lulua-net&key=620584095&type=data&doctype=json&version=1.1&q=" + txt;
     $.ajax({
         type: "GET",
@@ -35,13 +39,13 @@ function translateFunc(txt) {
         success: function (data, status) {
             if (status == "success") {
                 console.log(data.translation[0]);
-                sendMessageToContentScript("translateResult", data.translation[0])
+                sendMessageToContentScript("translateResult", data.translation[0]);
             } else {
-                sendMessageToContentScript("translateResult", "HELP!!!")
+                sendMessageToContentScript("translateResult", "HELP!!!");
             }
         },
         error: function (xhr, errorText, errorType) {
-            sendMessageToContentScript("translateResult", "HELP!!!可能断网了")
+            sendMessageToContentScript("translateResult", "HELP!!!可能断网了");
         },
         complete: function () {
             //do something
@@ -52,11 +56,11 @@ function translateFunc(txt) {
 // 持续监听发送给background的消息
 chrome.runtime.onMessage.addListener(function (req, sender, sendRes) {
     switch (req.action) {
-        case 'translate':
-            translateFunc(req.message)
+        case 'translate': // 翻译
+            translateFunc(req.message);
             sendRes('ok'); // acknowledge
             break;
-        case 'save-all':
+        case 'save-all': // 保存所有tab
             if (req.tabsArr.length > 0) {
                 saveTabs(req.tabsArr);
                 openBackgroundPage();
@@ -66,11 +70,11 @@ chrome.runtime.onMessage.addListener(function (req, sender, sendRes) {
             }
             sendRes('ok'); // acknowledge
             break;
-        case 'openbackgroundpage':
+        case 'openbackgroundpage': // 打开展示页
             openBackgroundPage();
             sendRes('ok'); // acknowledge
             break;
-        case 'save-current':
+        case 'save-current': // 保存当前tab
             if (req.tabsArr.length > 0) {
                 saveTabs(req.tabsArr);
                 openBackgroundPage();
@@ -80,7 +84,7 @@ chrome.runtime.onMessage.addListener(function (req, sender, sendRes) {
             }
             sendRes('ok'); // acknowledge
             break;
-        case 'save-others':
+        case 'save-others': // 保存其他tab
             if (req.tabsArr.length > 0) {
                 saveTabs(req.tabsArr);
                 openBackgroundPage();
@@ -90,32 +94,28 @@ chrome.runtime.onMessage.addListener(function (req, sender, sendRes) {
             }
             sendRes('ok'); // acknowledge
             break;
-        case 'five-minute':
+        case 'five-minute': // 5分钟后提醒
             remind(5);
             sendRes('ok'); // acknowledge
             break;
-        case 'ten-minute':
+        case 'ten-minute': // 10分钟后提醒
             remind(10);
             sendRes('ok'); // acknowledge
             break;
-        case 'forty-minute':
+        case 'forty-minute': // 40分钟后提醒
             remind(40);
             sendRes('ok'); // acknowledge
             break;
-        case 'custom-minute':
-            remind(Number(req.minute));
+        case 'custom-minute': // 自定义分钟后提醒
+            remind(Number(req.message));
             sendRes('ok'); // acknowledge
             break;
-        case 'command-x':
-            closeCurrentTab()
+        case 'command-x': // todo，没有触发入口
+            closeCurrentTab();
             sendRes('ok'); // acknowledge
             break;
-        case 'command-X':
-            restartLastClosedTab()
-            sendRes('ok'); // acknowledge
-            break;
-        case 'test':
-            test();
+        case 'command-X': // todo，没有触发入口
+            restartLastClosedTab();
             sendRes('ok'); // acknowledge
             break;
         default:
@@ -130,7 +130,7 @@ function sendMessageToContentScript(action, message) {
     chrome.tabs.query({ active: true, currentWindow: true }, function (res) {
         chrome.tabs.sendMessage(res[0].id, { action: action, message: message }, function (response) {
             if (response === 'ok') {
-                console.log("background-->content发送的消息被消费了")
+                console.log("background-->content发送的消息被消费了");
             }
         });
     });
@@ -178,12 +178,12 @@ function saveTabs(tabsArr) {
 // from the array of Tab objects it makes an object with date and the array
 function makeTabGroup(tabsArr) {
     var date;
-    date = dateFormat("YYYY-mm-dd HH:MM:SS", new Date())
+    date = dateFormat("YYYY-mm-dd HH:MM:SS", new Date());
     var tabGroup = {
         date: date,
         id: genObjectId() // clever way to quickly get a unique ID
     };
-    let res = tabsArr.map(({ title, url, favIconUrl }) => ({ title, url, favIconUrl }))
+    let res = tabsArr.map(({ title, url }) => ({ title, url }));
     tabGroup.tabs = res;
 
     return tabGroup;
@@ -198,16 +198,11 @@ function filterTabGroup(tabGroup) {
 function saveTabGroup(tabGroup) {
     getShardings(function (callback) {
         if (!callback || typeof callback == 'undefined' || callback == undefined) {
-            saveShardings([tabGroup], "object")
+            saveShardings([tabGroup], "object");
         } else {
-            // TODO 这里做了特别处理，第一个tab当做常用的，永远第一个，可以写很复杂的逻辑，结合列表拖曳，这块还没找到简单的方式。
-            var newArr = callback
-            var top = newArr.splice(0, 1)
-            newArr.unshift(tabGroup)
-            newArr.unshift(top[0])
-            // newArr.push(tabGroup);
-            // newArr.reverse();
-            saveShardings(newArr, "object")
+            var newArr = callback;
+            newArr.unshift(tabGroup);
+            saveShardings(newArr, "object");
         }
     })
 }
@@ -239,7 +234,7 @@ function closeTabs(tabsArr) {
 
     chrome.tabs.remove(tabsToClose, function () {
         if (chrome.runtime.lastError) {
-            console.error(chrome.runtime.lastError)
+            console.error(chrome.runtime.lastError);
         }
     });
 }
@@ -256,30 +251,35 @@ chrome.contextMenus.create({
             } else {
                 openBackgroundPage();
             }
-
         });
     }
 });
 
 // 定时提醒
 function remind(minute) {
-    setTimeout(() => {
-        chrome.notifications.create(null, {
-            type: 'basic',
-            iconUrl: 'images/favicon.png',
-            title: 'TIME UP',
-            message: minute + '分钟时间到了！',
-            requireInteraction: true
-        });
-        // 时间到，清除定时器
-        clearTimeout(timeoutId)
-        surplusTime = undefined
-    }, minute * 60 * 1000);
-    var endDateStr = new Date();
-    var min = endDateStr.getMinutes();
-    endDateStr.setMinutes(min + minute);
-    endDateStr.toLocaleString();
-    timeDown(endDateStr)
+    if (typeof (surplusTime) === "undefined") {
+        notificationId = genObjectId();
+        setTimeout(() => {
+            chrome.notifications.create(notificationId, {
+                type: 'basic',
+                iconUrl: 'images/favicon.png',
+                title: 'TIME UP',
+                message: minute + '分钟时间到了！',
+                buttons: [{ "title": "关闭" }],
+                requireInteraction: true
+            });
+            // 时间到，清除定时器
+            clearTimeout(timeoutId);
+            surplusTime = undefined;
+        }, minute * 60 * 1000);
+        var endDateStr = new Date();
+        var min = endDateStr.getMinutes();
+        endDateStr.setMinutes(min + minute);
+        endDateStr.toLocaleString();
+        timeDown(endDateStr);
+    } else {
+        alert("当前正在倒计时！一次只能倒计时一个");
+    }
 }
 
 // 倒计时
@@ -329,7 +329,7 @@ function dateFormat(fmt, date) {
     for (let k in opt) {
         ret = new RegExp("(" + k + ")").exec(fmt);
         if (ret) {
-            fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
+            fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")));
         };
     };
     return fmt;
@@ -358,10 +358,10 @@ function saveShardings(tabGroup, type) {
     if (type == "object") {
         tabGroupStr = JSON.stringify(tabGroup);
     } else if (type == "string") {
-        tabGroupStr = tabGroup
+        tabGroupStr = tabGroup;
     }
     var length = tabGroupStr.length;
-    var sliceLength = 102400; 
+    var sliceLength = 102400;
     var tabGroupSlices = {}; // 保存分片数据
     var i = 0; // 分片序号
 
@@ -389,10 +389,15 @@ function getShardings(cb) {
             for (var i = 0; i < items.tabGroups_num; i++) {
                 tabGroupsStr += items["tabGroups_" + i];
             }
-            cb(JSON.parse(tabGroupsStr))
+            cb(JSON.parse(tabGroupsStr));
         } else {
-            cb()
+            cb();
         }
     });
 }
 
+// 持续监听通知框的按钮点击事件，点了就清除通知框
+chrome.notifications.onButtonClicked.addListener(function callback(notificationId, buttonIndex) {
+    chrome.notifications.clear(notificationId, function callback() {
+    });
+});

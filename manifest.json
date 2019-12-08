@@ -18,9 +18,8 @@
         "tabs",
         "contextMenus",
         "storage",
-        "unlimitedStorage",// 据说是不受限制的存？
-        "notifications",
-        "<all_urls>"
+        "unlimitedStorage",
+        "notifications"
     ],
     "content_security_policy": "script-src 'self' https://api.github.com; object-src 'self'",
     "browser_action": {
@@ -41,8 +40,22 @@
                 "css/custom.css"
             ],
             "run_at": "document_start"
+        },
+        {
+            "matches": [
+                "http://10.0.18.10:9098/Radius/reader/routerFirst*"
+            ],
+            "js": [
+                "js/gzLibrary.js"
+            ],
+            "css": [],
+            "run_at": "document_start"
         }
     ],
+    "web_accessible_resources": [
+        "js/inject.js"
+    ],
+    "options_page": "options.html",
     "options_ui": {
         "page": "options.html",
         "chrome_style": true

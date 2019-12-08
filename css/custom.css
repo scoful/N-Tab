@@ -116,3 +116,25 @@
 .row{
     border-top: 1px solid #eee;
 }
+
+.delete-link {
+	font-size: .9em;
+	font-weight: bold;
+	background: #eee;
+	color: white;
+
+	display: inline-block;
+	border-radius: 1em;
+	padding: 0 .3em;
+	margin-right: 10px;
+}
+.delete-link:before {
+	content: "X";
+}
+*:hover > .delete-link {
+	background: #aaa;
+}
+.delete-link:hover {
+	background: red;
+	cursor: pointer;
+}

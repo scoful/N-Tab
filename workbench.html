@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
     <meta charset="UTF-8">
@@ -8,37 +8,47 @@
     <link rel="stylesheet" href="css/workbench.css">
     <script src="js/jquery-2.2.2.min.js"></script>
     <script src="js/prefixfree.min.js"></script>
+    <script src="js/Sortable.min.js"></script>
 </head>
 
 <body>
     <div id="container">
         <header>
             <h1>CloudSkyMonster
-                <span style="font-size: .5em;">总计：<span id="totalTabs"></span>个标签 </span>
-                <!-- <span id="githubStatus" style="font-size: .4em;"></span> -->
+                <span style="font-size: .5em;">Dashboard Total：<span id="totalTabs"></span> tabs</span>
             </h1>
             <button id="githubStatus" class="button"></button>
-            <button id="hideShow" class="button">click show or hide gist feature</button>
+            <button id="hideShowGist" class="button">click show or hide gist function</button>
+            <button id="hideShowImport" class="button">click show or hide import function</button>
+            <span>drag title</span><input id="dragTitle" class="switch switch-anim" type="checkbox">
+            <span>drag urls</span><input id="dragUrls" class="switch switch-anim" type="checkbox">
+
         </header>
         <div id="menu" class="grid-container" style="display:none">
             <div class="row">
-                <div id="pushToGithubGist" class="menu-entry">点击开始push到github的gist的任务,当前状态如下：</div>
-                <div id="pushToGithubGistStatus" class="menu-entry">暂无</div>
+                <div id="pushToGithubGist" class="menu-entry">click start push to github's gist, status：<span
+                        id="pushToGithubGistStatus">nope</span></div>
             </div>
             <div class="row">
-                <div id="pullFromGithubGist" class="menu-entry">点击开始pull从github的gist的任务,当前状态如下：</div>
-                <div id="pullFromGithubGistStatus" class="menu-entry">暂无</div>
+                <div id="pullFromGithubGist" class="menu-entry">click start pull from github's gist, status：<span
+                        id="pullFromGithubGistStatus">nope</span></div>
             </div>
             <div class="row">
-                <div id="pushToGiteeGist" class="menu-entry">(TODO)点击开始push到gitee的gist的任务,当前状态如下：</div>
-                <div id="pushToGiteeGistStatus" class="menu-entry">暂无</div>
+                <div id="pushToGiteeGist" class="menu-entry">(TODO)click start push to gitee's gist, status：<span
+                        id="pushToGiteeGistStatus">nope</span></div>
             </div>
             <div class="row">
-                <div id="pullFromGiteeGist" class="menu-entry">(TODO)点击开始pull从gitee的gist的任务,当前状态如下：</div>
-                <div id="pullFromGiteeGistStatus" class="menu-entry">暂无</div>
+                <div id="pullFromGiteeGist" class="menu-entry">(TODO)click start pull from gitee's gist, status：<span
+                        id="pullFromGiteeGistStatus">nope</span></div>
             </div>
         </div>
-        <div id="groups">
+        <div id="importOneTab" style="display:none">
+            <textarea id="importTextarea" style="width: 1024px; height: 200px;"></textarea>
+            <div>
+                <button id="import" class="button">导入本地</button><span>PS：导入的是从onetab导出的内容</span>
+            </div>
+        </div>
+        <div id="tabGroups">
         </div>
         <footer role="contentinfo">
             The source code for CloudSkyMonster is available at <a
@@ -47,6 +57,7 @@
     </div>
     <script src="js/mithril.min.js"></script>
     <script src="js/moment.min.js"></script>
+
     <script src="js/workbench.js"></script>
 </body>
 
