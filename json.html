@@ -2,58 +2,46 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>处理json工具合集</title>
+    <title>JSON Tools</title>
     <script src="js/jquery-2.2.2.min.js"></script>
     <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
+    <div id="">
+        <div class="panel-body" style="padding-top: 0px; padding-bottom: 0px;">
+            <!--内容块开始-->
+            <div style="clear: both;"></div>
+            <div style="height: 400px;">
+                <p style="margin-left:10px;">需要格式化json的内容：</p>
+                <form name="main" onsubmit="return false" style="margin-top: 10px;">
+                    <textarea id="code" name="code" style="display: none; resize: both"></textarea>
+                    <div class="validate">
+                        <div class="left1 validate" id="btn2019061122" style="float: left">
+                            <div class="btn-group" role="group" aria-label="..." style="margin-left: 20px">
+                                <button class="copy hide" data-ga="copy"></button>
+                                <input name="validate" data-ga="validate" type="submit" id="validate"
+                                    class="btn btn-primary" value="--格式化校验--">
 
-    <div class="panel-body" style="padding-top: 0px; padding-bottom: 0px;">
-        <!--内容块开始-->
-        <div style="clear: both;"></div>
-        <div style="height: 400px;">
-            <p style="margin-left:10px;">需要格式化json的内容：</p>
-            <form name="main" onsubmit="return false" style="margin-top: 10px;">
-                <textarea id="code" name="code" style="display: none; resize: both"></textarea>
-                <div class="grippie" id="btnShouOrFang" onclick="" style="">点击俺最大化</div>
-                <div class="validate">
-                    <div class="left1 validate" id="btn2019061122" style="float: left">
-                        <div class="btn-group" role="group" aria-label="..." style="margin-left: 20px">
-                            <button class="copy hide" data-ga="copy"></button>
-                            <input name="validate" data-ga="validate" type="submit" id="validate"
-                                class="btn btn-primary" value="--格式化校验--">
+                                <input name="validate" class="btn btn-default"
+                                    onclick="javascript:code.value='';$('#code').focus();$('#result-container').attr('class','hide');"
+                                    type="reset" value="--清空--">
 
-                            <input name="validate" class="btn btn-default"
-                                onclick="javascript:code.value='';$('#code').focus();$('#result-container').attr('class','hide');"
-                                type="reset" value="--清空--">
-
+                            </div>
+                        </div>
+                        <div style="clear: both;"></div>
+                        <div class="panel panel-default">
+                            <section id="result-container" class="shown">
+                                <pre id="result" class="error"></pre>
+                            </section>
                         </div>
                     </div>
-                    <div style="clear: both;"></div>
-                    <div class="panel panel-default">
-                        <section id="result-container" class="shown">
-                            <pre id="result" class="error"></pre>
-                        </section>
-                    </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
+
+    <script src="js/bejson_index20190109.min.js" type="text/javascript"></script>
 </body>
 
 </html>
-<script src="js/bejson_index20190109.min.js" type="text/javascript"></script>
-<script>
-    $("#reset").click(function () {
-        resetQrCodeContent();
-        resetImgSrc();
-    });
-
-</script>
-<style>
-    * {
-        font-family: "Microsoft YaHei", 微软雅黑, "MicrosoftJhengHei", 华文细黑, STHeiti,
-            MingLiu;
-    }
-</style>

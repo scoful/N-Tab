@@ -13,6 +13,51 @@
             $("#qr").attr("src", "http://qr.topscan.com/api.php?text=" + data);
         });
 
+        document.getElementById("menu").innerHTML = `
+        <div class="row">
+            <div id="surplusTime" class="menu-entry"></div>
+        </div>
+        <div class="row">
+            <div id="open-background-page" class="menu-entry">${chrome.i18n.getMessage("showAllTabs")}</div>
+        </div>
+        <div class="row">
+            <div id="save-all" class="menu-entry">${chrome.i18n.getMessage("sendAllTabs")}</div>
+        </div>
+        <div class="row">
+            <div id="save-current" class="menu-entry">${chrome.i18n.getMessage("sendCurrentTab")}</div>
+        </div>
+        <div class="row">
+            <div id="save-others" class="menu-entry">${chrome.i18n.getMessage("sendOtherTabs")}</div>
+        </div>
+        <div class="row">
+            <div id="five-minute" class="menu-entry">${chrome.i18n.getMessage("fiveMinuteRemind")}</div>
+        </div>
+        <div class="row">
+            <div id="ten-minute" class="menu-entry">${chrome.i18n.getMessage("tenMinuteRemind")}</div>
+        </div>
+        <div class="row">
+            <div id="forty-minute" class="menu-entry">${chrome.i18n.getMessage("fortyMinuteRemind")}</div>
+        </div>
+        <div class="row">
+            <div id="custom-minute" class="menu-entry">${chrome.i18n.getMessage("customMinuteRemind")}</div>
+        </div>
+        <div class="row">
+            <div id="open_json_html" class="menu-entry">${chrome.i18n.getMessage("openJsonTools")}</div>
+        </div>
+        <div class="row">
+            <div id="" class="menu-entry" style="color:red;">${chrome.i18n.getMessage("cuttingLine")}</div>
+        </div>
+        `;
+
+        document.getElementById("deadLine").innerHTML = `
+        <div class="row">
+            <div id="" class="menu-entry" style="color:red;">${chrome.i18n.getMessage("deadLine")}</div>
+        </div>
+        `;
+        // <div class="row">
+        //     <div id="open_test_html" class="menu-entry" style="color:red;">test</div>
+        // </div>
+
         // 发送所有tab
         document.getElementById('save-all').addEventListener('click', function () {
             chrome.tabs.query({ url: ["https://*/*", "http://*/*"], currentWindow: true }, function (tabsArr) {
@@ -63,13 +108,10 @@
         // 测试用
         // document.getElementById('open_test_html').addEventListener('click', function () {
         //     // chrome.tabs.create({ index: 0, url: chrome.extension.getURL('woc.html') });
-        //     chrome.notifications.create(null, {
-        //         type: 'basic',
-        //         iconUrl: 'images/favicon.png',
-        //         title: 'TIME UP',
-        //         message: '分钟时间到了！',
-        //         buttons: [{ "title": "111" }, { "title": "222" }],
-        //         requireInteraction: true
+        //     console.log("点了")
+        //     chrome.runtime.sendMessage({ action: 'test' }, function (res) {
+        //         if (res === 'ok') {
+        //         }
         //     });
         // });
 
@@ -102,7 +144,7 @@
 
         // 自定义分钟数的定时提醒
         document.getElementById('custom-minute').addEventListener('click', function () {
-            var minute = prompt('请输入指定分钟数：', 120);
+            var minute = prompt(`${chrome.i18n.getMessage("pleaseInputCustomMinute")}`, 120);
             chrome.runtime.sendMessage({ action: 'custom-minute', message: minute }, function (res) {
                 if (res === 'ok') {
                     window.close();
@@ -118,13 +160,13 @@
                     document.getElementById('surplusTime').innerHTML = bg.surplusTime;
                 } else {
                     clearInterval(intervalId);
-                    document.getElementById('surplusTime').innerHTML = "暂无定时任务";
+                    document.getElementById('surplusTime').innerHTML = `${chrome.i18n.getMessage("remindStatus")}`;
                 }
             }, 1000);
         } else {
             clearInterval(intervalId);
-            document.getElementById('surplusTime').innerHTML = "暂无定时任务";
-        }
+            document.getElementById('surplusTime').innerHTML = `${chrome.i18n.getMessage("remindStatus")}`;
+        };
 
     });
 

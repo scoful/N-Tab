@@ -1,0 +1,341 @@
+{
+	"pluginDesc": {
+		"message": "Multifunctional extension, introduce please see github https://github.com/scoful/cloudSkyMonster"
+	},
+	"showAllTabs": {
+		"message": "show all tabs"
+	},
+	"sendAllTabs": {
+		"message": "send all tabs"
+	},
+	"sendCurrentTab": {
+		"message": "send current tab"
+	},
+	"sendOtherTabs": {
+		"message": "send other tabs"
+	},
+	"fiveMinuteRemind": {
+		"message": "remind after 5 minute"
+	},
+	"tenMinuteRemind": {
+		"message": "remind after 10 minute"
+	},
+	"fortyMinuteRemind": {
+		"message": "remind after 40 minute"
+	},
+	"customMinuteRemind": {
+		"message": "remind after custom minute"
+	},
+	"openJsonTools": {
+		"message": "open JSON Tools"
+	},
+	"cuttingLine": {
+		"message": "I am cutting line"
+	},
+	"deadLine": {
+		"message": "I am dead line"
+	},
+	"pleaseInputCustomMinute": {
+		"message": "Please input custom minute: "
+	},
+	"remindStatus": {
+		"message": "no time task now"
+	},
+	"optionsValue": {
+		"message": "Options"
+	},
+	"restoreKey": {
+		"message": "On clicking \"Restore group\" or restoring a single tab:"
+	},
+	"restoreValueDelete": {
+		"message": " Delete opened links from tab groups"
+	},
+	"restoreValueLive": {
+		"message": "  Leave the links alone"
+	},
+	"saveButtonValue": {
+		"message": "Save options"
+	},
+	"savedValue": {
+		"message": "It saved."
+	},
+	"workBenchHeaderValue": {
+		"message": "Dashboard Total："
+	},
+	"tabsNo": {
+		"message": " tabs"
+	},
+	"hisdeShowGistFunction": {
+		"message": "click show or hide gist function"
+	},
+	"hideShowImportFunction": {
+		"message": "click show or hide import function"
+	},
+	"dragTitle": {
+		"message": "super drag title"
+	},
+	"dragTabs": {
+		"message": "super drag tabs"
+	},
+	"pushToGithubGist": {
+		"message": "click push to github's gist, status is ："
+	},
+	"pullFromGithubGist": {
+		"message": "click pull from github's gist, status is ："
+	},
+	"pushToGiteeGist": {
+		"message": "click push to gitee's gist, status is ："
+	},
+	"pullFromGiteeGist": {
+		"message": "click pull from gitee's gist, status is ："
+	},
+	"confirmKey": {
+		"message": "Please input \"confirm\" to ensure: "
+	},
+	"confirmValue": {
+		"message": "Warn!!! It will be override, please deep think about it !!!"
+	},
+	"importToLocal": {
+		"message": "import to local"
+	},
+	"importWarn": {
+		"message": "PS:The import contents is from oneTab extension."
+	},
+	"nope": {
+		"message": "nope"
+	},
+	"githubApiStatusSuccess": {
+		"message": "Github API status : SUCCESS"
+	},
+	"giteeApiStatusSuccess": {
+		"message": "Gitee API status : SUCCESS"
+	},
+	"githubApiStatusFailed": {
+		"message": "Github API status : FAILED"
+	},
+	"giteeApiStatusFailed": {
+		"message": "Gitee API status : FAILED"
+	},
+	"githubApiStatusError": {
+		"message": "Github API status : ERROR"
+	},
+	"giteeApiStatusError": {
+		"message": "Gitee API status : ERROR"
+	},
+	"pushToGithubGistIng": {
+		"message": "push to Github's Gist ing, please wait!"
+	},
+	"pullFromGithubGistIng": {
+		"message": "pull from Github's Gist ing, please wait!"
+	},
+	"pushToGiteeGistIng": {
+		"message": "push to Gitee's Gist ing, please wait!"
+	},
+	"pullFromGiteeGistIng": {
+		"message": "pull from Gitee's Gist ing, please wait!"
+	},
+	"startPushToGithubGistTask": {
+		"message": "start push to github's gist task"
+	},
+	"startPullFromGithubGistTask": {
+		"message": "start pull from github's gist task"
+	},
+	"startPushToGiteeGistTask": {
+		"message": "start push to gitee's gist task"
+	},
+	"startPullFromGiteeGistTask": {
+		"message": "start pull from gitee's gist task"
+	},
+	"endPushToGithubGistTask": {
+		"message": "push to github's gist task end"
+	},
+	"endPullFromGithubGistTask": {
+		"message": "pull from github's gist task end"
+	},
+	"endPushToGiteeGistTask": {
+		"message": "push to gitee's gist task end"
+	},
+	"endPullFromGiteeGistTask": {
+		"message": "pull from gitee's gist task end"
+	},
+	"clickPushToGithubGist": {
+		"message": "click push to github's gist"
+	},
+	"autoPushToGithubGist": {
+		"message": "auto push to github's gist"
+	},
+	"clickPullFromGithubGist": {
+		"message": "click pull from github's gist"
+	},
+	"clickPushToGiteeGist": {
+		"message": "click push to gitee's gist"
+	},
+	"autoPushToGiteeGist": {
+		"message": "auto push to gitee's gist"
+	},
+	"clickPullFromGiteeGist": {
+		"message": "click pull from gitee's gist"
+	},
+	"startCheckGithubTokenSaved": {
+		"message": "start check github token is saved ?"
+	},
+	"startCheckGiteeTokenSaved": {
+		"message": "start check gitee token is saved ?"
+	},
+	"githubTokenSaved": {
+		"message": "github token had saved"
+	},
+	"giteeTokenSaved": {
+		"message": "gitee token had saved"
+	},
+	"githubTokenNoSaved": {
+		"message": "github token had not saved"
+	},
+	"giteeTokenNoSaved": {
+		"message": "gitee token had not saved"
+	},
+	"saveTokenKey": {
+		"message": "please input token:"
+	},
+	"saveTokenValue": {
+		"message": "Warn!!! please ensure your token is right!!!"
+	},
+	"githubTokenSaveSuccess": {
+		"message": "github token save success!"
+	},
+	"giteeTokenSaveSuccess": {
+		"message": "gitee token save success!"
+	},
+	"startCheckGistIdSaved": {
+		"message": "start check gistId is saved ?"
+	},
+	"gistIdSaved": {
+		"message": "gistId had saved"
+	},
+	"gistIdNoSaved": {
+		"message": "gistId had not saved"
+	},
+	"directUpdate": {
+		"message": "gist had been created, direct update."
+	},
+	"updateSuccess": {
+		"message": "update success"
+	},
+	"updateFailed": {
+		"message": "update failed!"
+	},
+	"startCheckGistCreated": {
+		"message": "start check gist is created ?"
+	},
+	"gistCreated": {
+		"message": "gist had created"
+	},
+	"gistNoCreated": {
+		"message": "gist had not created"
+	},
+	"getGistIdAndSaved": {
+		"message": "get gistId and saved success"
+	},
+	"noGistCreatedAndOver": {
+		"message": "had not created gist, nothing can pull, it's over!"
+	},
+	"startCreateGithubGist": {
+		"message": "had not created gist, start create github gist now!"
+	},
+	"startCreateGiteeGist": {
+		"message": "had not created gist, start create gitee gist now!"
+	},
+	"createSuccess": {
+		"message": " create success"
+	},
+	"createFailed": {
+		"message": "create failed"
+	},
+	"getGithubGistById": {
+		"message": "get github's gist by gistId"
+	},
+	"getGithubGistByRawUrl": {
+		"message": "be truncated, get github's gist by raw_url"
+	},
+	"getGiteeGistById": {
+		"message": "get gitee's gist by gistId"
+	},
+	"pullSuccess": {
+		"message": "pull gist success"
+	},
+	"pullFailed": {
+		"message": "pull gist failed"
+	},
+	"start": {
+		"message": "start: "
+	},
+	"end": {
+		"message": "end: "
+	},
+	"clickPushGithub": {
+		"message": "CLICK TO PUSH TO GITHUB'S GIST"
+	},
+	"autoPushGithub": {
+		"message": "AUTO PUSH TO GITHUB'S GIST"
+	},
+	"clickPullGithub": {
+		"message": "CLICK TO PULL FROM GITHUB'S GIST"
+	},
+	"clickPushGitee": {
+		"message": "CLICK TO PUSH TO GITEE'S GIST"
+	},
+	"autoPushGitee": {
+		"message": "AUTO PUSH TO GITEE'S GIST"
+	},
+	"clickPullGitee": {
+		"message": "CLICK TO PULL FROM GITEE'S GIST"
+	},
+	"waitForMinutes": {
+		"message": "minute wait for"
+	},
+	"timeUpMessage": {
+		"message": " minute time up!"
+	},
+	"close": {
+		"message": "close"
+	},
+	"timeTaskLived": {
+		"message": "It's counting down! Please wait!"
+	},
+	"surplusTime": {
+		"message": ""
+	},
+	"days": {
+		"message": " day "
+	},
+	"hours": {
+		"message": " hour "
+	},
+	"minutes": {
+		"message": " minute "
+	},
+	"seconds": {
+		"message": " second "
+	},
+	"sourceCode": {
+		"message": "😃The source code for CloudSkyMonster is available at "
+	},
+	"usedSpace": {
+		"message": "usedSpace : "
+	},
+	"autoSync": {
+		"message": "open sync"
+	},
+	"noLog": {
+		"message": "No log have been saved yet"
+	},
+	"noTabs": {
+		"message": "No tab groups have been saved yet, or you deleted them all..."
+	},
+	"showLog": {
+		"message": "show log"
+	},
+	"secondWait": {
+		"message": " second wait"
+	}
+}

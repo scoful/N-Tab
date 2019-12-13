@@ -1,17 +1,17 @@
 {
-    "version": "0.0.2",
+    "version": "1.0.0",
     "name": "cloudSkyMonster",
     "manifest_version": 2,
-    "description": "多功能插件，说明书请看github https://github.com/scoful/cloudSkyMonster",
+    "description": "__MSG_pluginDesc__",
     "background": {
         "scripts": [
             "js/background.js"
         ]
     },
     "icons": {
-        "16": "images/get_started16.png",
-        "48": "images/get_started48.png",
-        "128": "images/get_started128.png"
+        "48": "images/48.png",
+        "96": "images/96.png",
+        "128": "images/128.png"
     },
     "permissions": [
         "<all_urls>",
@@ -19,11 +19,13 @@
         "contextMenus",
         "storage",
         "unlimitedStorage",
-        "notifications"
+        "notifications",
+        "idle",
+        "alarms"
     ],
-    "content_security_policy": "script-src 'self' https://api.github.com; object-src 'self'",
+    "content_security_policy": "script-src 'self' https://api.github.com https://gitee.com; object-src 'self'",
     "browser_action": {
-        "default_icon": "images/favicon.png",
+        "default_icon": "images/96.png",
         "default_title": "cloudSkyMonster",
         "default_popup": "popup.html"
     },
@@ -60,5 +62,6 @@
         "page": "options.html",
         "chrome_style": true
     },
-    "homepage_url": "https://github.com/scoful/cloudSkyMonster"
+    "homepage_url": "https://github.com/scoful/cloudSkyMonster",
+    "default_locale": "zh_CN"
 }

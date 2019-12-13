@@ -1,0 +1,77 @@
+/**/
+/* GENERAL STYLES */
+/**/
+
+body {
+	background: #fefefe;
+	color: #333;
+	font-size: 16px;
+	line-height: 1.4;
+}
+
+#container {
+	margin: 1%;
+	padding: 5px;
+	font-family: Liberation Sans, sans-serif;
+}
+
+/**/
+/* GROUPS RELATED STYLES */
+/**/
+
+#groups {
+	margin: 10px 0;
+	padding-left: 10px;
+}
+
+.group:first-of-type {
+	margin-top: 10px;
+}
+.group {
+	margin-top: 20px;
+}
+
+.group-title {
+	font-size: 2em;
+}
+
+ul {
+	margin-left: 2em;
+}
+
+li {
+	list-style-type: none;
+}
+
+.li-hover:hover {
+	cursor: pointer;
+	background: #f0f0f0;
+}
+
+.line{
+	text-decoration: none;
+	padding: .2em;
+}
+
+/**/
+/* HEADER STYLES */
+/**/
+
+h1 {
+	font-size: 3em;
+}
+
+header {
+	border-bottom: 1px solid #f6f6f6;
+}
+
+/**/
+/* FOOTER STYLES */
+/**/
+
+footer {
+	border-top: 1px solid #f6f6f6;
+	padding: 5px 0;
+}
+
+

@@ -1,0 +1,341 @@
+{
+	"pluginDesc": {
+		"message": "多功能插件，说明书请看github https://github.com/scoful/cloudSkyMonster"
+	},
+	"showAllTabs": {
+		"message": "展示收集的标签"
+	},
+	"sendAllTabs": {
+		"message": "发送所有标签"
+	},
+	"sendCurrentTab": {
+		"message": "发送当前标签"
+	},
+	"sendOtherTabs": {
+		"message": "发送其他标签"
+	},
+	"fiveMinuteRemind": {
+		"message": "5分钟提醒"
+	},
+	"tenMinuteRemind": {
+		"message": "10分钟提醒"
+	},
+	"fortyMinuteRemind": {
+		"message": "40分钟提醒"
+	},
+	"customMinuteRemind": {
+		"message": "自定义分钟提醒"
+	},
+	"openJsonTools": {
+		"message": "打开JSON工具"
+	},
+	"cuttingLine": {
+		"message": "我是分割线"
+	},
+	"deadLine": {
+		"message": "我是有底线的"
+	},
+	"pleaseInputCustomMinute": {
+		"message": "请输入自定义分钟数："
+	},
+	"remindStatus": {
+		"message": "暂无定时任务"
+	},
+	"optionsValue": {
+		"message": "配置页"
+	},
+	"restoreKey": {
+		"message": "点击“恢复全部”或恢复单个标签时："
+	},
+	"restoreValueDelete": {
+		"message": "打开标签并将其从标签列表中删除"
+	},
+	"restoreValueLive": {
+		"message": "打开标签但不将其从标签列表中删除"
+	},
+	"saveButtonValue": {
+		"message": "保存配置"
+	},
+	"savedValue": {
+		"message": "已保存"
+	},
+	"workBenchHeaderValue": {
+		"message": "展示页 总共："
+	},
+	"tabsNo": {
+		"message": "个标签"
+	},
+	"hisdeShowGistFunction": {
+		"message": "点击展开/折叠gist功能"
+	},
+	"hideShowImportFunction": {
+		"message": "点击展开/折叠导入功能"
+	},
+	"dragTitle": {
+		"message": "是否拖曳标题行"
+	},
+	"dragTabs": {
+		"message": "是否拖曳标签"
+	},
+	"pushToGithubGist": {
+		"message": "点击推送到github的gist里，状态是："
+	},
+	"pullFromGithubGist": {
+		"message": "点击从github的gist里拉取，状态是："
+	},
+	"pushToGiteeGist": {
+		"message": "点击推送到gitee的gist里，状态是："
+	},
+	"pullFromGiteeGist": {
+		"message": "点击从gitee的gist里拉取，状态是："
+	},
+	"confirmKey": {
+		"message": "请输入\"确定\"表示确认："
+	},
+	"confirmValue": {
+		"message": "会覆盖的，小心谨慎思考这操作到底要不要！！！"
+	},
+	"importToLocal": {
+		"message": "导入本机"
+	},
+	"importWarn": {
+		"message": "PS：导入的是从onetab导出的内容"
+	},
+	"nope": {
+		"message": "暂无"
+	},
+	"githubApiStatusSuccess": {
+		"message": "Github API 状态 : 正常"
+	},
+	"giteeApiStatusSuccess": {
+		"message": "Gitee API 状态 : 正常"
+	},
+	"githubApiStatusFailed": {
+		"message": "Github API 状态 : 异常"
+	},
+	"giteeApiStatusFailed": {
+		"message": "Gitee API 状态 : 异常"
+	},
+	"githubApiStatusError": {
+		"message": "Github API 状态 : 报错"
+	},
+	"giteeApiStatusError": {
+		"message": "Gitee API 状态 : 报错"
+	},
+	"pushToGithubGistIng": {
+		"message": "正在推送到github的gist，请稍等！"
+	},
+	"pullFromGithubGistIng": {
+		"message": "正在从github的gist拉取，请稍等！"
+	},
+	"pushToGiteeGistIng": {
+		"message": "正在推送到gitee的gist，请稍等！"
+	},
+	"pullFromGiteeGistIng": {
+		"message": "正在从gitee的gist拉取，请稍等！"
+	},
+	"startPushToGithubGistTask": {
+		"message": "开始推送到github的gist的任务"
+	},
+	"startPullFromGithubGistTask": {
+		"message": "开始从github的gist拉取的任务"
+	},
+	"startPushToGiteeGistTask": {
+		"message": "开始推送到gitee的gist的任务"
+	},
+	"startPullFromGiteeGistTask": {
+		"message": "开始从gitee的gist拉取的任务"
+	},
+	"endPushToGithubGistTask": {
+		"message": "推送到github的gist的任务结束"
+	},
+	"endPullFromGithubGistTask": {
+		"message": "从github的gist拉取的任务完成"
+	},
+	"endPushToGiteeGistTask": {
+		"message": "推送到gitee的gist的任务结束"
+	},
+	"endPullFromGiteeGistTask": {
+		"message": "从gitee的gist拉取的任务完成"
+	},
+	"clickPushToGithubGist": {
+		"message": "手动点击推送到github的gist"
+	},
+	"autoPushToGithubGist": {
+		"message": "自动推送到github的gist"
+	},
+	"clickPullFromGithubGist": {
+		"message": "手动点击从github的gist拉取"
+	},
+	"clickPushToGiteeGist": {
+		"message": "手动点击推送到gitee的gist"
+	},
+	"autoPushToGiteeGist": {
+		"message": "自动推送到gitee的gist"
+	},
+	"clickPullFromGiteeGist": {
+		"message": "手动点击从gitee的gist拉取"
+	},
+	"startCheckGithubTokenSaved": {
+		"message": "开始检查github token有没有保存"
+	},
+	"startCheckGiteeTokenSaved": {
+		"message": "开始检查gitee token有没有保存"
+	},
+	"githubTokenSaved": {
+		"message": "github token有保存"
+	},
+	"giteeTokenSaved": {
+		"message": "gitee token有保存"
+	},
+	"githubTokenNoSaved": {
+		"message": "github token没有保存"
+	},
+	"giteeTokenNoSaved": {
+		"message": "gitee token没有保存"
+	},
+	"saveTokenKey": {
+		"message": "请输入token："
+	},
+	"saveTokenValue": {
+		"message": "请确保token是正确的！！！"
+	},
+	"githubTokenSaveSuccess": {
+		"message": "github token 保存完毕"
+	},
+	"giteeTokenSaveSuccess": {
+		"message": "gitee token 保存完毕"
+	},
+	"startCheckGistIdSaved": {
+		"message": "开始检查gistId有没有保存"
+	},
+	"gistIdSaved": {
+		"message": "gistId有保存"
+	},
+	"gistIdNoSaved": {
+		"message": "gistId没有保存"
+	},
+	"directUpdate": {
+		"message": "已经创建了gist，直接开始更新"
+	},
+	"updateSuccess": {
+		"message": "更新成功"
+	},
+	"updateFailed": {
+		"message": "更新失败"
+	},
+	"startCheckGistCreated": {
+		"message": "检查是否已经创建了gist"
+	},
+	"gistCreated": {
+		"message": "已经创建了gist"
+	},
+	"gistNoCreated": {
+		"message": "还没有创建gist"
+	},
+	"getGistIdAndSaved": {
+		"message": "获取gistId并保存完毕"
+	},
+	"noGistCreatedAndOver": {
+		"message": "还没有创建gist,没有内容可以拉,结束任务"
+	},
+	"startCreateGithubGist": {
+		"message": "还没有创建github的gist,开始创建"
+	},
+	"startCreateGiteeGist": {
+		"message": "还没有创建gitee的gist,开始创建"
+	},
+	"createSuccess": {
+		"message": "创建成功"
+	},
+	"createFailed": {
+		"message": "创建失败"
+	},
+	"getGithubGistById": {
+		"message": "根据github的gistId拉取gist"
+	},
+	"getGithubGistByRawUrl": {
+		"message": "被截断了，根据raw_url拉取gist"
+	},
+	"getGiteeGistById": {
+		"message": "根据gitee的gistId拉取gist"
+	},
+	"pullSuccess": {
+		"message": "拉取gist成功"
+	},
+	"pullFailed": {
+		"message": "拉取gist失败"
+	},
+	"start": {
+		"message": "开始："
+	},
+	"end": {
+		"message": "结束："
+	},
+	"clickPushGithub": {
+		"message": "手动推送到github"
+	},
+	"autoPushGithub": {
+		"message": "自动推送到github"
+	},
+	"clickPullGithub": {
+		"message": "手动从github拉取"
+	},
+	"clickPushGitee": {
+		"message": "手动推送到gitee"
+	},
+	"autoPushGitee": {
+		"message": "自动推送到gitee"
+	},
+	"clickPullGitee": {
+		"message": "手动从gitee拉取"
+	},
+	"waitForMinutes": {
+		"message": " 秒等待"
+	},
+	"timeUpMessage": {
+		"message": " 分钟时间到了！"
+	},
+	"close": {
+		"message": "关闭"
+	},
+	"timeTaskLived": {
+		"message": "正在倒计时！再等等！"
+	},
+	"surplusTime": {
+		"message": "还剩："
+	},
+	"days": {
+		"message": "天"
+	},
+	"hours": {
+		"message": "时"
+	},
+	"minutes": {
+		"message": "分"
+	},
+	"seconds": {
+		"message": "秒"
+	},
+	"sourceCode": {
+		"message": "😃对本项目的源码有兴趣的话欢迎移步star-->"
+	},
+	"usedSpace": {
+		"message": "已使用："
+	},
+	"autoSync": {
+		"message": "是否自动同步"
+	},
+	"noLog": {
+		"message": "还没有产生日志！"
+	},
+	"noTabs": {
+		"message": "还没有收藏网页！"
+	},
+	"showLog": {
+		"message": "打开日志"
+	},
+	"secondWait": {
+		"message": "秒等待"
+	}
+}
