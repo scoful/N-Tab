@@ -798,6 +798,7 @@
         })
     }
 
+    // 被截断了，根据raw_url拉取github的gist
     function getGithubGistByRawUrl(rawUrl) {
         console.log("根据raw_url拉取gist");
         handleGistLog.push(`${chrome.i18n.getMessage("getGithubGistByRawUrl")}`)
@@ -1210,18 +1211,6 @@
         });
     }
 
-    // 移除local storage
-    function removeShardings(cb) {
-        chrome.storage.local.get(null, function (items) {
-            if (items.tabGroups_num >= 1) {
-                for (var i = 0; i < items.tabGroups_num; i++) {
-                    chrome.storage.local.remove("tabGroups_" + i, function callback() { });
-                }
-                chrome.storage.local.remove("tabGroups_num", function callback() { });
-            }
-        });
-        cb("ok");
-    }
 
     // 保存local storage
     function saveShardings(tabGroup, type) {
@@ -1426,8 +1415,6 @@
                                         tabs.vm.rmTab(i, ii);
                                     }
                                 }),
-                                // m('img', { src: tab.favIconUrl, height: '16', width: '16' }),
-                                // ' ',
                                 m('span.link', {
                                     title: tab.title + "\n" + tab.url,
                                     onclick: function () {

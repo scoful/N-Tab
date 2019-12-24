@@ -65,6 +65,9 @@
 	"tabsNo": {
 		"message": "个标签"
 	},
+	"logsNo": {
+		"message": "条日志"
+	},
 	"hisdeShowGistFunction": {
 		"message": "点击展开/折叠gist功能"
 	},
@@ -72,7 +75,7 @@
 		"message": "点击展开/折叠导入功能"
 	},
 	"dragTitle": {
-		"message": "是否拖曳标题行"
+		"message": "是否拖曳标签组"
 	},
 	"dragTabs": {
 		"message": "是否拖曳标签"

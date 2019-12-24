@@ -7,6 +7,7 @@
         document.getElementById("container").innerHTML = `
         <header>
             <h1>Gist Log
+            <span style="font-size: .5em;"><span id="totalLogs"></span>${chrome.i18n.getMessage("logsNo")}</span>
             </h1>
         </header>
         <div id="logs"></div>
@@ -27,6 +28,9 @@
             if (storage.gistLog) {
                 bridge = storage.gistLog;
                 console.log(bridge)
+                document.getElementById('totalLogs').innerHTML = bridge.length;
+            } else {
+                document.getElementById('totalLogs').innerHTML = 0;
             }
             var logs = {}, // to-be module
                 logGroups = bridge || [];

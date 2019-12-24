@@ -65,6 +65,9 @@
 	"tabsNo": {
 		"message": " tabs"
 	},
+	"logsNo": {
+		"message": " logs"
+	},
 	"hisdeShowGistFunction": {
 		"message": "click show or hide gist function"
 	},

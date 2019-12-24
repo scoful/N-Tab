@@ -7,7 +7,8 @@ var timeoutId;
 // 定义一个桌面通知框id
 var notificationId;
 var emojiReg = /[\uD83C|\uD83D|\uD83E][\uDC00-\uDFFF][\u200D|\uFE0F]|[\uD83C|\uD83D|\uD83E][\uDC00-\uDFFF]|[0-9|*|#]\uFE0F\u20E3|[0-9|#]\u20E3|[\u203C-\u3299]\uFE0F\u200D|[\u203C-\u3299]\uFE0F|[\u2122-\u2B55]|\u303D|[\A9|\AE]\u3030|\uA9|\uAE|\u3030/gi;
-var handleGistLog = new Array();
+var handleGithubGistLog = new Array();
+var handleGiteeGistLog = new Array();
 var gitHubApiUrl = "https://api.github.com";
 var giteeApiUrl = "https://gitee.com/api/v5";
 var usedSeconds;
@@ -17,7 +18,14 @@ var githubGistToken;
 var giteeGistToken;
 var githubGistId;
 var giteeGistId;
-
+// 定义一个n次循环定时器
+var githubIntervalId;
+var giteeIntervalId;
+var isLock = false;
+var failedDirsList = new Array();
+var getDirsFlag = false;
+var startTime;
+var endTime;
 
 window.onload = function () {
     console.log("load完window了");
@@ -32,6 +40,9 @@ document.addEventListener('DOMContentLoaded', function () {
     var script2 = document.createElement('script');
     script2.src = "js/moment.min.js";
     document.head.appendChild(script2);
+    var script3 = document.createElement('script');
+    script3.src = "js/axios.min.js";
+    document.head.appendChild(script3);
 
     // 获取tab数量并在pop上显示
     chrome.tabs.query({ currentWindow: true }, function (tab) {
@@ -74,9 +85,9 @@ function checkAutoSyncGitee() {
 // 开始推送github的gist
 function startPushToGithubGist() {
     console.log("开始推送github")
-    handleGistLog.length = 0;
-    handleGistLog.push(`${chrome.i18n.getMessage("start")}${moment().format('YYYY-MM-DD HH:mm:ss')}`);
-    handleGistLog.push(`${chrome.i18n.getMessage("autoPushToGithubGist")}`)
+    handleGithubGistLog.length = 0;
+    handleGithubGistLog.push(`${chrome.i18n.getMessage("start")}${moment().format('YYYY-MM-DD HH:mm:ss')}`);
+    handleGithubGistLog.push(`${chrome.i18n.getMessage("autoPushToGithubGist")}`)
     chrome.storage.local.get(null, function (storage) {
         console.log(storage.handleGistStatus);
         if (storage.handleGistStatus) {
@@ -90,10 +101,10 @@ function startPushToGithubGist() {
                 if (time > expireTime) {
                     pushToGithubGist();
                 } else {
-                    handleGistLog.push(storage.handleGistStatus.type)
-                    handleGistLog.push(`${chrome.i18n.getMessage("endPushToGithubGistTask")}`)
-                    handleGistLog.push(`${chrome.i18n.getMessage("end")}${moment().format('YYYY-MM-DD HH:mm:ss')}`);
-                    setHandleGistLog(`${chrome.i18n.getMessage("autoPushGithub")}`);
+                    handleGithubGistLog.push(storage.handleGistStatus.type)
+                    handleGithubGistLog.push(`${chrome.i18n.getMessage("endPushToGithubGistTask")}`)
+                    handleGithubGistLog.push(`${chrome.i18n.getMessage("end")}${moment().format('YYYY-MM-DD HH:mm:ss')}`);
+                    setHandleGistLog(`${chrome.i18n.getMessage("autoPushGithub")}`, handleGithubGistLog);
                 }
             }
         } else {
@@ -106,9 +117,9 @@ function startPushToGithubGist() {
 // 开始推送gitee的gist
 function startPushToGiteeGist() {
     console.log("开始推送gitee")
-    handleGistLog.length = 0;
-    handleGistLog.push(`${chrome.i18n.getMessage("start")}${moment().format('YYYY-MM-DD HH:mm:ss')}`);
-    handleGistLog.push(`${chrome.i18n.getMessage("autoPushToGiteeGist")}`)
+    handleGiteeGistLog.length = 0;
+    handleGiteeGistLog.push(`${chrome.i18n.getMessage("start")}${moment().format('YYYY-MM-DD HH:mm:ss')}`);
+    handleGiteeGistLog.push(`${chrome.i18n.getMessage("autoPushToGiteeGist")}`)
     chrome.storage.local.get(null, function (storage) {
         console.log(storage.handleGistStatus);
         if (storage.handleGistStatus) {
@@ -122,10 +133,10 @@ function startPushToGiteeGist() {
                 if (time > expireTime) {
                     pushToGiteeGist();
                 } else {
-                    handleGistLog.push(storage.handleGistStatus.type)
-                    handleGistLog.push(`${chrome.i18n.getMessage("endPushToGiteeGistTask")}`)
-                    handleGistLog.push(`${chrome.i18n.getMessage("end")}${moment().format('YYYY-MM-DD HH:mm:ss')}`);
-                    setHandleGistLog(`${chrome.i18n.getMessage("autoPushGitee")}`);
+                    handleGiteeGistLog.push(storage.handleGistStatus.type)
+                    handleGiteeGistLog.push(`${chrome.i18n.getMessage("endPushToGiteeGistTask")}`)
+                    handleGiteeGistLog.push(`${chrome.i18n.getMessage("end")}${moment().format('YYYY-MM-DD HH:mm:ss')}`);
+                    setHandleGistLog(`${chrome.i18n.getMessage("autoPushGitee")}`, handleGiteeGistLog);
                 }
             }
         } else {
@@ -142,20 +153,21 @@ function pushToGithubGist() {
     setHandleGistStatus(`${chrome.i18n.getMessage("pushToGithubGistIng")}`);
     usedSeconds = 0;
     pushToGithubGistStatus = `${chrome.i18n.getMessage("startPushToGithubGistTask")}`;
-    handleGistLog.push(`${chrome.i18n.getMessage("startPushToGithubGistTask")}`)
+    handleGithubGistLog.push(`${chrome.i18n.getMessage("startPushToGithubGistTask")}`)
     if (typeof (pushToGithubGistStatus) != "undefined") {
-        intervalId = setInterval(function () {
+        githubIntervalId = setInterval(function () {
             if (typeof (pushToGithubGistStatus) != "undefined") {
                 usedSeconds++;
             } else {
-                clearInterval(intervalId);
-                handleGistLog.push(`${usedSeconds}${chrome.i18n.getMessage("secondWait")}`)
-                handleGistLog.push(`${chrome.i18n.getMessage("endPushToGithubGistTask")}`)
-                handleGistLog.push(`${chrome.i18n.getMessage("end")}${moment().format('YYYY-MM-DD HH:mm:ss')}`);
+                clearInterval(githubIntervalId);
+                handleGithubGistLog.push(`${usedSeconds}${chrome.i18n.getMessage("secondWait")}`)
+                handleGithubGistLog.push(`${chrome.i18n.getMessage("endPushToGithubGistTask")}`)
+                handleGithubGistLog.push(`${chrome.i18n.getMessage("end")}${moment().format('YYYY-MM-DD HH:mm:ss')}`);
                 setHandleGistStatus("IDLE");
-                setHandleGistLog(`${chrome.i18n.getMessage("autoPushGithub")}`);
+                setHandleGistLog(`${chrome.i18n.getMessage("autoPushGithub")}`, handleGithubGistLog);
             }
         }, 1000);
+        console.log(githubIntervalId)
         isStoredGithubTokenLocal("push_github");
     }
 };
@@ -166,20 +178,21 @@ function pushToGiteeGist() {
     setHandleGistStatus(`${chrome.i18n.getMessage("pushToGiteeGistIng")}`);
     usedSeconds = 0;
     pushToGiteeGistStatus = `${chrome.i18n.getMessage("startPushToGiteeGistTask")}`;
-    handleGistLog.push(`${chrome.i18n.getMessage("startPushToGiteeGistTask")}`)
+    handleGiteeGistLog.push(`${chrome.i18n.getMessage("startPushToGiteeGistTask")}`)
     if (typeof (pushToGiteeGistStatus) != "undefined") {
-        intervalId = setInterval(function () {
+        giteeIntervalId = setInterval(function () {
             if (typeof (pushToGiteeGistStatus) != "undefined") {
                 usedSeconds++;
             } else {
-                clearInterval(intervalId);
-                handleGistLog.push(`${usedSeconds}${chrome.i18n.getMessage("secondWait")}`)
-                handleGistLog.push(`${chrome.i18n.getMessage("endPushToGiteeGistTask")}`)
-                handleGistLog.push(`${chrome.i18n.getMessage("end")}${moment().format('YYYY-MM-DD HH:mm:ss')}`);
+                clearInterval(giteeIntervalId);
+                handleGiteeGistLog.push(`${usedSeconds}${chrome.i18n.getMessage("secondWait")}`)
+                handleGiteeGistLog.push(`${chrome.i18n.getMessage("endPushToGiteeGistTask")}`)
+                handleGiteeGistLog.push(`${chrome.i18n.getMessage("end")}${moment().format('YYYY-MM-DD HH:mm:ss')}`);
                 setHandleGistStatus("IDLE");
-                setHandleGistLog(`${chrome.i18n.getMessage("autoPushGitee")}`);
+                setHandleGistLog(`${chrome.i18n.getMessage("autoPushGitee")}`, handleGiteeGistLog);
             }
         }, 1000);
+        console.log(giteeIntervalId)
         isStoredGiteeTokenLocal("push_gitee");
     }
 };
@@ -187,16 +200,16 @@ function pushToGiteeGist() {
 // 判断是否已经保存github的Token
 function isStoredGithubTokenLocal(action) {
     console.log("是否已经保存github的Token")
-    handleGistLog.push(`${chrome.i18n.getMessage("startCheckGithubTokenSaved")}`);
+    handleGithubGistLog.push(`${chrome.i18n.getMessage("startCheckGithubTokenSaved")}`);
     chrome.storage.local.get("githubGistToken", function (storage) {
         if (storage.githubGistToken) {
             console.log("已经保存github的Token")
-            handleGistLog.push(`${chrome.i18n.getMessage("githubTokenSaved")}`);
+            handleGithubGistLog.push(`${chrome.i18n.getMessage("githubTokenSaved")}`);
             githubGistToken = storage.githubGistToken;
             isStoredGithubGistIdLocal(action);
         } else {
             console.log("没有保存github的Token")
-            handleGistLog.push(`${chrome.i18n.getMessage("githubTokenNoSaved")}`);
+            handleGithubGistLog.push(`${chrome.i18n.getMessage("githubTokenNoSaved")}`);
             pushToGithubGistStatus = undefined;
         }
     });
@@ -205,16 +218,16 @@ function isStoredGithubTokenLocal(action) {
 // 判断是否已经保存gitee的Token
 function isStoredGiteeTokenLocal(action) {
     console.log("是否已经保存gitee的Token")
-    handleGistLog.push(`${chrome.i18n.getMessage("startCheckGiteeTokenSaved")}`);
+    handleGiteeGistLog.push(`${chrome.i18n.getMessage("startCheckGiteeTokenSaved")}`);
     chrome.storage.local.get("giteeGistToken", function (storage) {
         if (storage.giteeGistToken) {
             console.log("已经保存gitee的Token")
-            handleGistLog.push(`${chrome.i18n.getMessage("giteeTokenSaved")}`);
+            handleGiteeGistLog.push(`${chrome.i18n.getMessage("giteeTokenSaved")}`);
             giteeGistToken = storage.giteeGistToken;
             isStoredGiteeGistIdLocal(action);
         } else {
             console.log("没有保存gitee的Token")
-            handleGistLog.push(`${chrome.i18n.getMessage("giteeTokenNoSaved")}`);
+            handleGiteeGistLog.push(`${chrome.i18n.getMessage("giteeTokenNoSaved")}`);
             pushToGiteeGistStatus = undefined;
         }
     });
@@ -223,11 +236,11 @@ function isStoredGiteeTokenLocal(action) {
 // 判断是否已经保存了github的gistId
 function isStoredGithubGistIdLocal(action) {
     console.log("是否已经保存了github的gistId")
-    handleGistLog.push(`${chrome.i18n.getMessage("startCheckGistIdSaved")}`)
+    handleGithubGistLog.push(`${chrome.i18n.getMessage("startCheckGistIdSaved")}`)
     chrome.storage.local.get("githubGistId", function (storage) {
         if (storage.githubGistId) {
             console.log("已经保存了github的gistId")
-            handleGistLog.push(`${chrome.i18n.getMessage("gistIdSaved")}`)
+            handleGithubGistLog.push(`${chrome.i18n.getMessage("gistIdSaved")}`)
             githubGistId = storage.githubGistId;
             if (action == "push_github") {
                 getShardings(function (callback) {
@@ -240,7 +253,7 @@ function isStoredGithubGistIdLocal(action) {
             }
         } else {
             console.log("没有保存了github的gistId")
-            handleGistLog.push(`${chrome.i18n.getMessage("gistIdNoSaved")}`)
+            handleGithubGistLog.push(`${chrome.i18n.getMessage("gistIdNoSaved")}`)
             pushToGithubGistStatus = undefined;
         }
     });
@@ -249,11 +262,11 @@ function isStoredGithubGistIdLocal(action) {
 // 判断是否已经保存了gitee的gistId
 function isStoredGiteeGistIdLocal(action) {
     console.log("是否已经保存了gitee的gistId")
-    handleGistLog.push(`${chrome.i18n.getMessage("startCheckGistIdSaved")}`)
+    handleGiteeGistLog.push(`${chrome.i18n.getMessage("startCheckGistIdSaved")}`)
     chrome.storage.local.get("giteeGistId", function (storage) {
         if (storage.giteeGistId) {
             console.log("已经保存了gitee的gistId")
-            handleGistLog.push(`${chrome.i18n.getMessage("gistIdSaved")}`)
+            handleGiteeGistLog.push(`${chrome.i18n.getMessage("gistIdSaved")}`)
             giteeGistId = storage.giteeGistId;
             if (action == "push_gitee") {
                 getShardings(function (callback) {
@@ -266,7 +279,7 @@ function isStoredGiteeGistIdLocal(action) {
             }
         } else {
             console.log("没有保存了gitee的gistId")
-            handleGistLog.push(`${chrome.i18n.getMessage("gistIdNoSaved")}`)
+            handleGiteeGistLog.push(`${chrome.i18n.getMessage("gistIdNoSaved")}`)
             pushToGiteeGistStatus = undefined;
         }
     });
@@ -275,7 +288,7 @@ function isStoredGiteeGistIdLocal(action) {
 // 更新github的gist
 function updateGithubGist(content) {
     console.log("更新github的gist")
-    handleGistLog.push(`${chrome.i18n.getMessage("directUpdate")}`)
+    handleGithubGistLog.push(`${chrome.i18n.getMessage("directUpdate")}`)
     var content = JSON.stringify(content);
     var data = {
         "description": "myCloudSkyMonster",
@@ -291,14 +304,14 @@ function updateGithubGist(content) {
         success: function (data, status) {
             if (status == "success") {
                 console.log("更新成功")
-                handleGistLog.push(`${chrome.i18n.getMessage("updateSuccess")}`)
+                handleGithubGistLog.push(`${chrome.i18n.getMessage("updateSuccess")}`)
             } else {
                 console.log("更新失败")
-                handleGistLog.push(`${chrome.i18n.getMessage("updateFailed")}`)
+                handleGithubGistLog.push(`${chrome.i18n.getMessage("updateFailed")}`)
             }
         },
         error: function (xhr, errorText, errorType) {
-            handleGistLog.push(`${chrome.i18n.getMessage("updateFailed")}-->${xhr.responseText}`)
+            handleGithubGistLog.push(`${chrome.i18n.getMessage("updateFailed")}-->${xhr.responseText}`)
         },
         complete: function () {
             //do something
@@ -310,7 +323,7 @@ function updateGithubGist(content) {
 // 更新gitee的gist
 function updateGiteeGist(content) {
     console.log("更新gitee的gist")
-    handleGistLog.push(`${chrome.i18n.getMessage("directUpdate")}`)
+    handleGiteeGistLog.push(`${chrome.i18n.getMessage("directUpdate")}`)
     var content = JSON.stringify(content);
     var data = {
         "description": "myCloudSkyMonster",
@@ -326,14 +339,14 @@ function updateGiteeGist(content) {
         success: function (data, status) {
             if (status == "success") {
                 console.log("更新成功")
-                handleGistLog.push(`${chrome.i18n.getMessage("updateSuccess")}`)
+                handleGiteeGistLog.push(`${chrome.i18n.getMessage("updateSuccess")}`)
             } else {
                 console.log("更新失败")
-                handleGistLog.push(`${chrome.i18n.getMessage("updateFailed")}`)
+                handleGiteeGistLog.push(`${chrome.i18n.getMessage("updateFailed")}`)
             }
         },
         error: function (xhr, errorText, errorType) {
-            handleGistLog.push(`${chrome.i18n.getMessage("updateFailed")}-->${xhr.responseText}`)
+            handleGiteeGistLog.push(`${chrome.i18n.getMessage("updateFailed")}-->${xhr.responseText}`)
         },
         complete: function () {
             //do something
@@ -344,7 +357,7 @@ function updateGiteeGist(content) {
 
 
 // 构造操作gist的日志结构
-function setHandleGistLog(type) {
+function setHandleGistLog(type, handleGistLog) {
     var handleGistLogMap = { id: genObjectId(), handleGistType: type, handleGistLogs: handleGistLog };
     chrome.storage.local.get(null, function (storage) {
         if (storage.gistLog) {
@@ -463,8 +476,46 @@ chrome.runtime.onMessage.addListener(function (req, sender, sendRes) {
             restartLastClosedTab();
             sendRes('ok'); // acknowledge
             break;
+        case 'super-save': // 百度网盘转存
+            console.log("super-save")
+            startTime = moment();
+            sendRes('ok'); // acknowledge
+            startTransfer(req.message)
+                .then(function (data) {
+                    console.log(data)
+                    data.firstOn = true;
+                    return isRootDirExist(data);
+                })
+                .then(function (data) {
+                    data.rootPath = "/3kSpan";
+                    if (data.oldDirs.length > 0) {
+                        var flag = false;
+                        for (let i = 0; i < data.oldDirs.length; i++) {
+                            if (data.oldDirs[i].path === '/3kSpan') {
+                                flag = true;
+                            }
+                        }
+                        if (!flag) {
+                            return createRootDir(data)
+                        } else {
+                            return data;
+                        }
+                    } else {
+                        return createRootDir(data)
+                    }
+                })
+                .then(function (data) {
+                    return getDirs(data);
+                })
+                .then(function (data) {
+                    if (data.newDirs.length > 0) {
+                        failedDirsList.length = 0
+                        return loopDirectTransfer(data);
+                    }
+                });
+            break;
         case 'test': // test
-            console.log("test")
+            console.log("test axios")
             sendRes('ok'); // acknowledge
             break;
         default:
@@ -472,6 +523,233 @@ chrome.runtime.onMessage.addListener(function (req, sender, sendRes) {
             break;
     }
 });
+
+// 开始转存，获取shorturl
+function startTransfer(data) {
+    let p = new Promise(function (resolve, reject) {
+        chrome.tabs.query({ active: true, currentWindow: true }, function (tab) {
+            var currentUrl = tab[0].url;
+            var shorturl = currentUrl.split("/s/1")[1].substr(0, 22);
+            data.shorturl = shorturl;
+            resolve(data);
+        });
+    });
+    return p;
+}
+
+// 获取网盘本来的目录结构
+function isRootDirExist(data) {
+    let p = new Promise(function (resolve, reject) {
+        axios.get('https://pan.baidu.com/rest/2.0/xpan/file?method=list')
+            .then(function (response) {
+                data.oldDirs = response.data.list;
+                resolve(data)
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    });
+    return p;
+}
+
+// 创建插件所需根目录
+function createRootDir(data) {
+    let p = new Promise(function (resolve, reject) {
+        console.log("创建根目录：" + data.rootPath)
+        // 允许携带cookie
+        axios.defaults.withCredentials = true
+
+        var form = new FormData();
+        form.append("path", data.rootPath);
+        form.append("isdir", "1");
+        form.append("block_list", "[]");
+        axios.post('https://pan.baidu.com/api/create?a=commit&bdstoken=' + data.bdstoken, form)
+            .then(function (response) {
+                // console.log(response);
+                // console.log(response.data);
+                resolve(data)
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    });
+    return p;
+}
+
+
+// 获取外链顶层文件夹结构
+function getDirs(data) {
+    let p = new Promise(function (resolve, reject) {
+        axios.get('https://pan.baidu.com/rest/2.0/xpan/share?method=list&shareid=' + data.shareId + '&shorturl=' + data.shorturl + '&root=1&sekey=' + data.sekey)
+            .then(function (response) {
+                console.log(response);
+                if (response.data.list.length > 0) {
+                    data.newDirs = response.data.list;
+                }
+                resolve(data);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    });
+    return p;
+}
+
+// 触发递归转存
+async function loopDirectTransfer(data) {
+    for (let i = 0; i < data.newDirs.length; i++) {
+        console.log(data.newDirs[i])
+        var fsid = data.newDirs[i].fs_id
+        var dir = data.newDirs[i].path
+        await waitaMinute()
+        await directTransfer(data, fsid, dir)
+    }
+    if (failedDirsList.length == 0) {
+        console.log("保存完毕！")
+        endTime = moment();
+        const duration = moment.duration(moment(endTime).diff(moment(startTime)));
+        const str = `${duration.hours()}:${duration.minutes()}:${duration.seconds()}`
+        notificationId = genObjectId();
+        chrome.notifications.create(notificationId, {
+            type: 'basic',
+            iconUrl: 'images/128.png',
+            title: '百度网盘转存通知',
+            message: `转存完毕！用时:${duration.hours()}时${duration.minutes()}分${duration.seconds()}秒`,
+            buttons: [{ "title": `${chrome.i18n.getMessage("close")}` }],
+            requireInteraction: true
+        });
+    } else {
+        console.log("有目录保存失败")
+        console.log(failedDirsList)
+        data.newDirs.length = 0
+        for (let i = 0; i < failedDirsList.length; i++) {
+            await getFiles(data, failedDirsList[i])
+        }
+        failedDirsList.length = 0
+        loopDirectTransfer(data)
+    }
+}
+
+// 每调用一次api，暂停2秒，防止被block
+function waitaMinute() {
+    let p = new Promise(function (resolve, reject) {
+        setTimeout(() => {
+            console.log('等2秒');
+            resolve("done")
+        }, 2000);
+    });
+    return p;
+}
+
+// 调用转存api
+function directTransfer(data, fsid, dir) {
+    let p = new Promise(function (resolve, reject) {
+        console.log("开始保存文件！")
+        // 允许携带cookie
+        axios.defaults.withCredentials = true
+        var form = new FormData();
+        form.append("fsidlist", "[" + fsid + "]");
+        var firstOn = data.firstOn;
+        if (firstOn) {
+            form.append("path", data.rootPath);
+        } else {
+            var a = dir.lastIndexOf("/")
+            var b = dir.substr(0, a)
+            form.append("path", data.rootPath + b);
+        }
+        axios.post('https://pan.baidu.com/share/transfer?shareid=' + data.shareId + '&from=' + data.from + '&ondup=newcopy&async=1', form)
+            .then(function (response) {
+                // console.log(response);
+                console.log(response.data);
+                if (response.data.errno == 120 || response.data.errno == 130 || response.data.errno == -33 || response.data.errno == 12) {
+                    console.log("超过限制了")
+                    failedDirsList.push(dir);
+                    resolve('no done')
+                } else if (response.data.errno == 0) {
+                    console.log("保存文件成功！")
+                    resolve('done');
+                } else if (response.data.errno == 2) {
+                    console.log("参数错误")
+                    resolve('done');
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    });
+    return p;
+}
+
+// 获取非顶层文件夹结构
+async function getFiles(data, dir) {
+    var page = 0;
+    getDirsFlag = false;
+    while (!getDirsFlag) {
+        page++;
+        console.log("第" + page)
+        await getFile(data, dir, page)
+    }
+    await createDir(data, dir)
+    data.firstOn = false
+}
+
+// 创建文件夹结构
+function createDir(data, dir) {
+    let p = new Promise(function (resolve, reject) {
+        console.log("创建目录：" + data.rootPath + dir)
+        // 允许携带cookie
+        axios.defaults.withCredentials = true
+
+        var form = new FormData();
+        form.append("path", data.rootPath + dir);
+        form.append("isdir", "1");
+        form.append("block_list", "[]");
+        axios.post('https://pan.baidu.com/api/create?a=commit&bdstoken=' + data.bdstoken, form)
+            .then(function (response) {
+                // console.log(response);
+                console.log(response.data);
+                resolve('done')
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    });
+    return p;
+}
+
+// 获取指定目录文件夹
+function getFile(data, dir, page) {
+    let p = new Promise(function (resolve, reject) {
+        axios.get('https://pan.baidu.com/share/list?shareid=' + data.shareId + '&shorturl=' + data.shorturl + '&sekey=' + data.sekey + '&dir=' + dir + '&page=' + page)
+            .then(function (response) {
+                console.log(response);
+                if (response.data.list.length > 0) {
+                    for (let i = 0; i < response.data.list.length; i++) {
+                        data.newDirs.push(response.data.list[i]);
+                    }
+                } else {
+                    getDirsFlag = true
+                }
+                resolve('done');
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    });
+    return p;
+}
+
+
+// 持续监听在https://pan.baidu.com下的post方法发送之前，在header里加referer
+chrome.webRequest.onBeforeSendHeaders.addListener(function (details) {
+    if (details.method === 'POST' && details.url.indexOf("https://pan.baidu.com") != -1) {
+        // console.log(details)
+        details.requestHeaders.push({ name: 'Referer', value: 'pan.baidu.com' });
+        return { requestHeaders: details.requestHeaders };
+    }
+},
+    { urls: ["<all_urls>"] },
+    ["blocking", "requestHeaders", "extraHeaders"]);
 
 
 // 向content-script主动发送消息
@@ -759,17 +1037,22 @@ chrome.notifications.onButtonClicked.addListener(function callback(notificationI
 // 持续监听，假如锁屏或者睡眠就清空定时任务，激活再重新定时任务
 chrome.idle.onStateChanged.addListener(function (newState) {
     console.log(newState)
-    console.log(typeof (newState))
-    if (newState == "active" || newState == "idle") {
-        chrome.alarms.create("checkAutoSyncGitee", { delayInMinutes: 70, periodInMinutes: 70 });
-        chrome.alarms.create("checkAutoSyncGithub", { delayInMinutes: 90, periodInMinutes: 90 });
-
+    if (newState == "active") {
+        if (isLock) {
+            chrome.alarms.create("checkAutoSyncGitee", { delayInMinutes: 70, periodInMinutes: 70 });
+            chrome.alarms.create("checkAutoSyncGithub", { delayInMinutes: 90, periodInMinutes: 90 });
+            isLock = false;
+        }
     }
     if (newState == "locked") {
+        isLock = true;
         chrome.alarms.clearAll(function (wasCleared) {
             console.log(wasCleared)
         });
     }
+    chrome.alarms.getAll(function (alarms) {
+        console.log(alarms)
+    });
 });
 
 // 持续监听响应定时任务
@@ -784,3 +1067,4 @@ chrome.alarms.onAlarm.addListener(function (alarm) {
         checkAutoSyncGithub();
     }
 });
+

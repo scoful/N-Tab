@@ -55,7 +55,10 @@
         </div>
         `;
         // <div class="row">
-        //     <div id="open_test_html" class="menu-entry" style="color:red;">test</div>
+        //     <div id="testGithub" class="menu-entry" style="color:red;">test github</div>
+        // </div>
+        // <div class="row">
+        //     <div id="test" class="menu-entry" style="color:red;">test</div>
         // </div>
 
         // 发送所有tab
@@ -106,7 +109,15 @@
         });
 
         // 测试用
-        // document.getElementById('open_test_html').addEventListener('click', function () {
+        // document.getElementById('testGithub').addEventListener('click', function () {
+        //     // chrome.tabs.create({ index: 0, url: chrome.extension.getURL('woc.html') });
+        //     console.log("点了")
+        //     chrome.runtime.sendMessage({ action: 'testGithub' }, function (res) {
+        //         if (res === 'ok') {
+        //         }
+        //     });
+        // });
+        // document.getElementById('test').addEventListener('click', function () {
         //     // chrome.tabs.create({ index: 0, url: chrome.extension.getURL('woc.html') });
         //     console.log("点了")
         //     chrome.runtime.sendMessage({ action: 'test' }, function (res) {

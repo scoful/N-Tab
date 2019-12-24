@@ -21,7 +21,10 @@
         "unlimitedStorage",
         "notifications",
         "idle",
-        "alarms"
+        "alarms",
+        "cookies",
+        "webRequest",
+        "webRequestBlocking"
     ],
     "content_security_policy": "script-src 'self' https://api.github.com https://gitee.com; object-src 'self'",
     "browser_action": {
@@ -52,10 +55,31 @@
             ],
             "css": [],
             "run_at": "document_start"
+        },
+        {
+            "matches": [
+                "https://pan.baidu.com/s/*"
+            ],
+            "js": [
+                "js/baiduPan.js"
+            ],
+            "css": [],
+            "run_at": "document_start"
+        },
+        {
+            "matches": [
+                "http://91porn.com/*"
+            ],
+            "js": [
+                "js/nineone.js"
+            ],
+            "css": [],
+            "run_at": "document_start"
         }
     ],
     "web_accessible_resources": [
-        "js/inject.js"
+        "js/gzLibraryInject.js",
+        "js/baiduPanInject.js"
     ],
     "options_page": "options.html",
     "options_ui": {

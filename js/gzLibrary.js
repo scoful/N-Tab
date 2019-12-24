@@ -9,13 +9,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // 向页面注入自定义JS
 function injectCustomJs(jsPath) {
-    jsPath = jsPath || 'js/inject.js';
+    jsPath = jsPath || 'js/gzLibraryInject.js';
     var temp = document.createElement('script');
     temp.setAttribute('type', 'text/javascript');
     // 获得的地址类似：chrome-extension://ihcokhadfjfchaeagdoclpnjdiokfakg/js/inject.js
     temp.src = chrome.extension.getURL(jsPath);
     temp.onload = function () {
-        console.log("inject.js on loaded");
+        console.log("gzLibraryInject.js on loaded");
     };
     document.body.appendChild(temp);
 }
