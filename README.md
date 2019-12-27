@@ -157,7 +157,7 @@
 - gitee用的数据库是mysql，而且是不支持保存emoji表情的，:weary:，可能是版本太低也可能是字符集问题。​
 - github的api，如果返回的数据太大，会进行截断，需要注意，而gitee的就不会，可能没考虑过这个问题
 - 翻译用的是有道api，这是好早以前申请的，请求频率限制为每小时1000次，[文档](http://fanyi.youdao.com/openapi?path=data-mode)
-- 生成二维码用的是网上找的一个api，http://qr.topscan.com/api.php?text=https://www.baidu.com，text后加要生成的二维码的内容就ok，侵 告 删。
+- 生成二维码用的是网上找的一个api，http://qr.topscan.com/api.php?text=https://www.baidu.com text后加要生成的二维码的内容就ok，侵 告 删。
 - github的根据gistId获取gist，居然不用token也能获取私有的，理论上存在被人撞到私有gist的可能，gitee则需要
 - 已测试过，展示页存放1w+标签都支持，只是渲染的时候开始卡了，应该很少人有1w+保存的标签吧，虽然在chrome插件商店看过有人的onetab有1w+标签，:joy: ,如果需要，后面再加分页。
 
