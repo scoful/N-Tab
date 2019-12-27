@@ -4,17 +4,44 @@
     document.addEventListener('DOMContentLoaded', function () {
         console.log("load完log了");
 
-        document.getElementById("container").innerHTML = `
-        <header>
-            <h1>Gist Log
-            <span style="font-size: .5em;"><span id="totalLogs"></span>${chrome.i18n.getMessage("logsNo")}</span>
-            </h1>
-        </header>
-        <div id="logs"></div>
-        <footer role="contentinfo">
-        ${chrome.i18n.getMessage("sourceCode")}<a
-                href="https://github.com/scoful/cloudSkyMonster">GitHub</a>.
-        </footer>
+        document.getElementById("myContainer").innerHTML = `
+            <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                        aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">Gist Log</a>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li>
+                            <a href="#">
+                                <span id="totalLogs"></span>${chrome.i18n.getMessage("logsNo")}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <!--/.nav-collapse -->
+            </div>
+        </nav>
+        <div class="container theme-showcase" role="main">
+            <div class="row">
+                <h1>LOGS</h1>
+                <div id="logs"></div>
+            </div>
+            <hr>
+            <footer>
+                <p class="pull-right"><a href="#">${chrome.i18n.getMessage("backToTop")}</a></p>
+                <p>${chrome.i18n.getMessage("sourceCode")}<a
+                        href="https://github.com/scoful/cloudSkyMonster">GitHub</a>.</p>
+            </footer>
+            <hr>
+        </div>
         `;
         // 展示Log
         showAllLogs();
@@ -64,7 +91,10 @@
 
             logs.view = function () {
                 if (logs.vm.list.length === 0) {
-                    return m('p', `${chrome.i18n.getMessage("noLog")}`);
+                    return m('div',
+                        m('div.jumbotron',
+                            [m('div', { style: "text-align:center; margin-bottom:50px" }, `${chrome.i18n.getMessage("noLog")}`)
+                            ]))
                 }
 
                 return logs.vm.list.map(function (group, i) {

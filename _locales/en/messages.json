@@ -59,20 +59,17 @@
 	"savedValue": {
 		"message": "It saved."
 	},
-	"workBenchHeaderValue": {
-		"message": "Dashboard Total："
-	},
 	"tabsNo": {
-		"message": " tabs"
+		"message": " TABS"
 	},
 	"logsNo": {
 		"message": " logs"
 	},
-	"hisdeShowGistFunction": {
-		"message": "click show or hide gist function"
+	"home": {
+		"message": "Home"
 	},
 	"hideShowImportFunction": {
-		"message": "click show or hide import function"
+		"message": "import onetab"
 	},
 	"dragTitle": {
 		"message": "super drag title"
@@ -80,17 +77,20 @@
 	"dragTabs": {
 		"message": "super drag tabs"
 	},
+	"dragOpenTranslate": {
+		"message": "cross word translation"
+	},
 	"pushToGithubGist": {
-		"message": "click push to github's gist, status is ："
+		"message": "push to github's gist"
 	},
 	"pullFromGithubGist": {
-		"message": "click pull from github's gist, status is ："
+		"message": "pull from github's gist"
 	},
 	"pushToGiteeGist": {
-		"message": "click push to gitee's gist, status is ："
+		"message": "push to gitee's gist"
 	},
 	"pullFromGiteeGist": {
-		"message": "click pull from gitee's gist, status is ："
+		"message": "pull from gitee's gist"
 	},
 	"confirmKey": {
 		"message": "Please input \"confirm\" to ensure: "
@@ -104,8 +104,14 @@
 	"importWarn": {
 		"message": "PS:The import contents is from oneTab extension."
 	},
-	"nope": {
-		"message": "nope"
+	"packUpImport": {
+		"message": "pack up"
+	},
+	"gistFunction": {
+		"message": "gist function"
+	},
+	"otherFunction": {
+		"message": "other function"
 	},
 	"githubApiStatusSuccess": {
 		"message": "Github API status : SUCCESS"
@@ -124,6 +130,12 @@
 	},
 	"giteeApiStatusError": {
 		"message": "Gitee API status : ERROR"
+	},
+	"yes": {
+		"message": "yes"
+	},
+	"no": {
+		"message": "no"
 	},
 	"pushToGithubGistIng": {
 		"message": "push to Github's Gist ing, please wait!"
@@ -340,5 +352,17 @@
 	},
 	"secondWait": {
 		"message": " second wait"
+	},
+	"usedTime": {
+		"message": "usedTime:"
+	},
+	"backToTop": {
+		"message": "back to top"
+	},
+	"restoreGroup": {
+		"message": "restore group"
+	},
+	"importTextareaTip": {
+		"message": "please input the content from onetab."
 	}
 }

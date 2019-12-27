@@ -601,14 +601,13 @@ async function loopDirectTransfer(data) {
         console.log(data.newDirs[i])
         var fsid = data.newDirs[i].fs_id
         var dir = data.newDirs[i].path
-        await waitaMinute()
+        await waiteMinute()
         await directTransfer(data, fsid, dir)
     }
     if (failedDirsList.length == 0) {
         console.log("保存完毕！")
         endTime = moment();
         const duration = moment.duration(moment(endTime).diff(moment(startTime)));
-        const str = `${duration.hours()}:${duration.minutes()}:${duration.seconds()}`
         notificationId = genObjectId();
         chrome.notifications.create(notificationId, {
             type: 'basic',
@@ -631,7 +630,7 @@ async function loopDirectTransfer(data) {
 }
 
 // 每调用一次api，暂停2秒，防止被block
-function waitaMinute() {
+function waiteMinute() {
     let p = new Promise(function (resolve, reject) {
         setTimeout(() => {
             console.log('等2秒');
@@ -749,7 +748,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(function (details) {
     }
 },
     { urls: ["<all_urls>"] },
-    ["blocking", "requestHeaders", "extraHeaders"]);
+    ["blocking", "requestHeaders"]);
 
 
 // 向content-script主动发送消息

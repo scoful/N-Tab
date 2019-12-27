@@ -59,20 +59,17 @@
 	"savedValue": {
 		"message": "已保存"
 	},
-	"workBenchHeaderValue": {
-		"message": "展示页 总共："
-	},
 	"tabsNo": {
 		"message": "个标签"
 	},
 	"logsNo": {
 		"message": "条日志"
 	},
-	"hisdeShowGistFunction": {
-		"message": "点击展开/折叠gist功能"
+	"home": {
+		"message": "首页"
 	},
 	"hideShowImportFunction": {
-		"message": "点击展开/折叠导入功能"
+		"message": "导入onetab"
 	},
 	"dragTitle": {
 		"message": "是否拖曳标签组"
@@ -80,17 +77,20 @@
 	"dragTabs": {
 		"message": "是否拖曳标签"
 	},
+	"dragOpenTranslate": {
+		"message": "是否划词翻译"
+	},
 	"pushToGithubGist": {
-		"message": "点击推送到github的gist里，状态是："
+		"message": "推送到github的gist"
 	},
 	"pullFromGithubGist": {
-		"message": "点击从github的gist里拉取，状态是："
+		"message": "从github的gist拉取"
 	},
 	"pushToGiteeGist": {
-		"message": "点击推送到gitee的gist里，状态是："
+		"message": "推送到gitee的gist"
 	},
 	"pullFromGiteeGist": {
-		"message": "点击从gitee的gist里拉取，状态是："
+		"message": "从gitee的gist拉取"
 	},
 	"confirmKey": {
 		"message": "请输入\"确定\"表示确认："
@@ -99,13 +99,19 @@
 		"message": "会覆盖的，小心谨慎思考这操作到底要不要！！！"
 	},
 	"importToLocal": {
-		"message": "导入本机"
+		"message": "导入"
 	},
 	"importWarn": {
 		"message": "PS：导入的是从onetab导出的内容"
 	},
-	"nope": {
-		"message": "暂无"
+	"packUpImport": {
+		"message": "收起"
+	},
+	"gistFunction": {
+		"message": "gist功能"
+	},
+	"otherFunction": {
+		"message": "其他功能"
 	},
 	"githubApiStatusSuccess": {
 		"message": "Github API 状态 : 正常"
@@ -124,6 +130,12 @@
 	},
 	"giteeApiStatusError": {
 		"message": "Gitee API 状态 : 报错"
+	},
+	"yes": {
+		"message": "是"
+	},
+	"no": {
+		"message": "否"
 	},
 	"pushToGithubGistIng": {
 		"message": "正在推送到github的gist，请稍等！"
@@ -336,9 +348,21 @@
 		"message": "还没有收藏网页！"
 	},
 	"showLog": {
-		"message": "打开日志"
+		"message": "查看日志"
 	},
 	"secondWait": {
 		"message": "秒等待"
+	},
+	"usedTime": {
+		"message": "用时："
+	},
+	"backToTop": {
+		"message": "滚动到页首"
+	},
+	"restoreGroup": {
+		"message": "打开整组"
+	},
+	"importTextareaTip": {
+		"message": "请输入从onetab导出的内容！"
 	}
 }

@@ -17,55 +17,101 @@
     var intervalId;
     var usedSeconds;
     var emojiReg = /[\uD83C|\uD83D|\uD83E][\uDC00-\uDFFF][\u200D|\uFE0F]|[\uD83C|\uD83D|\uD83E][\uDC00-\uDFFF]|[0-9|*|#]\uFE0F\u20E3|[0-9|#]\u20E3|[\u203C-\u3299]\uFE0F\u200D|[\u203C-\u3299]\uFE0F|[\u2122-\u2B55]|\u303D|[\A9|\AE]\u3030|\uA9|\uAE|\u3030/gi;
-
+    var startTime;
+    var endTime;
+    // 定义一个桌面通知框id
+    var notificationId;
 
     document.addEventListener('DOMContentLoaded', function () {
         console.log("load完workbench了");
 
-        document.getElementById("container").innerHTML = `
-        <header>
-            <h1>CloudSkyMonster
-                <span style="font-size: .5em;">${chrome.i18n.getMessage("workBenchHeaderValue")}<span id="totalTabs"></span>${chrome.i18n.getMessage("tabsNo")}</span>
-                <button id="githubStatus" class="button"></button>
-                <button id="giteeStatus" class="button"></button>
-                <button id="usage" class="button"></button>
-            </h1>
-            <button id="hideShowGist" class="button">${chrome.i18n.getMessage("hisdeShowGistFunction")}</button>
-            <button id="hideShowImport" class="button">${chrome.i18n.getMessage("hideShowImportFunction")}</button>
-            <span>${chrome.i18n.getMessage("dragTitle")}</span><input id="dragTitle" class="switch switch-anim" type="checkbox">
-            <span>${chrome.i18n.getMessage("dragTabs")}</span><input id="dragUrls" class="switch switch-anim" type="checkbox">
-            <span>${chrome.i18n.getMessage("autoSync")}</span><input id="autoSync" class="switch switch-anim" type="checkbox">
-            <button id="showLog" class="button">${chrome.i18n.getMessage("showLog")}</button>
-        </header>
-        <div id="menu" class="grid-container" style="display:none">
-            <div class="row">
-                <div id="pushToGithubGist" class="menu-entry">${chrome.i18n.getMessage("pushToGithubGist")}<span
-                        id="pushToGithubGistStatus">${chrome.i18n.getMessage("nope")}</span></div>
+        document.getElementById("myContainer").innerHTML = `
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                        aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">CloudSkyMonster</a>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li class="active"><a href="#">${chrome.i18n.getMessage("home")}</a></li>
+                        <li>
+                            <a href="#">
+                                <span id="totalTabs"></span>${chrome.i18n.getMessage("tabsNo")}
+                            </a>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                aria-haspopup="true" aria-expanded="false">${chrome.i18n.getMessage("gistFunction")}<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li id="pushToGithubGist"><a href="#">${chrome.i18n.getMessage("pushToGithubGist")}</a>
+                                </li>
+                                <li id="pullFromGithubGist"><a
+                                        href="#">${chrome.i18n.getMessage("pullFromGithubGist")}</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li id="pushToGiteeGist"><a href="#">${chrome.i18n.getMessage("pushToGiteeGist")}</a>
+                                </li>
+                                <li id="pullFromGiteeGist"><a
+                                        href="#">${chrome.i18n.getMessage("pullFromGiteeGist")}</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="#">${chrome.i18n.getMessage("autoSync")}<input id="autoSync"
+                                            data-size="mini" type="checkbox"></a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                aria-haspopup="true" aria-expanded="false">${chrome.i18n.getMessage("otherFunction")}<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li id="showLog"><a href="#">${chrome.i18n.getMessage("showLog")}</a></li>
+                                <li id="showOptions"><a href="#">${chrome.i18n.getMessage("optionsValue")}</a></li>
+                                <li id="openImport"><a href="#">${chrome.i18n.getMessage("hideShowImportFunction")}</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="#">${chrome.i18n.getMessage("dragTitle")}<input id="dragTitle" data-size="mini" type="checkbox"></a></li>
+                                <li><a href="#">${chrome.i18n.getMessage("dragTabs")}<input id="dragUrls" data-size="mini" type="checkbox"></a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="#">${chrome.i18n.getMessage("dragOpenTranslate")}<input id="dragOpenTranslate" data-size="mini" type="checkbox"></a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#"><span id="usage"></span></a>
+                        </li>
+                        <li>
+                            <a href="#"><span id="githubStatus"></span></a>
+                        </li>
+                        <li>
+                            <a href="#"><span id="giteeStatus"></span></a>
+                        </li>
+                    </ul>
+                </div>
+                <!--/.nav-collapse -->
             </div>
-            <div class="row">
-                <div id="pullFromGithubGist" class="menu-entry">${chrome.i18n.getMessage("pullFromGithubGist")}<span
-                        id="pullFromGithubGistStatus">${chrome.i18n.getMessage("nope")}</span></div>
+        </nav>
+        <div class="container theme-showcase" role="main">
+        <div class="row">
+                <h1>TABS</h1>
+                <div id="importOneTab" style="display:none">
+                    <textarea id="importTextarea" style="width: 1024px; height: 200px;"></textarea>
+                    <div>
+                        <button id="import" type="button"
+                            class="btn btn-primary">${chrome.i18n.getMessage("importToLocal")}</button>
+                        <button id="hideShowImport" type="button" class="btn btn-primary">${chrome.i18n.getMessage("packUpImport")}</button>
+                        <span>${chrome.i18n.getMessage("importWarn")}</span>
+                    </div>
+                </div>
+                <div id="tabGroups"></div>
             </div>
-            <div class="row">
-                <div id="pushToGiteeGist" class="menu-entry">${chrome.i18n.getMessage("pushToGiteeGist")}<span
-                        id="pushToGiteeGistStatus">${chrome.i18n.getMessage("nope")}</span></div>
-            </div>
-            <div class="row">
-                <div id="pullFromGiteeGist" class="menu-entry">${chrome.i18n.getMessage("pullFromGiteeGist")}<span
-                        id="pullFromGiteeGistStatus">${chrome.i18n.getMessage("nope")}</span></div>
-            </div>
+            <hr>
+                <p class="pull-right"><a href="#">${chrome.i18n.getMessage("backToTop")}</a></p>
+                <p>${chrome.i18n.getMessage("sourceCode")}<a
+                        href="https://github.com/scoful/cloudSkyMonster">GitHub</a>.</p>
+            <hr>
         </div>
-        <div id="importOneTab" style="display:none">
-            <textarea id="importTextarea" style="width: 1024px; height: 200px;"></textarea>
-            <div>
-                <button id="import" class="button">${chrome.i18n.getMessage("importToLocal")}</button><span>${chrome.i18n.getMessage("importWarn")}</span>
-            </div>
-        </div>
-        <div id="tabGroups"></div>
-        <footer role="contentinfo">
-        ${chrome.i18n.getMessage("sourceCode")}<a
-                href="https://github.com/scoful/cloudSkyMonster">GitHub</a>.
-        </footer>
         `;
 
         checkGitHubStatus();
@@ -86,14 +132,216 @@
 
             var dragType = items.dragType;
             if (dragType == "dragUrls") {
-                $('#dragUrls').prop("checked", true);
-            }
-            if (dragType == "dragTitle") {
-                $('#dragTitle').prop("checked", true);
+                $('#dragUrls').bootstrapSwitch({
+                    state: true,
+                    onText: `${chrome.i18n.getMessage("yes")}`,
+                    offText: `${chrome.i18n.getMessage("no")}`,
+                    onColor: "success",
+                    offColor: "danger",
+                    onSwitchChange: function (event, state) {
+                        if (state == true) {
+                            $('#dragTitle').bootstrapSwitch("state", false, true)
+                            chrome.storage.local.set({ "dragType": "dragUrls" });
+                            chrome.tabs.query({ active: true, currentWindow: true }, function (tabsArr) {
+                                chrome.tabs.reload(tabsArr[0].id, {}, function (tab) {
+                                });
+                            });
+                        } else {
+                            $('#dragTitle').bootstrapSwitch("state", true, true)
+                            chrome.storage.local.set({ "dragType": "dragTitle" });
+                            chrome.tabs.query({ active: true, currentWindow: true }, function (tabsArr) {
+                                chrome.tabs.reload(tabsArr[0].id, {}, function (tab) {
+                                });
+                            });
+                        }
+                    }
+                });
+                $('#dragTitle').bootstrapSwitch({
+                    state: false,
+                    onText: `${chrome.i18n.getMessage("yes")}`,
+                    offText: `${chrome.i18n.getMessage("no")}`,
+                    onColor: "success",
+                    offColor: "danger",
+                    onSwitchChange: function (event, state) {
+                        if (state == true) {
+                            $('#dragUrls').bootstrapSwitch("state", false, true)
+                            chrome.storage.local.set({ "dragType": "dragTitle" });
+                            chrome.tabs.query({ active: true, currentWindow: true }, function (tabsArr) {
+                                chrome.tabs.reload(tabsArr[0].id, {}, function (tab) {
+                                });
+                            });
+                        } else {
+                            $('#dragUrls').bootstrapSwitch("state", true, true)
+                            chrome.storage.local.set({ "dragType": "dragUrls" });
+                            chrome.tabs.query({ active: true, currentWindow: true }, function (tabsArr) {
+                                chrome.tabs.reload(tabsArr[0].id, {}, function (tab) {
+                                });
+                            });
+                        }
+                    }
+                });
+            } else if (dragType == "dragTitle") {
+                $('#dragUrls').bootstrapSwitch({
+                    state: false,
+                    onText: `${chrome.i18n.getMessage("yes")}`,
+                    offText: `${chrome.i18n.getMessage("no")}`,
+                    onColor: "success",
+                    offColor: "danger",
+                    onSwitchChange: function (event, state) {
+                        if (state == true) {
+                            $('#dragTitle').bootstrapSwitch("state", false, true)
+                            chrome.storage.local.set({ "dragType": "dragUrls" });
+                            chrome.tabs.query({ active: true, currentWindow: true }, function (tabsArr) {
+                                chrome.tabs.reload(tabsArr[0].id, {}, function (tab) {
+                                });
+                            });
+                        } else {
+                            $('#dragTitle').bootstrapSwitch("state", true, true)
+                            chrome.storage.local.set({ "dragType": "dragTitle" });
+                            chrome.tabs.query({ active: true, currentWindow: true }, function (tabsArr) {
+                                chrome.tabs.reload(tabsArr[0].id, {}, function (tab) {
+                                });
+                            });
+                        }
+                    }
+                });
+                $('#dragTitle').bootstrapSwitch({
+                    state: true,
+                    onText: `${chrome.i18n.getMessage("yes")}`,
+                    offText: `${chrome.i18n.getMessage("no")}`,
+                    onColor: "success",
+                    offColor: "danger",
+                    onSwitchChange: function (event, state) {
+                        if (state == true) {
+                            $('#dragUrls').bootstrapSwitch("state", false, true)
+                            chrome.storage.local.set({ "dragType": "dragTitle" });
+                            chrome.tabs.query({ active: true, currentWindow: true }, function (tabsArr) {
+                                chrome.tabs.reload(tabsArr[0].id, {}, function (tab) {
+                                });
+                            });
+                        } else {
+                            $('#dragUrls').bootstrapSwitch("state", true, true)
+                            chrome.storage.local.set({ "dragType": "dragUrls" });
+                            chrome.tabs.query({ active: true, currentWindow: true }, function (tabsArr) {
+                                chrome.tabs.reload(tabsArr[0].id, {}, function (tab) {
+                                });
+                            });
+                        }
+                    }
+                });
+            } else {
+                $('#dragUrls').bootstrapSwitch({
+                    state: false,
+                    onText: `${chrome.i18n.getMessage("yes")}`,
+                    offText: `${chrome.i18n.getMessage("no")}`,
+                    onColor: "success",
+                    offColor: "danger",
+                    onSwitchChange: function (event, state) {
+                        if (state == true) {
+                            $('#dragTitle').bootstrapSwitch("state", false, true)
+                            chrome.storage.local.set({ "dragType": "dragUrls" });
+                            chrome.tabs.query({ active: true, currentWindow: true }, function (tabsArr) {
+                                chrome.tabs.reload(tabsArr[0].id, {}, function (tab) {
+                                });
+                            });
+                        } else {
+                            $('#dragTitle').bootstrapSwitch("state", true, true)
+                            chrome.storage.local.set({ "dragType": "dragTitle" });
+                            chrome.tabs.query({ active: true, currentWindow: true }, function (tabsArr) {
+                                chrome.tabs.reload(tabsArr[0].id, {}, function (tab) {
+                                });
+                            });
+                        }
+                    }
+                });
+                $('#dragTitle').bootstrapSwitch({
+                    state: false,
+                    onText: `${chrome.i18n.getMessage("yes")}`,
+                    offText: `${chrome.i18n.getMessage("no")}`,
+                    onColor: "success",
+                    offColor: "danger",
+                    onSwitchChange: function (event, state) {
+                        if (state == true) {
+                            $('#dragUrls').bootstrapSwitch("state", false, true)
+                            chrome.storage.local.set({ "dragType": "dragTitle" });
+                            chrome.tabs.query({ active: true, currentWindow: true }, function (tabsArr) {
+                                chrome.tabs.reload(tabsArr[0].id, {}, function (tab) {
+                                });
+                            });
+                        } else {
+                            $('#dragUrls').bootstrapSwitch("state", true, true)
+                            chrome.storage.local.set({ "dragType": "dragUrls" });
+                            chrome.tabs.query({ active: true, currentWindow: true }, function (tabsArr) {
+                                chrome.tabs.reload(tabsArr[0].id, {}, function (tab) {
+                                });
+                            });
+                        }
+                    }
+                });
             }
             var autoSync = items.autoSync
             if (autoSync == true) {
-                $('#autoSync').prop("checked", true);
+                $('#autoSync').bootstrapSwitch({
+                    state: true,
+                    onText: `${chrome.i18n.getMessage("yes")}`,
+                    offText: `${chrome.i18n.getMessage("no")}`,
+                    onColor: "success",
+                    offColor: "danger",
+                    onSwitchChange: function (event, state) {
+                        if (state == true) {
+                            chrome.storage.local.set({ "autoSync": true });
+                        } else {
+                            chrome.storage.local.set({ "autoSync": false });
+                        }
+                    }
+                });
+            } else {
+                $('#autoSync').bootstrapSwitch({
+                    statue: false,
+                    onText: `${chrome.i18n.getMessage("yes")}`,
+                    offText: `${chrome.i18n.getMessage("no")}`,
+                    onColor: "success",
+                    offColor: "danger",
+                    onSwitchChange: function (event, state) {
+                        if (state == true) {
+                            chrome.storage.local.set({ "autoSync": true });
+                        } else {
+                            chrome.storage.local.set({ "autoSync": false });
+                        }
+                    }
+                });
+            }
+            var dragOpenTranslate = items.dragOpenTranslate
+            if (dragOpenTranslate) {
+                $('#dragOpenTranslate').bootstrapSwitch({
+                    state: true,
+                    onText: `${chrome.i18n.getMessage("yes")}`,
+                    offText: `${chrome.i18n.getMessage("no")}`,
+                    onColor: "success",
+                    offColor: "danger",
+                    onSwitchChange: function (event, state) {
+                        if (state == true) {
+                            chrome.storage.local.set({ "dragOpenTranslate": true });
+                        } else {
+                            chrome.storage.local.set({ "dragOpenTranslate": false });
+                        }
+                    }
+                });
+            } else {
+                $('#dragOpenTranslate').bootstrapSwitch({
+                    state: false,
+                    onText: `${chrome.i18n.getMessage("yes")}`,
+                    offText: `${chrome.i18n.getMessage("no")}`,
+                    onColor: "success",
+                    offColor: "danger",
+                    onSwitchChange: function (event, state) {
+                        if (state == true) {
+                            chrome.storage.local.set({ "dragOpenTranslate": true });
+                        } else {
+                            chrome.storage.local.set({ "dragOpenTranslate": false });
+                        }
+                    }
+                });
             }
         });
         // 展示所有标签
@@ -129,11 +377,10 @@
             }
         });
 
-        // hide show gist 功能
-        document.getElementById('hideShowGist').addEventListener('click', function () {
-            $("#menu").slideToggle();
+        // hide show 导入oneTab的url功能
+        document.getElementById('openImport').addEventListener('click', function () {
+            $("#importOneTab").slideToggle();
         });
-
         // hide show 导入oneTab的url功能
         document.getElementById('hideShowImport').addEventListener('click', function () {
             $("#importOneTab").slideToggle();
@@ -142,6 +389,11 @@
         // 打开日志页
         document.getElementById('showLog').addEventListener('click', function () {
             openLogPage();
+        });
+
+        // 打开配置页
+        document.getElementById('showOptions').addEventListener('click', function () {
+            openOptionsPage();
         });
 
         // 把从onetab导出的数据导入
@@ -157,6 +409,11 @@
                     tabGroups = JSON.parse(tabGroupsStr);
                 }
                 var importTextarea = $('#importTextarea').val();
+                console.log(importTextarea)
+                if (!importTextarea) {
+                    alert(`${chrome.i18n.getMessage("importTextareaTip")}`)
+                    return;
+                }
                 var content = importTextarea.split("\n");
                 let tabsArr = new Array();
                 for (let i = 0; i < content.length; i++) {
@@ -179,52 +436,6 @@
                     });
                 });
             });
-        });
-
-        // 是否开启拖曳title，title和url的拖曳互斥
-        document.getElementById('dragTitle').addEventListener('click', function () {
-            if ($('#dragTitle').prop('checked')) {
-                $('#dragUrls').prop("checked", false);
-                chrome.storage.local.set({ "dragType": "dragTitle" });
-                chrome.tabs.query({ active: true, currentWindow: true }, function (tabsArr) {
-                    chrome.tabs.reload(tabsArr[0].id, {}, function (tab) {
-                    });
-                });
-            } else {
-                $('#dragUrls').prop("checked", true);
-                chrome.storage.local.set({ "dragType": "dragUrls" });
-                chrome.tabs.query({ active: true, currentWindow: true }, function (tabsArr) {
-                    chrome.tabs.reload(tabsArr[0].id, {}, function (tab) {
-                    });
-                });
-            }
-        });
-        // 是否开启拖曳url,title和url的拖曳互斥
-        document.getElementById('dragUrls').addEventListener('click', function () {
-            if ($('#dragUrls').prop('checked')) {
-                $('#dragTitle').prop("checked", false);
-                chrome.storage.local.set({ "dragType": "dragUrls" });
-                chrome.tabs.query({ active: true, currentWindow: true }, function (tabsArr) {
-                    chrome.tabs.reload(tabsArr[0].id, {}, function (tab) {
-                    });
-                });
-            } else {
-                $('#dragTitle').prop("checked", true);
-                chrome.storage.local.set({ "dragType": "dragTitle" });
-                chrome.tabs.query({ active: true, currentWindow: true }, function (tabsArr) {
-                    chrome.tabs.reload(tabsArr[0].id, {}, function (tab) {
-                    });
-                });
-            }
-        });
-
-        // 是否开启自动同步
-        document.getElementById('autoSync').addEventListener('click', function () {
-            if ($('#autoSync').prop('checked')) {
-                chrome.storage.local.set({ "autoSync": true });
-            } else {
-                chrome.storage.local.set({ "autoSync": false });
-            }
         });
 
         // 响应推送到github的gist的动作
@@ -351,10 +562,17 @@
                 console.log("no");
             }
         });
+
+        // 持续监听通知框的按钮点击事件，点了就清除通知框
+        chrome.notifications.onButtonClicked.addListener(function callback(notificationId, buttonIndex) {
+            chrome.notifications.clear(notificationId, function callback() {
+            });
+        });
     });
 
     // 从github的gist拉取
     function pullFromGithubGist() {
+        startTime = moment();
         setHandleGistStatus(`${chrome.i18n.getMessage("pullFromGithubGistIng")}`);
         handleGistLog.length = 0;
         usedSeconds = 0;
@@ -370,10 +588,19 @@
                 if (typeof (pullFromGithubGistStatus) != "undefined") {
                     console.log("秒等待");
                     usedSeconds++;
-                    document.getElementById('pullFromGithubGistStatus').innerHTML = pullFromGithubGistStatus;
                 } else {
                     clearInterval(intervalId);
-                    document.getElementById('pullFromGithubGistStatus').innerHTML = `${chrome.i18n.getMessage("endPullFromGithubGistTask")}`;
+                    endTime = moment();
+                    const duration = moment.duration(moment(endTime).diff(moment(startTime)));
+                    notificationId = genObjectId();
+                    chrome.notifications.create(notificationId, {
+                        type: 'basic',
+                        iconUrl: 'images/128.png',
+                        title: `${chrome.i18n.getMessage("endPullFromGithubGistTask")}`,
+                        message: `${chrome.i18n.getMessage("usedTime")}${duration.hours()}${chrome.i18n.getMessage("hours")}${duration.minutes()}${chrome.i18n.getMessage("minutes")}${duration.seconds()}${chrome.i18n.getMessage("seconds")}`,
+                        buttons: [{ "title": `${chrome.i18n.getMessage("close")}` }],
+                        requireInteraction: true
+                    });
                     handleGistLog.push(`${usedSeconds}${chrome.i18n.getMessage("secondWait")}`)
                     handleGistLog.push(`${chrome.i18n.getMessage("endPullFromGithubGistTask")}`)
                     handleGistLog.push(`${chrome.i18n.getMessage("end")}${moment().format('YYYY-MM-DD HH:mm:ss')}`);
@@ -388,6 +615,7 @@
 
     // 从gitee的gist拉取
     function pullFromGiteeGist() {
+        startTime = moment();
         setHandleGistStatus(`${chrome.i18n.getMessage("pullFromGiteeGistIng")}`);
         handleGistLog.length = 0;
         usedSeconds = 0;
@@ -403,10 +631,19 @@
                 if (typeof (pullFromGiteeGistStatus) != "undefined") {
                     console.log("秒等待");
                     usedSeconds++;
-                    document.getElementById('pullFromGiteeGistStatus').innerHTML = pullFromGiteeGistStatus;
                 } else {
                     clearInterval(intervalId);
-                    document.getElementById('pullFromGiteeGistStatus').innerHTML = `${chrome.i18n.getMessage("endPullFromGiteeGistTask")}`;
+                    endTime = moment();
+                    const duration = moment.duration(moment(endTime).diff(moment(startTime)));
+                    notificationId = genObjectId();
+                    chrome.notifications.create(notificationId, {
+                        type: 'basic',
+                        iconUrl: 'images/128.png',
+                        title: `${chrome.i18n.getMessage("endPullFromGiteeGistTask")}`,
+                        message: `${chrome.i18n.getMessage("usedTime")}${duration.hours()}${chrome.i18n.getMessage("hours")}${duration.minutes()}${chrome.i18n.getMessage("minutes")}${duration.seconds()}${chrome.i18n.getMessage("seconds")}`,
+                        buttons: [{ "title": `${chrome.i18n.getMessage("close")}` }],
+                        requireInteraction: true
+                    });
                     handleGistLog.push(`${usedSeconds}${chrome.i18n.getMessage("secondWait")}`)
                     handleGistLog.push(`${chrome.i18n.getMessage("endPullFromGiteeGistTask")}`)
                     handleGistLog.push(`${chrome.i18n.getMessage("end")}${moment().format('YYYY-MM-DD HH:mm:ss')}`);
@@ -421,6 +658,7 @@
 
     // 推送到github的gist
     function pushToGithubGist() {
+        startTime = moment();
         setHandleGistStatus(`${chrome.i18n.getMessage("pushToGithubGistIng")}`);
         handleGistLog.length = 0;
         usedSeconds = 0;
@@ -437,10 +675,19 @@
                 if (typeof (pushToGithubGistStatus) != "undefined") {
                     console.log("秒等待");
                     usedSeconds++;
-                    document.getElementById('pushToGithubGistStatus').innerHTML = pushToGithubGistStatus;
                 } else {
                     clearInterval(intervalId);
-                    document.getElementById('pushToGithubGistStatus').innerHTML = `${chrome.i18n.getMessage("endPushToGithubGistTask")}`;
+                    endTime = moment();
+                    const duration = moment.duration(moment(endTime).diff(moment(startTime)));
+                    notificationId = genObjectId();
+                    chrome.notifications.create(notificationId, {
+                        type: 'basic',
+                        iconUrl: 'images/128.png',
+                        title: `${chrome.i18n.getMessage("endPushToGithubGistTask")}`,
+                        message: `${chrome.i18n.getMessage("usedTime")}${duration.hours()}${chrome.i18n.getMessage("hours")}${duration.minutes()}${chrome.i18n.getMessage("minutes")}${duration.seconds()}${chrome.i18n.getMessage("seconds")}`,
+                        buttons: [{ "title": `${chrome.i18n.getMessage("close")}` }],
+                        requireInteraction: true
+                    });
                     handleGistLog.push(`${usedSeconds}${chrome.i18n.getMessage("secondWait")}`)
                     handleGistLog.push(`${chrome.i18n.getMessage("endPushToGithubGistTask")}`)
                     handleGistLog.push(`${chrome.i18n.getMessage("end")}${moment().format('YYYY-MM-DD HH:mm:ss')}`);
@@ -455,6 +702,7 @@
 
     // 推送到gitee的gist
     function pushToGiteeGist() {
+        startTime = moment();
         setHandleGistStatus(`${chrome.i18n.getMessage("pushToGiteeGistIng")}`);
         handleGistLog.length = 0;
         usedSeconds = 0;
@@ -471,10 +719,19 @@
                 if (typeof (pushToGiteeGistStatus) != "undefined") {
                     console.log("秒等待");
                     usedSeconds++;
-                    document.getElementById('pushToGiteeGistStatus').innerHTML = pushToGiteeGistStatus;
                 } else {
                     clearInterval(intervalId);
-                    document.getElementById('pushToGiteeGistStatus').innerHTML = `${chrome.i18n.getMessage("endPushToGiteeGistTask")}`;
+                    endTime = moment();
+                    const duration = moment.duration(moment(endTime).diff(moment(startTime)));
+                    notificationId = genObjectId();
+                    chrome.notifications.create(notificationId, {
+                        type: 'basic',
+                        iconUrl: 'images/128.png',
+                        title: `${chrome.i18n.getMessage("endPushToGiteeGistTask")}`,
+                        message: `${chrome.i18n.getMessage("usedTime")}${duration.hours()}${chrome.i18n.getMessage("hours")}${duration.minutes()}${chrome.i18n.getMessage("minutes")}${duration.seconds()}${chrome.i18n.getMessage("seconds")}`,
+                        buttons: [{ "title": `${chrome.i18n.getMessage("close")}` }],
+                        requireInteraction: true
+                    });
                     handleGistLog.push(`${usedSeconds}${chrome.i18n.getMessage("secondWait")}`)
                     handleGistLog.push(`${chrome.i18n.getMessage("endPushToGiteeGistTask")}`)
                     handleGistLog.push(`${chrome.i18n.getMessage("end")}${moment().format('YYYY-MM-DD HH:mm:ss')}`);
@@ -549,6 +806,22 @@
                 });
             } else {
                 chrome.tabs.create({ index: 0, url: chrome.extension.getURL('log.html') });
+            }
+        });
+    };
+
+    // 打开配置页
+    function openOptionsPage() {
+        chrome.tabs.query({ url: "chrome-extension://*/options.html*", currentWindow: true }, function (tab) {
+            if (tab.length >= 1) {
+                chrome.tabs.move(tab[0].id, { index: 0 }, function callback() {
+                    chrome.tabs.highlight({ tabs: 0 }, function callback() {
+                    });
+                });
+                chrome.tabs.reload(tab[0].id, {}, function (tab) {
+                });
+            } else {
+                chrome.tabs.create({ index: 0, url: chrome.extension.getURL('options.html') });
             }
         });
     };
@@ -1361,9 +1634,11 @@
 
             tabs.view = function () {
                 if (tabs.vm.list.length === 0) {
-                    return m('p', `${chrome.i18n.getMessage("noTabs")}`);
+                    return m('div',
+                        m('div.jumbotron',
+                            [m('div', { style: "text-align:center; margin-bottom:50px" }, `${chrome.i18n.getMessage("noTabs")}`)
+                            ]))
                 }
-
                 // foreach tab group
                 return tabs.vm.list.map(function (group, i) {
                     // console.log(tabs.vm.list);
@@ -1383,7 +1658,7 @@
                                 onclick: function () {
                                     $("#tabs_" + i).slideToggle();
                                 }
-                            }, group.tabs().length + ' Tabs'),
+                            }, group.tabs().length + `${chrome.i18n.getMessage("tabsNo")}`),
                             ' ',
                             m('span.group-date', moment(group.date()).format('YYYY-MM-DD, HH:mm:ss')),
                             ' ',
@@ -1403,7 +1678,7 @@
                                         });
                                     }
                                 }
-                            }, 'Restore group')
+                            }, `${chrome.i18n.getMessage("restoreGroup")}`)
                         ]),
                         // foreach tab
                         m('ul' + tabClass, {
@@ -1436,6 +1711,7 @@
             // init the app
             m.module(document.getElementById('tabGroups'), { controller: tabs.controller, view: tabs.view });
 
+            // 以下是超级拖曳的相关代码
             if (storage.dragType == "dragTitle") {
                 if (sortableTabList.length > 0) {
                     var j;

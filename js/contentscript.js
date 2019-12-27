@@ -9,7 +9,12 @@ document.addEventListener('DOMContentLoaded', function () {
         var txt;
         txt = window.getSelection();
         if (txt.toString().length > 0) {
-            sendMessageToBackground("translate", txt.toString());
+            chrome.storage.local.get('dragOpenTranslate', function (storage) {
+                console.log(storage)
+                if (storage.dragOpenTranslate) {
+                    sendMessageToBackground("translate", txt.toString());
+                }
+            });
         }
     });
 

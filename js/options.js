@@ -14,29 +14,47 @@
             }
         });
 
-        document.getElementById("container").innerHTML = `
-        <header>
-            <h1>CloudSkyMonster <span style="font-size: .6em;">${chrome.i18n.getMessage("optionsValue")}</span></h1>
-        </header>
-
-        <div id="options">
-            <div class="option">
-                <div class="desc">
-                    <p>${chrome.i18n.getMessage("restoreKey")}</p>
+        document.getElementById("myContainer").innerHTML = `
+            <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                        aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">CloudSkyMonster ${chrome.i18n.getMessage("optionsValue")}</a>
                 </div>
-                <div class="choices">
-                    <p><label for="deleteTabOnOpen"><input type="radio" name="deleteTabOnOpen" value="yes">${chrome.i18n.getMessage("restoreValueDelete")}</label></p>
-                    <p><label for="deleteTabOnOpen"><input type="radio" name="deleteTabOnOpen" value="no">${chrome.i18n.getMessage("restoreValueLive")}</label></p>
-                </div>
+                <!--/.nav-collapse -->
             </div>
-            <button id="save">${chrome.i18n.getMessage("saveButtonValue")}</button>
-            <div id="saved">${chrome.i18n.getMessage("savedValue")}</div>
-        </div>
-
-        <footer role="contentinfo">
-        ${chrome.i18n.getMessage("sourceCode")}
-        <a href="https://github.com/scoful/cloudSkyMonster">GitHub</a>.
-        </footer>
+        </nav>
+        <div class="container theme-showcase" role="main">
+            <div class="row">
+                <h1>LOGS</h1>
+                <div id="options">
+                <div class="option">
+                    <div class="desc">
+                        <p>${chrome.i18n.getMessage("restoreKey")}</p>
+                    </div>
+                    <div class="choices">
+                        <p><label for="deleteTabOnOpen"><input type="radio" name="deleteTabOnOpen" value="yes">${chrome.i18n.getMessage("restoreValueDelete")}</label></p>
+                        <p><label for="deleteTabOnOpen"><input type="radio" name="deleteTabOnOpen" value="no">${chrome.i18n.getMessage("restoreValueLive")}</label></p>
+                    </div>
+                </div>
+                <button id="save">${chrome.i18n.getMessage("saveButtonValue")}</button>
+                <div id="saved">${chrome.i18n.getMessage("savedValue")}</div>
+            </div>
+            </div>
+            <hr>
+            <footer>
+                <p class="pull-right"><a href="#">${chrome.i18n.getMessage("backToTop")}</a></p>
+                <p>${chrome.i18n.getMessage("sourceCode")}<a
+                        href="https://github.com/scoful/cloudSkyMonster">GitHub</a>.</p>
+            </footer>
+            <hr>
+        </div>    
         `;
 
         document.getElementById('save').addEventListener('click', function () {
