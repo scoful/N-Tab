@@ -107,14 +107,18 @@
                 <div id="tabGroups"></div>
             </div>
             <hr>
-                <p class="pull-right"><a href="#">${chrome.i18n.getMessage("backToTop")}</a></p>
-                <p>${chrome.i18n.getMessage("sourceCode")}<a
-                        href="https://github.com/scoful/cloudSkyMonster">GitHub</a>.</p>
+            <div class="blog-footer">
+            <p class="pull-right"><a href="#">${chrome.i18n.getMessage("backToTop")}</a></p>
+            <p>${chrome.i18n.getMessage("sourceCode")}<a
+                    href="https://github.com/scoful/cloudSkyMonster">GitHub</a>.</p>
             <hr>
+            </div>
         </div>
-        `;
 
+        `;
+        // 检查跟github的通讯是否正常
         checkGitHubStatus();
+        // 检查跟gitee的通讯是否正常
         checkGiteeStatus();
         chrome.storage.local.get(null, function (items) {
             var total = new Array();
@@ -130,6 +134,7 @@
                 document.getElementById('usage').innerHTML = `${chrome.i18n.getMessage("usedSpace")}${Math.round(bytes / 1024 / 1024 * 100) / 100}mb/5mb`;
             });
 
+            // 处理是否拖曳标签组和标签
             var dragType = items.dragType;
             if (dragType == "dragUrls") {
                 $('#dragUrls').bootstrapSwitch({
@@ -279,6 +284,7 @@
                     }
                 });
             }
+            // 处理是否自动同步
             var autoSync = items.autoSync
             if (autoSync == true) {
                 $('#autoSync').bootstrapSwitch({
@@ -311,6 +317,7 @@
                     }
                 });
             }
+            // 处理是否划词翻译
             var dragOpenTranslate = items.dragOpenTranslate
             if (dragOpenTranslate) {
                 $('#dragOpenTranslate').bootstrapSwitch({
@@ -785,15 +792,6 @@
         });
     };
 
-    // 生成唯一标识
-    // refer: https://gist.github.com/solenoid/1372386
-    var genObjectId = function () {
-        var timestamp = (new Date().getTime() / 1000 | 0).toString(16);
-        return timestamp + 'xxxxxxxxxxxxxxxx'.replace(/[x]/g, function () {
-            return (Math.random() * 16 | 0).toString(16);
-        }).toLowerCase();
-    };
-
     // 打开日志页
     function openLogPage() {
         chrome.tabs.query({ url: "chrome-extension://*/log.html*", currentWindow: true }, function (tab) {
@@ -998,7 +996,6 @@
             }
         });
     }
-
 
     // 判断是否已经保存了gitee的gistId
     function isStoredGiteeGistIdLocal(action) {
@@ -1484,7 +1481,6 @@
         });
     }
 
-
     // 保存local storage
     function saveShardings(tabGroup, type) {
         var tabGroupStr;
@@ -1510,7 +1506,6 @@
 
         // 写入Storage
         chrome.storage.local.set(tabGroupSlices);
-
     }
 
     // 展示保存的所有url

@@ -1,7 +1,3 @@
-/**/
-/* GENERAL STYLES */
-/**/
-
 body {
 	background: #fefefe;
 	color: #333;
@@ -15,10 +11,6 @@ body {
 	font-family: Liberation Sans, sans-serif;
 }
 
-/**/
-/* GROUPS RELATED STYLES */
-/**/
-
 #groups {
 	margin: 10px 0;
 	padding-left: 10px;
@@ -27,6 +19,7 @@ body {
 .group:first-of-type {
 	margin-top: 10px;
 }
+
 .group {
 	margin-top: 20px;
 }
@@ -53,10 +46,6 @@ li {
 	padding: .2em;
 }
 
-/**/
-/* HEADER STYLES */
-/**/
-
 h1 {
 	font-size: 3em;
 }
@@ -65,13 +54,7 @@ header {
 	border-bottom: 1px solid #f6f6f6;
 }
 
-/**/
-/* FOOTER STYLES */
-/**/
-
 footer {
 	border-top: 1px solid #f6f6f6;
 	padding: 5px 0;
 }
-
-

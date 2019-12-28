@@ -12,7 +12,6 @@ function injectCustomJs(jsPath) {
     jsPath = jsPath || 'js/baiduPanInject.js';
     var temp = document.createElement('script');
     temp.setAttribute('type', 'text/javascript');
-    // 获得的地址类似：chrome-extension://ihcokhadfjfchaeagdoclpnjdiokfakg/js/inject.js
     temp.src = chrome.extension.getURL(jsPath);
     temp.onload = function () {
         console.log("baiduPanInject.js on loaded");

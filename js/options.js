@@ -1,8 +1,6 @@
 ; (function ($) {
     'use strict'
 
-    var opts = {};
-
     document.addEventListener('DOMContentLoaded', function () {
         chrome.storage.local.get('options', function (storage) {
             var opts = storage.options || {};
@@ -78,6 +76,4 @@
             });
         });
     });
-
-
 }(jQuery));

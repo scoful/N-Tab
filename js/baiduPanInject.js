@@ -1,4 +1,3 @@
-
 document.getElementById('mySuperSave').addEventListener('click', function () {
     // var sekey = prompt("请输入提取码：", "");
     var sekey = "";

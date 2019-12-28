@@ -1,7 +1,3 @@
-/**/
-/* GENERAL STYLES */
-/**/
-
 body {
 	background: #fefefe;
 	color: #333;
@@ -15,10 +11,6 @@ body {
 	font-family: Liberation Sans, sans-serif;
 }
 
-/**/
-/* GROUPS RELATED STYLES */
-/**/
-
 #groups {
 	margin: 10px 0;
 	padding-left: 10px;
@@ -27,6 +19,7 @@ body {
 .group:first-of-type {
 	margin-top: 10px;
 }
+
 .group {
 	margin-top: 20px;
 }
@@ -43,6 +36,7 @@ body {
 	margin-left: 5px;
 	cursor: pointer;
 }
+
 .restore-all:hover {
 	color: blue;
 	text-decoration: underline;
@@ -67,12 +61,15 @@ li {
 	padding: 0 .3em;
 	margin-right: 10px;
 }
+
 .delete-link:before {
 	content: "X";
 }
+
 *:hover > .delete-link {
 	background: #aaa;
 }
+
 .delete-link:hover {
 	background: red;
 	cursor: pointer;
@@ -83,14 +80,11 @@ li {
 	text-decoration: none;
 	padding: .2em;
 }
+
 .link:hover {
 	cursor: pointer;
 	text-decoration: underline;
 }
-
-/**/
-/* HEADER STYLES */
-/**/
 
 h1 {
 	font-size: 3em;
@@ -99,10 +93,6 @@ h1 {
 header {
 	border-bottom: 1px solid #f6f6f6;
 }
-
-/**/
-/* FOOTER STYLES */
-/**/
 
 footer {
 	border-top: 1px solid #f6f6f6;
@@ -129,13 +119,13 @@ footer {
 	box-sizing: border-box;
 }
 
-/* clearfix hack */
 .row:before,
 .row:after {
 	content: "";
 	display: table ;
     clear: both;
 }
+
 .row{
     border-top: 1px solid #eee;
 }
@@ -158,55 +148,6 @@ footer {
 .button:hover {
     box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
 }
-
-.switch {
-	width: 57px;
-	height: 28px;
-	position: relative;
-	border: 1px solid #dfdfdf;
-	background-color: #fdfdfd;
-	box-shadow: #dfdfdf 0 0 0 0 inset;
-	border-radius: 20px;
-	background-clip: content-box;
-	display: inline-block;
-	-webkit-appearance: none;
-	user-select: none;
-	outline: none;
-}
-.switch:before {
-	content: '';
-	width: 26px;
-	height: 26px;
-	position: absolute;
-	top: 0;
-	left: 0;
-	border-radius: 20px;
-	background-color: #fff;
-	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
-}
-.switch:checked {
-	border-color: #64bd63;
-	box-shadow: #64bd63 0 0 0 16px inset;
-	background-color: #64bd63;
-}
-.switch:checked:before {
-	left: 30px;
-}
-.switch.switch-anim {
-	transition: border cubic-bezier(0, 0, 0, 1) 0.4s, box-shadow cubic-bezier(0, 0, 0, 1) 0.4s;
-}
-.switch.switch-anim:before {
-	transition: left 0.3s;
-}
-.switch.switch-anim:checked {
-	box-shadow: #64bd63 0 0 0 16px inset;
-	background-color: #64bd63;
-	transition: border ease 0.4s, box-shadow ease 0.4s, background-color ease 1.2s;
-}
-.switch.switch-anim:checked:before {
-	transition: left 0.3s;
-}
-
 
 .my-handle {
 	cursor: move;

@@ -52,8 +52,9 @@ document.addEventListener('DOMContentLoaded', function () {
     chrome.storage.local.get(function (storage) {
         console.log(storage);
     });
-
+    // 创建定时同步gitee任务
     chrome.alarms.create("checkAutoSyncGitee", { delayInMinutes: 70, periodInMinutes: 70 });
+    // 创建定时同步github任务
     chrome.alarms.create("checkAutoSyncGithub", { delayInMinutes: 90, periodInMinutes: 90 });
 
 });
@@ -1056,7 +1057,6 @@ chrome.idle.onStateChanged.addListener(function (newState) {
 
 // 持续监听响应定时任务
 chrome.alarms.onAlarm.addListener(function (alarm) {
-    console.log(alarm.name + "_" + alarm.scheduledTime + "_" + alarm.periodInMinutes)
     if (alarm.name == "checkAutoSyncGitee") {
         console.log("自动同步gitee")
         checkAutoSyncGitee();

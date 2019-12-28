@@ -10,7 +10,6 @@ document.addEventListener('DOMContentLoaded', function () {
         txt = window.getSelection();
         if (txt.toString().length > 0) {
             chrome.storage.local.get('dragOpenTranslate', function (storage) {
-                console.log(storage)
                 if (storage.dragOpenTranslate) {
                     sendMessageToBackground("translate", txt.toString());
                 }
@@ -85,5 +84,3 @@ function tip(info) {
         }, 400);
     }, 3000);
 }
-
-

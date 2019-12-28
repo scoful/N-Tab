@@ -1,4 +1,3 @@
-
 //直接通过方法名覆盖本来的js，增加发消息的功能
 function loginSuccess() {
     changeElement($("#msg"), "blue", "登录成功，跳转中......");
