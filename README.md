@@ -43,7 +43,7 @@
 
 ## 安装方法： ##
 
-1. 下载[最新的crx](https://github.com/scoful/cloudSkyMonster/releases)文件，解压缩到一个不会删掉的文件目录下，或者直接下载源码；
+1. 下载[最新的crx](https://github.com/scoful/cloudSkyMonster/releases)文件，要选择解压缩到文件名，不要解压缩到当前目录，或者直接下载源码；
 
 2. 打开Chrome浏览器或其他支持Chrome内核的浏览器，找到并点开“扩展程序”项；
 
