@@ -1640,7 +1640,7 @@
                     // console.log(group.tabs());
                     // console.log(i);
                     // group
-                    return m('div' + titleClass, {
+                    return m('div.tabs' + titleClass, {
                         id: i
                     }, [
                         m('div.group-title', [
@@ -1673,13 +1673,18 @@
                                         });
                                     }
                                 }
-                            }, `${chrome.i18n.getMessage("restoreGroup")}`)
+                            }, `${chrome.i18n.getMessage("restoreGroup")}`),
+                            m('span.delete-all', {
+                                onclick: function () {
+                                    tabs.vm.rmGroup(i);
+                                }
+                            }, `${chrome.i18n.getMessage("deleteAll")}`)
                         ]),
                         // foreach tab
                         m('ul' + tabClass, {
                             id: "tabs_" + i
                         }, group.tabs().map(function (tab, ii) {
-                            return m('li.li-hover', [
+                            return m('li.li-hover.li-standard', [
                                 m('span.delete-link', {
                                     onclick: function () {
                                         tabs.vm.rmTab(i, ii);

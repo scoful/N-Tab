@@ -8,6 +8,9 @@
 	"sendAllTabs": {
 		"message": "发送所有标签"
 	},
+	"toggleFeatureSaveAllTabs": {
+		"message": "快捷键触发功能-发送所有标签"
+	},
 	"sendCurrentTab": {
 		"message": "发送当前标签"
 	},
@@ -361,6 +364,9 @@
 	},
 	"restoreGroup": {
 		"message": "打开整组"
+	},
+	"deleteAll": {
+		"message": "删除整组"
 	},
 	"importTextareaTip": {
 		"message": "请输入从onetab导出的内容！"

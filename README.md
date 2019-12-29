@@ -28,6 +28,7 @@
    - 支持手动push或pull到gitee的gist
    - 支持自动push到gitee的gist，即自动同步到gitee的gist
    - 支持查看跟gist操作有关的log记录，日志记录只保存最新100条
+   - 支持快捷键Ctrl+Q，触发**发送所有标签**
 4. 定时提醒功能
    - 5分钟弹窗提醒
    - 10分钟弹窗提醒

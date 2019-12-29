@@ -1,9 +1,4 @@
-body {
-	background: #fefefe;
-	color: #333;
-	font-size: 16px;
-	line-height: 1.4;
-}
+
 
 #container {
 	margin: 1%;
@@ -25,7 +20,7 @@ body {
 }
 
 .group-amount {
-	font-size: 2em;
+	font-size: 120%;
 }
 
 .group-date {
@@ -35,10 +30,22 @@ body {
 .restore-all {
 	margin-left: 5px;
 	cursor: pointer;
+	color: #234da7;
 }
 
 .restore-all:hover {
-	color: blue;
+	color: #234da7;
+	text-decoration: underline;
+}
+
+.delete-all {
+	margin-left: 5px;
+	cursor: pointer;
+	color: #234da7;
+}
+
+.delete-all:hover {
+	color: #234da7;
 	text-decoration: underline;
 }
 
@@ -51,7 +58,7 @@ li {
 }
 
 .delete-link {
-	font-size: .9em;
+	font-size: 70%;
 	font-weight: bold;
 	background: #eee;
 	color: white;
@@ -76,9 +83,10 @@ li {
 }
 
 .link, .link:visited {
-	color: blue;
+	color: #234da7;
 	text-decoration: none;
 	padding: .2em;
+	font-size: 85%;
 }
 
 .link:hover {
@@ -151,6 +159,7 @@ footer {
 
 .my-handle {
 	cursor: move;
+
 }
 
 .ghost {
@@ -161,4 +170,18 @@ footer {
 .li-hover:hover {
 	cursor: pointer;
 	background: #f0f0f0;
+	padding-bottom: 3px;
+}
+
+.li-standard {
+	padding-bottom: 3px;
+}
+
+.tabs {
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+.group-title {
+	margin-bottom: 10px;
 }

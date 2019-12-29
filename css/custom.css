@@ -88,7 +88,7 @@
 /*以下是popup的*/
 .menu-entry {
     text-align: center;
-    font-size: 20px;
+    font-size: 13px;
 	background: #fefefe;
 	padding: 10px;
 }
@@ -116,6 +116,7 @@
 
 .row{
     border-top: 1px solid #eee;
+    font-size: 13px;
 }
 
 .delete-link {

@@ -8,6 +8,9 @@
 	"sendAllTabs": {
 		"message": "send all tabs"
 	},
+	"toggleFeatureSaveAllTabs": {
+		"message": "toggle feature save all tabs"
+	},
 	"sendCurrentTab": {
 		"message": "send current tab"
 	},
@@ -361,6 +364,9 @@
 	},
 	"restoreGroup": {
 		"message": "restore group"
+	},
+	"deleteAll": {
+		"message": "delete group"
 	},
 	"importTextareaTip": {
 		"message": "please input the content from onetab."

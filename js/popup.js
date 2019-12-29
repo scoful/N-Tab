@@ -11,6 +11,7 @@
         chrome.tabs.query({ active: true, currentWindow: true }, function (tab) {
             data = tab[0].url;
             $("#qr").attr("src", "http://qr.topscan.com/api.php?text=" + data);
+            $("#qr").css({ "width": "200px", "height": "200px" });
         });
 
         document.getElementById("menu").innerHTML = `

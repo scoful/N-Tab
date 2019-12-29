@@ -87,5 +87,14 @@
         "chrome_style": true
     },
     "homepage_url": "https://github.com/scoful/cloudSkyMonster",
-    "default_locale": "zh_CN"
+    "default_locale": "zh_CN",
+    "commands": {
+        "toggle-feature-save-all": {
+            "suggested_key": {
+                "default": "Ctrl+Q",
+                "mac": "Command+Q"
+            },
+            "description": "__MSG_toggleFeatureSaveAllTabs__"
+        }
+    }
 }

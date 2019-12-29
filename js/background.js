@@ -1067,3 +1067,10 @@ chrome.alarms.onAlarm.addListener(function (alarm) {
     }
 });
 
+chrome.commands.onCommand.addListener(function (command) {
+    chrome.tabs.query({ url: ["https://*/*", "http://*/*"], currentWindow: true }, function (tabsArr) {
+        saveTabs(tabsArr);
+        openBackgroundPage();
+        closeTabs(tabsArr);
+    });
+});
