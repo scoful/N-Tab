@@ -1,30 +1,13 @@
-
-
-#container {
-	margin: 1%;
-	padding: 5px;
-	font-family: Liberation Sans, sans-serif;
-}
-
-#groups {
-	margin: 10px 0;
-	padding-left: 10px;
-}
-
-.group:first-of-type {
-	margin-top: 10px;
-}
-
-.group {
-	margin-top: 20px;
-}
-
 .group-amount {
 	font-size: 120%;
 }
 
 .group-date {
 	opacity: 0.7;
+}
+
+.group-title {
+	margin-bottom: 10px;
 }
 
 .restore-all {
@@ -53,8 +36,14 @@ ul {
 	margin-left: 2em;
 }
 
-li {
-	list-style-type: none;
+.li-hover:hover {
+	cursor: pointer;
+	background: #f0f0f0;
+	padding-bottom: 3px;
+}
+
+.li-standard {
+	padding-bottom: 3px;
 }
 
 .delete-link {
@@ -62,7 +51,6 @@ li {
 	font-weight: bold;
 	background: #eee;
 	color: white;
-
 	display: inline-block;
 	border-radius: 1em;
 	padding: 0 .3em;
@@ -94,72 +82,8 @@ li {
 	text-decoration: underline;
 }
 
-h1 {
-	font-size: 3em;
-}
-
-header {
-	border-bottom: 1px solid #f6f6f6;
-}
-
-footer {
-	border-top: 1px solid #f6f6f6;
-	padding: 5px 0;
-}
-
-.menu-entry {
-    text-align: left;
-    font-size: 20px;
-	background: #fefefe;
-	padding: 10px;
-}
-
-.menu-entry:hover {
-	cursor: pointer;
-	background: #f0f0f0;
-}
-
-.grid-container {
-	width: 100%;
-}
-
-.grid-container * {
-	box-sizing: border-box;
-}
-
-.row:before,
-.row:after {
-	content: "";
-	display: table ;
-    clear: both;
-}
-
-.row{
-    border-top: 1px solid #eee;
-}
-
-.button {
-    background-color: #4CAF50; /* Green */
-    border: none;
-    color: white;
-    padding: 10px 10px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-    -webkit-transition-duration: 0.4s; /* Safari */
-    transition-duration: 0.4s;
-}
-
-.button:hover {
-    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
-}
-
 .my-handle {
 	cursor: move;
-
 }
 
 .ghost {
@@ -167,21 +91,7 @@ footer {
 	background: #C8EBFB;
 }
 
-.li-hover:hover {
-	cursor: pointer;
-	background: #f0f0f0;
-	padding-bottom: 3px;
-}
-
-.li-standard {
-	padding-bottom: 3px;
-}
-
 .tabs {
 	padding-top: 10px;
 	padding-bottom: 10px;
-}
-
-.group-title {
-	margin-bottom: 10px;
 }

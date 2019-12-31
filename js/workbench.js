@@ -25,8 +25,8 @@
     document.addEventListener('DOMContentLoaded', function () {
         console.log("load完workbench了");
 
-        document.getElementById("myContainer").innerHTML = `
-        <nav class="navbar navbar-default navbar-fixed-top">
+        document.body.innerHTML = `
+        <nav class="navbar navbar-default navbar-fixed-top" style="position:relative">
             <div class="container">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
@@ -93,14 +93,13 @@
             </div>
         </nav>
         <div class="container theme-showcase" role="main">
-        <div class="row">
-                <h1>TABS</h1>
+        <div>
                 <div id="importOneTab" style="display:none">
-                    <textarea id="importTextarea" style="width: 1024px; height: 200px;"></textarea>
-                    <div>
+                    <textarea id="importTextarea" style="width: 100%; height: 200px;"></textarea>
+                    <div style="margin-bottom:5px">
                         <button id="import" type="button"
-                            class="btn btn-primary">${chrome.i18n.getMessage("importToLocal")}</button>
-                        <button id="hideShowImport" type="button" class="btn btn-primary">${chrome.i18n.getMessage("packUpImport")}</button>
+                            class="btn btn-default">${chrome.i18n.getMessage("importToLocal")}</button>
+                        <button id="hideShowImport" type="button" class="btn btn-default">${chrome.i18n.getMessage("packUpImport")}</button>
                         <span>${chrome.i18n.getMessage("importWarn")}</span>
                     </div>
                 </div>

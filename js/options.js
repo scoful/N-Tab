@@ -12,8 +12,8 @@
             }
         });
 
-        document.getElementById("myContainer").innerHTML = `
-            <nav class="navbar navbar-default navbar-fixed-top">
+        document.body.innerHTML = `
+            <nav class="navbar navbar-default navbar-fixed-top" style="position:relative">
             <div class="container">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
@@ -29,9 +29,7 @@
             </div>
         </nav>
         <div class="container theme-showcase" role="main">
-            <div class="row">
-                <h1>LOGS</h1>
-                <div id="options">
+            <div id="options">
                 <div class="option">
                     <div class="desc">
                         <p>${chrome.i18n.getMessage("restoreKey")}</p>
@@ -44,14 +42,13 @@
                 <button id="save">${chrome.i18n.getMessage("saveButtonValue")}</button>
                 <div id="saved">${chrome.i18n.getMessage("savedValue")}</div>
             </div>
+            <hr>
+            <div class="blog-footer">
+            <p class="pull-right"><a href="#">${chrome.i18n.getMessage("backToTop")}</a></p>
+            <p>${chrome.i18n.getMessage("sourceCode")}<a
+                    href="https://github.com/scoful/cloudSkyMonster">GitHub</a>.</p>
+            <hr>
             </div>
-            <hr>
-            <footer>
-                <p class="pull-right"><a href="#">${chrome.i18n.getMessage("backToTop")}</a></p>
-                <p>${chrome.i18n.getMessage("sourceCode")}<a
-                        href="https://github.com/scoful/cloudSkyMonster">GitHub</a>.</p>
-            </footer>
-            <hr>
         </div>    
         `;
 

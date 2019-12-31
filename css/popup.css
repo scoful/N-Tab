@@ -1,0 +1,57 @@
+.menu-entry {
+    text-align: center;
+    font-size: 13px;
+	background: #fefefe;
+	padding: 10px;
+}
+
+.menu-entry:hover {
+	cursor: pointer;
+	background: #f0f0f0;
+}
+
+.grid-container {
+	width: 100%;
+}
+
+.grid-container * {
+	box-sizing: border-box;
+}
+
+/* clearfix hack */
+.row:before,
+.row:after {
+	content: "";
+	display: table ;
+    clear: both;
+}
+
+.row{
+    border-top: 1px solid #eee;
+    font-size: 13px;
+}
+
+.delete-link {
+	font-size: .9em;
+	font-weight: bold;
+	background: #eee;
+	color: white;
+
+	display: inline-block;
+	border-radius: 1em;
+	padding: 0 .3em;
+	margin-right: 10px;
+}
+
+.delete-link:before {
+	content: "X";
+}
+
+*:hover > .delete-link {
+	background: #aaa;
+}
+
+.delete-link:hover {
+	background: red;
+	cursor: pointer;
+}

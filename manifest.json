@@ -39,10 +39,10 @@
             ],
             "js": [
                 "js/jquery-2.2.2.min.js",
-                "js/contentscript.js"
+                "js/contentScript.js"
             ],
             "css": [
-                "css/custom.css"
+                "css/contentScript.css"
             ],
             "run_at": "document_start"
         },

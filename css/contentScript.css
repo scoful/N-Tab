@@ -1,0 +1,17 @@
+.chrome-plugin-simple-tip {
+    position: fixed;
+	z-index: 999999;/* 这里是该元素与显示屏的距离，据说越大越好，但是我也没有看到效果，因为没有它也是可以的 */
+    /* left: 20px; */
+    padding: 16px 10px;
+    /* top: 100px; */
+    color: white;
+    min-width: 150px;
+	max-width: 700px;
+    border-radius: 3px;
+    text-align: center;
+    font-size: 20px;
+    background: #dff0d8;
+    background-image: linear-gradient(to bottom, #dff0d8, #70a800);
+    box-shadow: 0 0 3px rgba(0, 0, 0, .2);
+	transition: top .4s;
+}
