@@ -204,7 +204,7 @@
             var i;
             tabs.vm.init();
             for (i = 0; i < allTabs.length; i += 1) {
-                var tab = { "title": allTabs[i].title, "id": allTabs[i].id };
+                var tab = { "title": allTabs[i].title, "id": allTabs[i].id, "favIconUrl": allTabs[i].favIconUrl };
                 tabs.vm.list.push(tab);
             }
         };
@@ -222,7 +222,8 @@
                             tabs.vm.rmTab(i);
                             event.stopPropagation();
                         }
-                    }), m("span", {}, tab.title)])
+                    }), m('img', { src: tab.favIconUrl, height: '10', width: '10' }),
+                        ' ', m("span", {}, tab.title)])
                 ]);
             });
         };
