@@ -1067,10 +1067,29 @@ chrome.alarms.onAlarm.addListener(function (alarm) {
     }
 });
 
+// 持续监听是否按了manifest设置的快捷键
 chrome.commands.onCommand.addListener(function (command) {
     chrome.tabs.query({ url: ["https://*/*", "http://*/*"], currentWindow: true }, function (tabsArr) {
         saveTabs(tabsArr);
         openBackgroundPage();
         closeTabs(tabsArr);
     });
+});
+
+// 持续监听storage是否修改
+chrome.storage.onChanged.addListener(function (changes, areaName) {
+    var flag = false;
+    console.log(changes)
+    for (var key in changes) {
+        if (key.indexOf("tabGroups") != -1) {
+            if (key.indexOf("tabGroups_num") == -1) {
+                if (changes[key].oldValue) {
+                    flag = true;
+                }
+            }
+        }
+    }
+    if (areaName === "local" && flag) {
+        startPushToGiteeGist();
+    }
 });
