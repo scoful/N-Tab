@@ -1,6 +1,6 @@
 .menu-entry {
     text-align: center;
-    font-size: 13px;
+    font-size: 100%;
 	background: #fefefe;
 	padding: 10px;
 }
@@ -28,7 +28,7 @@
 
 .row{
     border-top: 1px solid #eee;
-    font-size: 13px;
+    font-size: 100%;
 }
 
 .delete-link {

@@ -397,8 +397,10 @@ function translateFunc(txt) {
         url: url,
         success: function (data, status) {
             if (status == "success") {
-                console.log(data.translation[0]);
-                sendMessageToContentScript("translateResult", data.translation[0]);
+                if (data.translation) {
+                    console.log(data.translation[0]);
+                    sendMessageToContentScript("translateResult", data.translation[0]);
+                }
             } else {
                 sendMessageToContentScript("translateResult", "--FAILED--!");
             }

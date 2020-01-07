@@ -211,6 +211,16 @@
 
         tabs.view = function () {
             return tabs.vm.list.map(function (tab, i) {
+                var favIconUrl = tab.favIconUrl
+                if (favIconUrl && typeof (favIconUrl) != undefined && favIconUrl.indexOf("chrome") != -1) {
+                    favIconUrl = "./images/48.png"
+                }
+                if (!favIconUrl) {
+                    favIconUrl = "./images/48.png"
+                }
+                if (typeof (favIconUrl) == undefined) {
+                    favIconUrl = "./images/48.png"
+                }
                 return m('div.row', {
                     onclick: function () {
                         chrome.tabs.highlight({ tabs: i }, function callback() {
@@ -222,8 +232,12 @@
                             tabs.vm.rmTab(i);
                             event.stopPropagation();
                         }
-                    }), m('img', { src: tab.favIconUrl, height: '10', width: '10' }),
-                        ' ', m("span", {}, tab.title)])
+                    }),
+                    m('img', {
+                        src: favIconUrl, height: '15', width: '15'
+                    }),
+                        ' ',
+                    m("span", {}, tab.title)])
                 ]);
             });
         };
