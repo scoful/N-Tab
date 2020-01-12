@@ -814,6 +814,8 @@ function makeTabGroup(tabsArr) {
     };
     let res = tabsArr.map(({ title, url }) => ({ title, url }));
     tabGroup.tabs = res;
+    tabGroup.isLock = false;
+    tabGroup.groupTitle = '';
     return tabGroup;
 }
 

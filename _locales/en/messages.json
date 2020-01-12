@@ -71,8 +71,14 @@
 	"home": {
 		"message": "Home"
 	},
-	"hideShowImportFunction": {
-		"message": "import onetab"
+	"hideShowImportOnetabFunction": {
+		"message": "import Onetab mode"
+	},
+	"hideShowImportDefaultFunction": {
+		"message": "import default mode"
+	},
+	"hideShowExportFunction": {
+		"message": "export"
 	},
 	"dragTitle": {
 		"message": "super drag title"
@@ -104,10 +110,16 @@
 	"importToLocal": {
 		"message": "import to local"
 	},
-	"importWarn": {
-		"message": "PS:The import contents is from oneTab extension."
+	"exportToLocal": {
+		"message": "export to local"
 	},
-	"packUpImport": {
+	"importWarn": {
+		"message": "PS:The import contents is from oneTab extension, Format refer to the example above: Newline means grouping, | before is URL, and | behind is title, and | have spaces on both sides"
+	},
+	"exportWarn": {
+		"message": "PS:The export contents save by yourself, Format description: Newline means grouping, | before is URL, and | behind is title, and | have spaces on both sides"
+	},
+	"packUp": {
 		"message": "pack up"
 	},
 	"gistFunction": {
@@ -369,6 +381,18 @@
 		"message": "delete group"
 	},
 	"importTextareaTip": {
-		"message": "please input the content from onetab."
+		"message": "please input the content right format."
+	},
+	"unLock": {
+		"message": "cancle lock"
+	},
+	"lock": {
+		"message": "lock"
+	},
+	"toTop": {
+		"message": "to top"
+	},
+	"nameThis": {
+		"message": "name group"
 	}
 }

@@ -71,8 +71,14 @@
 	"home": {
 		"message": "首页"
 	},
-	"hideShowImportFunction": {
-		"message": "导入onetab"
+	"hideShowImportOnetabFunction": {
+		"message": "导入Onetab格式"
+	},
+	"hideShowImportDefaultFunction": {
+		"message": "导入默认格式"
+	},
+	"hideShowExportFunction": {
+		"message": "导出"
 	},
 	"dragTitle": {
 		"message": "是否拖曳标签组"
@@ -104,10 +110,16 @@
 	"importToLocal": {
 		"message": "导入"
 	},
-	"importWarn": {
-		"message": "PS：导入的是从onetab导出的内容"
+	"exportToLocal": {
+		"message": "导出"
 	},
-	"packUpImport": {
+	"importWarn": {
+		"message": "PS：导入的是从onetab导出的内容，参照以上的例子，格式说明：换行表示分组，|前面是网址，|后面是标题，|两边都有空格"
+	},
+	"exportWarn": {
+		"message": "PS：导出后自行复制保存，格式说明：换行表示分组，|前面是网址，|后面是标题，|两边都有空格"
+	},
+	"packUp": {
 		"message": "收起"
 	},
 	"gistFunction": {
@@ -369,6 +381,18 @@
 		"message": "删除整组"
 	},
 	"importTextareaTip": {
-		"message": "请输入从onetab导出的内容！"
+		"message": "请输入格式正确的内容！"
+	},
+	"unLock": {
+		"message": "取消锁定"
+	},
+	"lock": {
+		"message": "锁定该组"
+	},
+	"toTop": {
+		"message": "上浮该组"
+	},
+	"nameThis": {
+		"message": "命名该组"
 	}
 }

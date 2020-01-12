@@ -70,7 +70,9 @@
                             <ul class="dropdown-menu">
                                 <li id="showLog"><a href="#">${chrome.i18n.getMessage("showLog")}</a></li>
                                 <li id="showOptions"><a href="#">${chrome.i18n.getMessage("optionsValue")}</a></li>
-                                <li id="openImport"><a href="#">${chrome.i18n.getMessage("hideShowImportFunction")}</a></li>
+                                <li id="openImportOnetab"><a href="#">${chrome.i18n.getMessage("hideShowImportOnetabFunction")}</a></li>
+                                <li id="openImportDefault"><a href="#">${chrome.i18n.getMessage("hideShowImportDefaultFunction")}</a></li>
+                                <li id="openExport"><a href="#">${chrome.i18n.getMessage("hideShowExportFunction")}</a></li>
                                 <li role="separator" class="divider"></li>
                                 <li><a href="#">${chrome.i18n.getMessage("dragTitle")}<input id="dragTitle" data-size="mini" type="checkbox"></a></li>
                                 <li><a href="#">${chrome.i18n.getMessage("dragTabs")}<input id="dragUrls" data-size="mini" type="checkbox"></a></li>
@@ -95,12 +97,41 @@
         <div class="container theme-showcase" role="main">
         <div>
                 <div id="importOneTab" style="display:none">
-                    <textarea id="importTextarea" style="width: 100%; height: 200px;"></textarea>
+                    <textarea id="importOnetabTextarea" style="width: 100%; height: 200px;">
+https://www.baidu.com | BaiDu
+https://www.google.com | Google
+
+https://www.baidu.com | BaiDu
+https://www.google.com | Google
+</textarea>
                     <div style="margin-bottom:5px">
-                        <button id="import" type="button"
+                        <button id="importOnetabMode" type="button"
                             class="btn btn-default">${chrome.i18n.getMessage("importToLocal")}</button>
-                        <button id="hideShowImport" type="button" class="btn btn-default">${chrome.i18n.getMessage("packUpImport")}</button>
+                        <button id="hideShowImportOnetab" type="button" class="btn btn-default">${chrome.i18n.getMessage("packUp")}</button>
                         <span>${chrome.i18n.getMessage("importWarn")}</span>
+                    </div>
+                </div>
+                <div id="importDefault" style="display:none">
+                    <textarea id="importDefaultTextarea" style="width: 100%; height: 200px;">
+https://www.baidu.com | BaiDu
+https://www.google.com | Google
+
+https://www.baidu.com | BaiDu
+https://www.google.com | Google
+</textarea>
+                    <div style="margin-bottom:5px">
+                        <button id="importDefaultMode" type="button"
+                            class="btn btn-default">${chrome.i18n.getMessage("importToLocal")}</button>
+                        <button id="hideShowImportDefault" type="button" class="btn btn-default">${chrome.i18n.getMessage("packUp")}</button>
+                        <span>${chrome.i18n.getMessage("importWarn")}</span>
+                    </div>
+                </div>
+                <div id="exportDefault" style="display:none">
+                    <textarea id="exportTextarea" style="width: 100%; height: 200px;"></textarea>
+                    <div style="margin-bottom:5px">
+                        <button id="export" type="button" class="btn btn-default">${chrome.i18n.getMessage("exportToLocal")}</button>
+                        <button id="hideShowExport" type="button" class="btn btn-default">${chrome.i18n.getMessage("packUp")}</button>
+                        <span>${chrome.i18n.getMessage("exportWarn")}</span>
                     </div>
                 </div>
                 <div id="tabGroups"></div>
@@ -384,12 +415,31 @@
         });
 
         // hide show 导入oneTab的url功能
-        document.getElementById('openImport').addEventListener('click', function () {
+        document.getElementById('openImportOnetab').addEventListener('click', function () {
             $("#importOneTab").slideToggle();
         });
         // hide show 导入oneTab的url功能
-        document.getElementById('hideShowImport').addEventListener('click', function () {
+        document.getElementById('hideShowImportOnetab').addEventListener('click', function () {
             $("#importOneTab").slideToggle();
+        });
+        // hide show 导入oneTab的url功能
+        document.getElementById('openImportDefault').addEventListener('click', function () {
+            $("#importDefault").slideToggle();
+        });
+        // hide show 导入oneTab的url功能
+        document.getElementById('hideShowImportDefault').addEventListener('click', function () {
+            $("#importDefault").slideToggle();
+        });
+
+        // hide show 导出功能
+        document.getElementById('openExport').addEventListener('click', function () {
+            $("#exportDefault").slideToggle();
+            $('#exportTextarea').val("");
+        });
+        // hide show 导出功能
+        document.getElementById('hideShowExport').addEventListener('click', function () {
+            $("#exportDefault").slideToggle();
+            $('#exportTextarea').val("");
         });
 
         // 打开日志页
@@ -403,7 +453,7 @@
         });
 
         // 把从onetab导出的数据导入
-        document.getElementById('import').addEventListener('click', function () {
+        document.getElementById('importOnetabMode').addEventListener('click', function () {
             chrome.storage.local.get(null, function (items) {
                 var tabGroupsStr = "";
                 var tabGroups = new Array();
@@ -414,13 +464,13 @@
                     }
                     tabGroups = JSON.parse(tabGroupsStr);
                 }
-                var importTextarea = $('#importTextarea').val();
-                console.log(importTextarea)
-                if (!importTextarea) {
+                var importOnetabTextarea = $('#importOnetabTextarea').val();
+                console.log(importOnetabTextarea)
+                if (!importOnetabTextarea) {
                     alert(`${chrome.i18n.getMessage("importTextareaTip")}`)
                     return;
                 }
-                var content = importTextarea.split("\n");
+                var content = importOnetabTextarea.split("\n");
                 let tabsArr = new Array();
                 for (let i = 0; i < content.length; i++) {
                     if (content[i] == "") {
@@ -441,6 +491,96 @@
                     chrome.tabs.reload(tabsArr[0].id, {}, function (tab) {
                     });
                 });
+            });
+        });
+
+        // 把从本插件导出的数据导入
+        document.getElementById('importDefaultMode').addEventListener('click', function () {
+            chrome.storage.local.get(null, function (items) {
+                var tabGroupsStr = "";
+                var tabGroups = new Array();
+                if (items.tabGroups_num >= 1) {
+                    // 把分片数据组成字符串
+                    for (var i = 0; i < items.tabGroups_num; i++) {
+                        tabGroupsStr += items["tabGroups_" + i];
+                    }
+                    tabGroups = JSON.parse(tabGroupsStr);
+                }
+                var importDefaultTextarea = $('#importDefaultTextarea').val();
+                console.log(importDefaultTextarea)
+                if (!importDefaultTextarea) {
+                    alert(`${chrome.i18n.getMessage("importTextareaTip")}`)
+                    return;
+                }
+                var content = importDefaultTextarea.split("\n");
+                let tabsArr = new Array();
+                for (let i = 0; i < content.length; i++) {
+                    if (content[i] == "") {
+                        console.log(tabsArr[0])
+                        let isLock = false
+                        let groupTitle = ""
+                        if (tabsArr[0] != undefined) {
+                            let _isLock = tabsArr[0].title
+                            if (_isLock === '锁定') {
+                                isLock = true
+                            }
+                            if (_isLock === '解锁') {
+                                isLock = false
+                            }
+                            groupTitle = tabsArr[0].url
+                        }
+                        tabsArr.splice(0, 1)
+                        tabGroups.push(makeTabGroup(tabsArr, isLock, groupTitle));
+                        tabsArr.length = 0;
+                        continue;
+                    }
+                    let lineList = content[i].split(" | ");
+                    let title = lineList[1];
+                    if (title && typeof (title) != undefined) {
+                        title = title.replace(emojiReg, "");
+                    }
+                    let tab = { "title": title, "url": lineList[0] }
+                    tabsArr.push(tab);
+                }
+                saveShardings(tabGroups, "object");
+                chrome.tabs.query({ active: true, currentWindow: true }, function (tabsArr) {
+                    chrome.tabs.reload(tabsArr[0].id, {}, function (tab) {
+                    });
+                });
+            });
+        });
+
+        // 导出本插件内容功能
+        document.getElementById('export').addEventListener('click', function () {
+            chrome.storage.local.get(null, function (items) {
+                var tabGroupsStr = "";
+                var tabGroups = new Array();
+                if (items.tabGroups_num >= 1) {
+                    // 把分片数据组成字符串
+                    for (var i = 0; i < items.tabGroups_num; i++) {
+                        tabGroupsStr += items["tabGroups_" + i];
+                    }
+                    tabGroups = JSON.parse(tabGroupsStr);
+                }
+                $('#exportTextarea').val();
+                var exportTextarea = "";
+                for (var i = 0; i < tabGroups.length; i++) {
+                    let isLock = tabGroups[i].isLock ? "锁定" : "解锁"
+                    let groupTitle = tabGroups[i].groupTitle
+                    console.log(typeof (groupTitle))
+                    console.log(groupTitle)
+                    if (groupTitle === "undefined" || typeof (groupTitle) === "undefined") {
+                        groupTitle = ""
+                    }
+                    let groupInfo = groupTitle + " | " + isLock + "\n"
+                    exportTextarea += groupInfo
+                    for (var j = 0; j < tabGroups[i].tabs.length; j++) {
+                        let line = tabGroups[i].tabs[j].url + " | " + tabGroups[i].tabs[j].title + "\n"
+                        exportTextarea += line;
+                    }
+                    exportTextarea += "\n"
+                }
+                $('#exportTextarea').val(exportTextarea)
             });
         });
 
@@ -1459,7 +1599,23 @@
         };
         let res = tabsArr.map(({ title, url }) => ({ title, url }));
         tabGroup.tabs = res;
+        tabGroup.isLock = false;
+        tabGroup.groupTitle = '';
+        return tabGroup;
+    };
 
+    // from the array of Tab objects it makes an object with date and the array
+    function makeTabGroup(tabsArr, isLock, groupTitle) {
+        var date;
+        date = dateFormat("YYYY-mm-dd HH:MM:SS", new Date());
+        var tabGroup = {
+            date: date,
+            id: genObjectId() // clever way to quickly get a unique ID
+        };
+        let res = tabsArr.map(({ title, url }) => ({ title, url }));
+        tabGroup.tabs = res;
+        tabGroup.isLock = isLock;
+        tabGroup.groupTitle = groupTitle;
         return tabGroup;
     };
 
@@ -1556,6 +1712,8 @@
                 this.date = m.prop(data.date);
                 this.id = m.prop(data.id);
                 this.tabs = m.prop(data.tabs);
+                this.isLock = m.prop(data.isLock);
+                this.groupTitle = m.prop(data.groupTitle)
             };
 
             // alias for Array
@@ -1588,6 +1746,28 @@
                         }
                     };
 
+                    vm.updateGroup = function (index, groupInfo) {
+                        let isLock = groupInfo.isLock
+                        let toTop = groupInfo.toTop
+                        let groupTitle = groupInfo.groupTitle
+                        if (isLock != undefined) {
+                            tabGroups[index].isLock = isLock
+                            saveTabGroups(tabGroups);
+                            showAllTabs();
+                        }
+                        if (toTop != undefined) {
+                            if (toTop) {
+                                tabs.vm.moveGroup(index, 0)
+                                showAllTabs();
+                            }
+                        }
+                        if (groupTitle != undefined) {
+                            tabGroups[index].groupTitle = groupTitle
+                            saveTabGroups(tabGroups);
+                            showAllTabs();
+                        }
+                    };
+
                     vm.rmTab = function (groupIndex, index) {
                         tabGroups[groupIndex].tabs.splice(index, 1);
                         // save
@@ -1612,8 +1792,6 @@
                             saveTabGroups(tabGroups);
                         }
                     };
-
-
                 };
                 return vm;
             };
@@ -1639,21 +1817,68 @@
                     // console.log(group.tabs());
                     // console.log(i);
                     // group
-                    return m('div.tabs' + titleClass, {
+                    var isLock = group.isLock()
+                    var deleteLinkClass, lockStatus, lockImgClass, lockClass = ""
+                    if (isLock) {
+                        deleteLinkClass = ".no-delete-link"
+                        lockStatus = `${chrome.i18n.getMessage("unLock")}`
+                        lockImgClass = ".lock-img"
+                        lockClass = ".filtered"
+                    } else {
+                        deleteLinkClass = ".delete-link"
+                        lockStatus = `${chrome.i18n.getMessage("lock")}`
+                        lockImgClass = ".no-lock-img"
+                    }
+                    var groupTitle = group.groupTitle()
+
+                    return m('div.tabs' + titleClass + lockClass, {
                         id: i
                     }, [
                         m('div.group-title', [
-                            m('span.delete-link', {
+                            m('img' + lockImgClass, {
+                                src: "/images/lock.png"
+                            }),
+                            m('span' + deleteLinkClass, {
                                 onclick: function () {
                                     tabs.vm.rmGroup(i);
                                 }
                             }),
+                            ' ',
                             m('span.group-amount', {
                                 onclick: function () {
                                     $("#tabs_" + i).slideToggle();
                                 }
                             }, group.tabs().length + `${chrome.i18n.getMessage("tabsNo")}`),
                             ' ',
+                            m('span.group-name', {
+                                id: "groupTitle" + i,
+                                onclick: function () {
+                                    let val = $("#groupTitle" + i).html();
+                                    $("#groupTitle" + i).slideToggle(100);
+                                    $("#groupTitleInput" + i).slideToggle(1000);
+                                    $("#groupTitleInput" + i).focus()
+                                    $("#groupTitleInput" + i).val(val)
+                                }
+                            }, groupTitle),
+                            ' ',
+                            m('input.group-title-input', {
+                                id: "groupTitleInput" + i,
+                                style: "display:none",
+                                onchange: function () {
+                                    let val = $("#groupTitleInput" + i).val()
+                                    $("#groupTitle" + i).html(val)
+                                    $("#groupTitle" + i).slideToggle(1000);
+                                    $("#groupTitleInput" + i).slideToggle(100);
+                                    tabs.vm.updateGroup(i, { groupTitle: val })
+                                },
+                                onblur: function () {
+                                    let val = $("#groupTitleInput" + i).val()
+                                    $("#groupTitle" + i).html(val)
+                                    $("#groupTitle" + i).slideToggle(1000);
+                                    $("#groupTitleInput" + i).slideToggle(100);
+                                    tabs.vm.updateGroup(i, { groupTitle: val })
+                                }
+                            }),
                             m('span.group-date', moment(group.date()).format('YYYY-MM-DD, HH:mm:ss')),
                             ' ',
                             m('span.restore-all', {
@@ -1677,14 +1902,33 @@
                                 onclick: function () {
                                     tabs.vm.rmGroup(i);
                                 }
-                            }, `${chrome.i18n.getMessage("deleteAll")}`)
+                            }, `${chrome.i18n.getMessage("deleteAll")}`),
+                            m('span.about-lock', {
+                                onclick: function () {
+                                    tabs.vm.updateGroup(i, { isLock: !isLock })
+                                }
+                            }, lockStatus),
+                            m('span.about-top', {
+                                onclick: function () {
+                                    tabs.vm.updateGroup(i, { toTop: true })
+                                }
+                            }, `${chrome.i18n.getMessage("toTop")}`),
+                            m('span.about-top', {
+                                onclick: function () {
+                                    let val = $("#groupTitle" + i).html();
+                                    $("#groupTitle" + i).slideToggle(100);
+                                    $("#groupTitleInput" + i).slideToggle(1000);
+                                    $("#groupTitleInput" + i).focus()
+                                    $("#groupTitleInput" + i).val(val)
+                                }
+                            }, `${chrome.i18n.getMessage("nameThis")}`),
                         ]),
                         // foreach tab
-                        m('ul' + tabClass, {
+                        m('ul' + tabClass + lockClass, {
                             id: "tabs_" + i
                         }, group.tabs().map(function (tab, ii) {
                             return m('li.li-hover.li-standard', [
-                                m('span.delete-link', {
+                                m('span' + deleteLinkClass, {
                                     onclick: function () {
                                         tabs.vm.rmTab(i, ii);
                                     }
@@ -1731,6 +1975,7 @@
                         easing: "cubic-bezier(1, 0, 0, 1)",
                         animation: 150, //动画参数
                         ghostClass: 'ghost',
+                        filter: '.filtered',
                         onEnd: function (evt) { //拖拽完毕之后发生该事件
                             // console.log(evt)
                             // console.log(evt.item);
@@ -1763,6 +2008,7 @@
                         scroll: true,
                         swapThreshold: 0.65,
                         animation: 150, //动画参数
+                        filter: '.filtered',
                         onEnd: function (evt) {
                             // console.log(evt)
                             // console.log(evt.item);
