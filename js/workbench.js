@@ -113,9 +113,11 @@ https://www.google.com | Google
                 </div>
                 <div id="importDefault" style="display:none">
                     <textarea id="importDefaultTextarea" style="width: 100%; height: 200px;">
+标签组名 | 锁定
 https://www.baidu.com | BaiDu
 https://www.google.com | Google
 
+ | 解锁
 https://www.baidu.com | BaiDu
 https://www.google.com | Google
 </textarea>
