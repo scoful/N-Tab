@@ -144,3 +144,37 @@ ul {
 	border: none;
 	margin-right: 5px;
 }
+
+.line{
+	text-decoration: none;
+	padding: .2em;
+}
+
+.div-top{
+	margin-top: 15px;
+}
+
+.option {
+	margin: 15px 0;
+}
+
+.option:first-of-type {
+	margin-top: 0;
+}
+
+.desc {
+	font-size: 1.1em;
+	margin-bottom: 5px;
+}
+
+.choices {
+	font-size: .9em;
+}
+
+#saved {
+	display: none;
+	background: green;
+	color: white;
+	width: 300px;
+	margin-top: 15px;
+}

@@ -81,11 +81,6 @@
         "js/gzLibraryInject.js",
         "js/baiduPanInject.js"
     ],
-    "options_page": "options.html",
-    "options_ui": {
-        "page": "options.html",
-        "chrome_style": true
-    },
     "homepage_url": "https://github.com/scoful/cloudSkyMonster",
     "default_locale": "zh_CN",
     "commands": {

@@ -36,20 +36,20 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="#">CloudSkyMonster</a>
+                    <a class="home navbar-brand" href="#">CloudSkyMonster</a>
                 </div>
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
-                        <li class="active"><a href="#">${chrome.i18n.getMessage("home")}</a></li>
-                        <li>
+                        <li class="active home"><a href="#">${chrome.i18n.getMessage("home")}</a></li>
+                        <li class="home">
                             <a href="#">
-                                <span id="totalTabs"></span>${chrome.i18n.getMessage("tabsNo")}
+                                <span id="totals"></span>${chrome.i18n.getMessage("totals")}
                             </a>
                         </li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
                                 aria-haspopup="true" aria-expanded="false">${chrome.i18n.getMessage("gistFunction")}<span class="caret"></span></a>
-                            <ul class="dropdown-menu">
+                            <ul id="gist" class="dropdown-menu">
                                 <li id="pushToGithubGist"><a href="#">${chrome.i18n.getMessage("pushToGithubGist")}</a>
                                 </li>
                                 <li id="pullFromGithubGist"><a
@@ -67,9 +67,11 @@
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
                                 aria-haspopup="true" aria-expanded="false">${chrome.i18n.getMessage("otherFunction")}<span class="caret"></span></a>
-                            <ul class="dropdown-menu">
+                            <ul id="others" class="dropdown-menu">
+                                <li id="openTools"><a href="#">${chrome.i18n.getMessage("openJsonTools")}</a></li>
                                 <li id="showLog"><a href="#">${chrome.i18n.getMessage("showLog")}</a></li>
                                 <li id="showOptions"><a href="#">${chrome.i18n.getMessage("optionsValue")}</a></li>
+                                <li role="separator" class="divider"></li>
                                 <li id="openImportOnetab"><a href="#">${chrome.i18n.getMessage("hideShowImportOnetabFunction")}</a></li>
                                 <li id="openImportDefault"><a href="#">${chrome.i18n.getMessage("hideShowImportDefaultFunction")}</a></li>
                                 <li id="openExport"><a href="#">${chrome.i18n.getMessage("hideShowExportFunction")}</a></li>
@@ -80,13 +82,13 @@
                                 <li><a href="#">${chrome.i18n.getMessage("dragOpenTranslate")}<input id="dragOpenTranslate" data-size="mini" type="checkbox"></a></li>
                             </ul>
                         </li>
-                        <li>
+                        <li class="home">
                             <a href="#"><span id="usage"></span></a>
                         </li>
-                        <li>
+                        <li class="home">
                             <a href="#"><span id="githubStatus"></span></a>
                         </li>
-                        <li>
+                        <li class="home">
                             <a href="#"><span id="giteeStatus"></span></a>
                         </li>
                     </ul>
@@ -137,6 +139,8 @@ https://www.google.com | Google
                     </div>
                 </div>
                 <div id="tabGroups"></div>
+                <div id="logs"></div>
+                <div id="options" class="div-top"></div>
             </div>
             <hr>
             <div class="blog-footer">
@@ -148,6 +152,10 @@ https://www.google.com | Google
         </div>
 
         `;
+        // 控制导航阴影
+        $("#navbar ul li").click(function () {
+            $(this).addClass("active").siblings().removeClass("active");
+        })
         // 检查跟github的通讯是否正常
         checkGitHubStatus();
         // 检查跟gitee的通讯是否正常
@@ -446,12 +454,37 @@ https://www.google.com | Google
 
         // 打开日志页
         document.getElementById('showLog').addEventListener('click', function () {
-            openLogPage();
+            $("#tabGroups").addClass("hide")
+            $("#options").addClass("hide")
+            $("#logs").removeClass("hide")
+            // 展示Log
+            showAllLogs();
         });
+
+        // 打开首页
+        var allHomeClass = document.getElementsByClassName('home')
+        for (let i = 0; i < allHomeClass.length; i++) {
+            allHomeClass[i].addEventListener('click', function () {
+                $("#logs").addClass("hide");
+                $("#options").addClass("hide");
+                $("#tabGroups").removeClass("hide");
+                // 展示所有标签
+                showAllTabs();
+            });
+        }
 
         // 打开配置页
         document.getElementById('showOptions').addEventListener('click', function () {
-            openOptionsPage();
+            $("#logs").addClass("hide");
+            $("#tabGroups").addClass("hide");
+            $("#options").removeClass("hide");
+            // 展示配置
+            showOptions();
+        });
+
+        // 打开JSON工具
+        document.getElementById('openTools').addEventListener('click', function () {
+            openJsonTools();
         });
 
         // 把从onetab导出的数据导入
@@ -929,38 +962,6 @@ https://www.google.com | Google
                         });
                     });
                 }
-            }
-        });
-    };
-
-    // 打开日志页
-    function openLogPage() {
-        chrome.tabs.query({ url: "chrome-extension://*/log.html*", currentWindow: true }, function (tab) {
-            if (tab.length >= 1) {
-                chrome.tabs.move(tab[0].id, { index: 0 }, function callback() {
-                    chrome.tabs.highlight({ tabs: 0 }, function callback() {
-                    });
-                });
-                chrome.tabs.reload(tab[0].id, {}, function (tab) {
-                });
-            } else {
-                chrome.tabs.create({ index: 0, url: chrome.extension.getURL('log.html') });
-            }
-        });
-    };
-
-    // 打开配置页
-    function openOptionsPage() {
-        chrome.tabs.query({ url: "chrome-extension://*/options.html*", currentWindow: true }, function (tab) {
-            if (tab.length >= 1) {
-                chrome.tabs.move(tab[0].id, { index: 0 }, function callback() {
-                    chrome.tabs.highlight({ tabs: 0 }, function callback() {
-                    });
-                });
-                chrome.tabs.reload(tab[0].id, {}, function (tab) {
-                });
-            } else {
-                chrome.tabs.create({ index: 0, url: chrome.extension.getURL('options.html') });
             }
         });
     };
@@ -1684,7 +1685,7 @@ https://www.google.com | Google
             for (i = 0; i < bridge.length; i += 1) {
                 total += bridge[i].tabs.length;
             }
-            document.getElementById('totalTabs').innerHTML = total;
+            document.getElementById('totals').innerHTML = total;
             var titleClass, tabClass;
             if (storage.dragType == "dragTitle") {
                 titleClass = ".my-handle"
@@ -1705,7 +1706,7 @@ https://www.google.com | Google
                 for (i = 0; i < json.length; i += 1) {
                     total += json[i].tabs.length;
                 }
-                document.getElementById('totalTabs').innerHTML = total;
+                document.getElementById('totals').innerHTML = total;
             }
 
             // model entity
@@ -2030,4 +2031,139 @@ https://www.google.com | Google
             };
         });
     };
+
+    // 展示Log
+    function showAllLogs() {
+        chrome.storage.local.get(function (storage) {
+            console.log(storage)
+            var bridge = [];
+            if (storage.gistLog) {
+                bridge = storage.gistLog;
+                console.log(bridge)
+                document.getElementById('totals').innerHTML = bridge.length;
+            } else {
+                document.getElementById('totals').innerHTML = 0;
+            }
+            var logs = {}, // to-be module
+                logGroups = bridge || [];
+
+            // model entity
+            logs.LogGroup = function (data) {
+                this.type = m.prop(data.handleGistType);
+                this.id = m.prop(data.id);
+                this.logs = m.prop(data.handleGistLogs);
+            };
+
+            // alias for Array
+            logs.LogGroupsList = Array;
+
+            // view-model
+            logs.vm = new function () {
+                var vm = {};
+                vm.init = function () {
+                    vm.list = new logs.LogGroupsList();
+                };
+                return vm;
+            };
+
+            logs.controller = function () {
+                var i;
+                logs.vm.init();
+                for (i = 0; i < logGroups.length; i += 1) {
+                    logs.vm.list.push(new logs.LogGroup(logGroups[i]));
+                }
+            };
+
+            logs.view = function () {
+                if (logs.vm.list.length === 0) {
+                    return m('div',
+                        m('div.jumbotron',
+                            [m('div', { style: "text-align:center; margin-bottom:50px" }, `${chrome.i18n.getMessage("noLog")}`)
+                            ]))
+                }
+
+                return logs.vm.list.map(function (group, i) {
+                    return m('div.div-top', {
+                        id: i
+                    }, [
+                        m('div', [
+                            m('span.group-title', {
+                                onclick: function () {
+                                    $("#logs_" + i).slideToggle();
+                                }
+                            }, group.type())
+                        ]),
+                        m('ul', {
+                            id: "logs_" + i
+                        }, group.logs().map(function (log, ii) {
+                            return m('li.li-hover li-standard', [
+                                m('span.line', {
+                                }, log)
+                            ]);
+                        }))
+                    ]);
+                });
+            };
+            // init the app
+            m.module(document.getElementById('logs'), { controller: logs.controller, view: logs.view });
+        });
+    };
+
+    // 展示配置
+    function showOptions() {
+        chrome.storage.local.get('options', function (storage) {
+            var opts = storage.options || {};
+
+            if (opts.deleteTabOnOpen === undefined) {
+                $('input[name="deleteTabOnOpen"][value="no"]').prop('checked', 'checked');
+            } else {
+                $('input[name="deleteTabOnOpen"][value="' + opts.deleteTabOnOpen + '"]').prop('checked', 'checked');
+            }
+        });
+        document.getElementById("options").innerHTML = `
+            <div class="option">
+                <div class="desc">
+                    <p>${chrome.i18n.getMessage("restoreKey")}</p>
+                </div>
+                <div class="choices">
+                    <p><label for="deleteTabOnOpen"><input type="radio" name="deleteTabOnOpen" value="yes">${chrome.i18n.getMessage("restoreValueDelete")}</label></p>
+                    <p><label for="deleteTabOnOpen"><input type="radio" name="deleteTabOnOpen" value="no">${chrome.i18n.getMessage("restoreValueLive")}</label></p>
+                </div>
+            </div>
+            <button id="save">${chrome.i18n.getMessage("saveButtonValue")}</button>
+            <div id="saved">${chrome.i18n.getMessage("savedValue")}</div>
+        `
+        // 保存配置
+        document.getElementById('save').addEventListener('click', function () {
+            var deleteTabOnOpen = document.querySelector('input[name="deleteTabOnOpen"]:checked').value;
+
+            chrome.storage.local.set({
+                options: {
+                    deleteTabOnOpen: deleteTabOnOpen
+                }
+            }, function () { // show "settings saved" notice thing
+                document.getElementById('saved').style.display = 'block';
+                window.setTimeout(function () {
+                    document.getElementById('saved').style.display = 'none';
+                }, 1000);
+            });
+        });
+    };
+
+    // 打开JSON工具页
+    function openJsonTools() {
+        chrome.tabs.query({ url: "chrome-extension://*/json.html*", currentWindow: true }, function (tab) {
+            if (tab.length >= 1) {
+                chrome.tabs.move(tab[0].id, { index: 0 }, function callback() {
+                    chrome.tabs.highlight({ tabs: 0 }, function callback() {
+                    });
+                });
+                chrome.tabs.reload(tab[0].id, {}, function (tab) {
+                });
+            } else {
+                chrome.tabs.create({ index: 0, url: chrome.extension.getURL('json.html') });
+            }
+        });
+    };
+
 }(m));

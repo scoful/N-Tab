@@ -30,7 +30,7 @@
 		"message": "自定义分钟提醒"
 	},
 	"openJsonTools": {
-		"message": "打开JSON工具"
+		"message": "JSON工具"
 	},
 	"cuttingLine": {
 		"message": "我是分割线"
@@ -45,7 +45,7 @@
 		"message": "暂无定时任务"
 	},
 	"optionsValue": {
-		"message": "配置页"
+		"message": "查看配置"
 	},
 	"restoreKey": {
 		"message": "点击“恢复全部”或恢复单个标签时："
@@ -65,8 +65,8 @@
 	"tabsNo": {
 		"message": "个标签"
 	},
-	"logsNo": {
-		"message": "条日志"
+	"totals": {
+		"message": "条记录"
 	},
 	"home": {
 		"message": "首页"

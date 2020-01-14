@@ -30,7 +30,7 @@
 		"message": "remind after custom minute"
 	},
 	"openJsonTools": {
-		"message": "open JSON Tools"
+		"message": "JSON Tools"
 	},
 	"cuttingLine": {
 		"message": "I am cutting line"
@@ -65,8 +65,8 @@
 	"tabsNo": {
 		"message": " TABS"
 	},
-	"logsNo": {
-		"message": " logs"
+	"totals": {
+		"message": " records"
 	},
 	"home": {
 		"message": "Home"
