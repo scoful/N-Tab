@@ -394,5 +394,23 @@
 	},
 	"nameThis": {
 		"message": "name group"
+	},
+	"addTask": {
+		"message": "add task"
+	},
+	"add": {
+		"message": "add"
+	},
+	"update": {
+		"message": "update"
+	},
+	"cancle": {
+		"message": "cancle"
+	},
+	"inputNumber": {
+		"message": "please input number！"
+	},
+	"refresh": {
+		"message": "refresh"
 	}
 }

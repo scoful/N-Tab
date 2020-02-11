@@ -290,21 +290,25 @@ function isStoredGiteeGistIdLocal(action) {
 function updateGithubGist(content) {
     console.log("更新github的gist")
     handleGithubGistLog.push(`${chrome.i18n.getMessage("directUpdate")}`)
-    var content = JSON.stringify(content);
+    var _content = JSON.stringify(content);
+    var js = generateJs(content)
     var data = {
         "description": "myCloudSkyMonster",
         "public": false,
         "files": {
-            "brower_Tabs.json": { "content": content }
+            "brower_Tabs.json": { "content": _content },
+            "brower_tasks.js": { "content": js }
         }
     }
     $.ajax({
         type: "PATCH",
-        url: gitHubApiUrl + "/gists/" + githubGistId + "?access_token=" + githubGistToken,
+        headers: { "Authorization": "token " + githubGistToken },
+        url: gitHubApiUrl + "/gists/" + githubGistId,
         data: JSON.stringify(data),
         success: function (data, status) {
             if (status == "success") {
                 console.log("更新成功")
+                chrome.storage.local.set({ "taskJsUrl": data.files['brower_tasks.js'].raw_url })
                 handleGithubGistLog.push(`${chrome.i18n.getMessage("updateSuccess")}`)
             } else {
                 console.log("更新失败")
@@ -321,25 +325,52 @@ function updateGithubGist(content) {
     })
 };
 
+// 生成js
+function generateJs(content) {
+    var result = ""
+    var myRun = "console.log('load完任务了'); function myRun(functionName) {"
+    var functionJs = ""
+    var alarmJs = "chrome.alarms.onAlarm.addListener(function (alarm) {"
+    var taskList = content.taskList
+    if (taskList) {
+        for (let i = 0; i < taskList.length; i++) {
+            let script = taskList[i].script + ";"
+            let functionName = taskList[i].functionName
+            let jsContent = " if(functionName === '" + functionName + "'){" + functionName + "();}"
+            let jsContent2 = " if(alarm.name === '" + functionName + "'){" + functionName + "();}"
+            myRun += jsContent
+            functionJs += script
+            alarmJs += jsContent2
+        }
+    }
+    result = myRun + "}" + functionJs + alarmJs + "});"
+    console.log(result)
+    return result;
+}
+
 // 更新gitee的gist
 function updateGiteeGist(content) {
     console.log("更新gitee的gist")
     handleGiteeGistLog.push(`${chrome.i18n.getMessage("directUpdate")}`)
-    var content = JSON.stringify(content);
+    var _content = JSON.stringify(content);
+    var js = generateJs(content)
     var data = {
         "description": "myCloudSkyMonster",
         "public": false,
         "files": {
-            "brower_Tabs.json": { "content": content }
+            "brower_Tabs.json": { "content": _content },
+            "brower_tasks.js": { "content": js }
         }
     }
     $.ajax({
         type: "PATCH",
-        url: giteeApiUrl + "/gists/" + giteeGistId + "?access_token=" + giteeGistToken,
+        headers: { "Authorization": "token " + giteeGistToken },
+        url: giteeApiUrl + "/gists/" + giteeGistId,
         data: data,
         success: function (data, status) {
             if (status == "success") {
                 console.log("更新成功")
+                chrome.storage.local.set({ "taskJsUrl": data.files['brower_tasks.js'].raw_url })
                 handleGiteeGistLog.push(`${chrome.i18n.getMessage("updateSuccess")}`)
             } else {
                 console.log("更新失败")
@@ -833,12 +864,16 @@ function filterTabGroup(tabGroup) {
 // saves array (of Tab objects) to localStorage
 function saveTabGroup(tabGroup) {
     getShardings(function (callback) {
-        if (!callback || typeof callback == 'undefined' || callback == undefined) {
-            saveShardings([tabGroup], "object");
+        if (callback || typeof callback != 'undefined' || callback != undefined) {
+            if (!callback.tabGroups || typeof callback.tabGroups == 'undefined' || callback.tabGroups == undefined) {
+                saveShardings([tabGroup], "object");
+            } else {
+                var newArr = callback.tabGroups;
+                newArr.unshift(tabGroup);
+                saveShardings(newArr, "object");
+            }
         } else {
-            var newArr = callback;
-            newArr.unshift(tabGroup);
-            saveShardings(newArr, "object");
+            saveShardings([tabGroup], "object");
         }
     })
 }
@@ -1024,11 +1059,20 @@ function getShardings(cb) {
             // 把分片数据组成字符串
             for (var i = 0; i < items.tabGroups_num; i++) {
                 tabGroupsStr += items["tabGroups_" + i];
+                delete items["tabGroups_" + i]
             }
-            cb(JSON.parse(tabGroupsStr));
-        } else {
-            cb();
         }
+        delete items.tabGroups_num
+        delete items.gistLog
+        delete items.handleGistStatus
+        delete items.giteeGistId
+        delete items.giteeGistToken
+        delete items.githubGistId
+        delete items.githubGistToken
+        if (tabGroupsStr.length > 0) {
+            items["tabGroups"] = JSON.parse(tabGroupsStr)
+        }
+        cb(items)
     });
 }
 
@@ -1086,14 +1130,19 @@ chrome.storage.onChanged.addListener(function (changes, areaName) {
     console.log(changes)
     for (var key in changes) {
         if (key.indexOf("tabGroups") != -1) {
+            console.log(key)
             if (key.indexOf("tabGroups_num") == -1) {
-                if (changes[key].oldValue) {
-                    flag = true;
-                }
+                flag = true;
             }
+        }
+        if (key.indexOf("taskList") != -1) {
+            flag = true;
         }
     }
     if (areaName === "local" && flag) {
+        console.log("要同步")
         startPushToGiteeGist();
+    } else {
+        console.log("不要同步")
     }
 });
