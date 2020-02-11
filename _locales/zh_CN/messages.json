@@ -394,5 +394,23 @@
 	},
 	"nameThis": {
 		"message": "命名该组"
+	},
+	"addTask": {
+		"message": "新增任务"
+	},
+	"add": {
+		"message": "新增"
+	},
+	"update": {
+		"message": "更新"
+	},
+	"cancle": {
+		"message": "取消"
+	},
+	"inputNumber": {
+		"message": "请输入数字！"
+	},
+	"refresh": {
+		"message": "刷新"
 	}
 }

@@ -157,11 +157,15 @@
         // 自定义分钟数的定时提醒
         document.getElementById('custom-minute').addEventListener('click', function () {
             var minute = prompt(`${chrome.i18n.getMessage("pleaseInputCustomMinute")}`, 120);
-            chrome.runtime.sendMessage({ action: 'custom-minute', message: minute }, function (res) {
-                if (res === 'ok') {
-                    window.close();
-                }
-            });
+            if (!isInt(parseInt(minute.trim()))) {
+                alert(`${chrome.i18n.getMessage("inputNumber")}`)
+            } else {
+                chrome.runtime.sendMessage({ action: 'custom-minute', message: minute.trim() }, function (res) {
+                    if (res === 'ok') {
+                        window.close();
+                    }
+                });
+            }
         });
 
         // 通过定时器获取倒计时的样子
@@ -181,6 +185,11 @@
         };
 
     });
+
+    // 判断是否int
+    function isInt(i) {
+        return typeof i == "number" && !(i % 1) && !isNaN(i);
+    }
 
     // 列出当前窗口打开的tab，方便浏览
     chrome.tabs.query({ currentWindow: true }, function (allTabs) {

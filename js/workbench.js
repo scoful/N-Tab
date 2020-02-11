@@ -12,6 +12,7 @@
     var pullFromGiteeGistStatus;
     var handleGistLog = new Array();
     var sortableTitle;
+    var sortableTask;
     var sortableTabList = new Array();
     // 定义一个n次循环定时器
     var intervalId;
@@ -21,10 +22,34 @@
     var endTime;
     // 定义一个桌面通知框id
     var notificationId;
+    // 是否锁屏或睡眠了
+    var isLock = false;
 
     document.addEventListener('DOMContentLoaded', function () {
         console.log("load完workbench了");
 
+        chrome.storage.local.get(null, function (items) {
+            console.log(items)
+            var script1 = document.createElement('script');
+            script1.src = "js/axios.min.js";
+            document.head.appendChild(script1);
+            if (items.taskJsUrl) {
+                var script2 = document.createElement('script');
+                script2.src = items.taskJsUrl;
+                script2.id = "taskJs";
+                document.head.appendChild(script2);
+            }
+            if (!items.giteeGistToken) {
+                console.log("giteetoken没有保存");
+                var token = prompt(`${chrome.i18n.getMessage("saveTokenKey")}`, `${chrome.i18n.getMessage("saveTokenValue")}`);
+                chrome.storage.local.set({ giteeGistToken: token.trim() });
+                console.log("giteetoken保存完毕");
+            }
+        })
+
+        chrome.alarms.getAll(function (alarms) {
+            console.log(alarms)
+        });
         document.body.innerHTML = `
         <nav class="navbar navbar-default navbar-fixed-top" style="position:relative">
             <div class="container">
@@ -69,6 +94,7 @@
                                 aria-haspopup="true" aria-expanded="false">${chrome.i18n.getMessage("otherFunction")}<span class="caret"></span></a>
                             <ul id="others" class="dropdown-menu">
                                 <li id="openTools"><a href="#">${chrome.i18n.getMessage("openJsonTools")}</a></li>
+                                <li id="timeTaskPlatform"><a href="#">定时任务平台</a></li>
                                 <li id="showLog"><a href="#">${chrome.i18n.getMessage("showLog")}</a></li>
                                 <li id="showOptions"><a href="#">${chrome.i18n.getMessage("optionsValue")}</a></li>
                                 <li role="separator" class="divider"></li>
@@ -98,8 +124,9 @@
         </nav>
         <div class="container theme-showcase" role="main">
         <div>
-                <div id="importOneTab" style="display:none">
-                    <textarea id="importOnetabTextarea" style="width: 100%; height: 200px;">
+                <div id="importOneTab"  class="hide">
+                    <span>${chrome.i18n.getMessage("hideShowImportOnetabFunction")}</span>
+                    <textarea id="importOnetabTextarea" style="width: 100%; height: 200px; margin-top:5px">
 https://www.baidu.com | BaiDu
 https://www.google.com | Google
 
@@ -109,12 +136,12 @@ https://www.google.com | Google
                     <div style="margin-bottom:5px">
                         <button id="importOnetabMode" type="button"
                             class="btn btn-default">${chrome.i18n.getMessage("importToLocal")}</button>
-                        <button id="hideShowImportOnetab" type="button" class="btn btn-default">${chrome.i18n.getMessage("packUp")}</button>
                         <span>${chrome.i18n.getMessage("importWarn")}</span>
                     </div>
                 </div>
-                <div id="importDefault" style="display:none">
-                    <textarea id="importDefaultTextarea" style="width: 100%; height: 200px;">
+                <div id="importDefault" class="hide">
+                    <span>${chrome.i18n.getMessage("hideShowImportDefaultFunction")}</span>
+                    <textarea id="importDefaultTextarea" style="width: 100%; height: 200px; margin-top:5px">
 标签组名 | 锁定
 https://www.baidu.com | BaiDu
 https://www.google.com | Google
@@ -126,21 +153,21 @@ https://www.google.com | Google
                     <div style="margin-bottom:5px">
                         <button id="importDefaultMode" type="button"
                             class="btn btn-default">${chrome.i18n.getMessage("importToLocal")}</button>
-                        <button id="hideShowImportDefault" type="button" class="btn btn-default">${chrome.i18n.getMessage("packUp")}</button>
                         <span>${chrome.i18n.getMessage("importWarn")}</span>
                     </div>
                 </div>
-                <div id="exportDefault" style="display:none">
-                    <textarea id="exportTextarea" style="width: 100%; height: 200px;"></textarea>
+                <div id="exportDefault" class="hide">
+                    <sapn>${chrome.i18n.getMessage("hideShowExportFunction")}</sapn>
+                    <textarea id="exportTextarea" style="width: 100%; height: 200px;" margin-top:5px></textarea>
                     <div style="margin-bottom:5px">
                         <button id="export" type="button" class="btn btn-default">${chrome.i18n.getMessage("exportToLocal")}</button>
-                        <button id="hideShowExport" type="button" class="btn btn-default">${chrome.i18n.getMessage("packUp")}</button>
                         <span>${chrome.i18n.getMessage("exportWarn")}</span>
                     </div>
                 </div>
                 <div id="tabGroups"></div>
                 <div id="logs"></div>
                 <div id="options" class="div-top"></div>
+                <div id="tasks"></div>
             </div>
             <hr>
             <div class="blog-footer">
@@ -187,17 +214,11 @@ https://www.google.com | Google
                         if (state == true) {
                             $('#dragTitle').bootstrapSwitch("state", false, true)
                             chrome.storage.local.set({ "dragType": "dragUrls" });
-                            chrome.tabs.query({ active: true, currentWindow: true }, function (tabsArr) {
-                                chrome.tabs.reload(tabsArr[0].id, {}, function (tab) {
-                                });
-                            });
+                            refresh()
                         } else {
                             $('#dragTitle').bootstrapSwitch("state", true, true)
                             chrome.storage.local.set({ "dragType": "dragTitle" });
-                            chrome.tabs.query({ active: true, currentWindow: true }, function (tabsArr) {
-                                chrome.tabs.reload(tabsArr[0].id, {}, function (tab) {
-                                });
-                            });
+                            refresh()
                         }
                     }
                 });
@@ -211,17 +232,11 @@ https://www.google.com | Google
                         if (state == true) {
                             $('#dragUrls').bootstrapSwitch("state", false, true)
                             chrome.storage.local.set({ "dragType": "dragTitle" });
-                            chrome.tabs.query({ active: true, currentWindow: true }, function (tabsArr) {
-                                chrome.tabs.reload(tabsArr[0].id, {}, function (tab) {
-                                });
-                            });
+                            refresh()
                         } else {
                             $('#dragUrls').bootstrapSwitch("state", true, true)
                             chrome.storage.local.set({ "dragType": "dragUrls" });
-                            chrome.tabs.query({ active: true, currentWindow: true }, function (tabsArr) {
-                                chrome.tabs.reload(tabsArr[0].id, {}, function (tab) {
-                                });
-                            });
+                            refresh()
                         }
                     }
                 });
@@ -236,17 +251,11 @@ https://www.google.com | Google
                         if (state == true) {
                             $('#dragTitle').bootstrapSwitch("state", false, true)
                             chrome.storage.local.set({ "dragType": "dragUrls" });
-                            chrome.tabs.query({ active: true, currentWindow: true }, function (tabsArr) {
-                                chrome.tabs.reload(tabsArr[0].id, {}, function (tab) {
-                                });
-                            });
+                            refresh()
                         } else {
                             $('#dragTitle').bootstrapSwitch("state", true, true)
                             chrome.storage.local.set({ "dragType": "dragTitle" });
-                            chrome.tabs.query({ active: true, currentWindow: true }, function (tabsArr) {
-                                chrome.tabs.reload(tabsArr[0].id, {}, function (tab) {
-                                });
-                            });
+                            refresh()
                         }
                     }
                 });
@@ -260,17 +269,11 @@ https://www.google.com | Google
                         if (state == true) {
                             $('#dragUrls').bootstrapSwitch("state", false, true)
                             chrome.storage.local.set({ "dragType": "dragTitle" });
-                            chrome.tabs.query({ active: true, currentWindow: true }, function (tabsArr) {
-                                chrome.tabs.reload(tabsArr[0].id, {}, function (tab) {
-                                });
-                            });
+                            refresh()
                         } else {
                             $('#dragUrls').bootstrapSwitch("state", true, true)
                             chrome.storage.local.set({ "dragType": "dragUrls" });
-                            chrome.tabs.query({ active: true, currentWindow: true }, function (tabsArr) {
-                                chrome.tabs.reload(tabsArr[0].id, {}, function (tab) {
-                                });
-                            });
+                            refresh()
                         }
                     }
                 });
@@ -285,17 +288,11 @@ https://www.google.com | Google
                         if (state == true) {
                             $('#dragTitle').bootstrapSwitch("state", false, true)
                             chrome.storage.local.set({ "dragType": "dragUrls" });
-                            chrome.tabs.query({ active: true, currentWindow: true }, function (tabsArr) {
-                                chrome.tabs.reload(tabsArr[0].id, {}, function (tab) {
-                                });
-                            });
+                            refresh()
                         } else {
                             $('#dragTitle').bootstrapSwitch("state", true, true)
                             chrome.storage.local.set({ "dragType": "dragTitle" });
-                            chrome.tabs.query({ active: true, currentWindow: true }, function (tabsArr) {
-                                chrome.tabs.reload(tabsArr[0].id, {}, function (tab) {
-                                });
-                            });
+                            refresh()
                         }
                     }
                 });
@@ -309,17 +306,11 @@ https://www.google.com | Google
                         if (state == true) {
                             $('#dragUrls').bootstrapSwitch("state", false, true)
                             chrome.storage.local.set({ "dragType": "dragTitle" });
-                            chrome.tabs.query({ active: true, currentWindow: true }, function (tabsArr) {
-                                chrome.tabs.reload(tabsArr[0].id, {}, function (tab) {
-                                });
-                            });
+                            refresh()
                         } else {
                             $('#dragUrls').bootstrapSwitch("state", true, true)
                             chrome.storage.local.set({ "dragType": "dragUrls" });
-                            chrome.tabs.query({ active: true, currentWindow: true }, function (tabsArr) {
-                                chrome.tabs.reload(tabsArr[0].id, {}, function (tab) {
-                                });
-                            });
+                            refresh()
                         }
                     }
                 });
@@ -393,96 +384,127 @@ https://www.google.com | Google
         });
         // 展示所有标签
         showAllTabs();
-        // TODO 本来想实现在空标签页和chrome://extensions/这种特殊页面也可以按x直接关闭，问题：空标签页和chrome://extensions/没有load contentscript，目前只是实现在后台展示页按x关闭
-        $(document).keyup(function (event) {
-            if (event.key == 'x') {
-                var inputs = document.getElementsByTagName('input');
-                let flag = false;
-                for (var i = 0; i < inputs.length; i++) {
-                    if (inputs[i].type == 'text') {
-                        if (inputs[i] == document.activeElement) {
-                            flag = true;
-                        } else {
-                            flag = false;
-                        }
-                    }
-                }
-                var textareas = document.getElementsByTagName('textarea');
-                for (var i = 0; i < textareas.length; i++) {
-                    if (textareas[i] == document.activeElement) {
-                        flag = true;
-                    } else {
-                        flag = false;
-                    }
-                }
-                if (!flag) {
-                    closeCurrentTab();
-                }
-            }
-            if (event.key == 'X') {
-                // todo，按下大写X
-            }
-        });
+        // // TODO 本来想实现在空标签页和chrome://extensions/这种特殊页面也可以按x直接关闭，问题：空标签页和chrome://extensions/没有load contentscript，目前只是实现在后台展示页按x关闭
+        // $(document).keyup(function (event) {
+        //     if (event.key == 'x') {
+        //         var inputs = document.getElementsByTagName('input');
+        //         let flag = false;
+        //         for (var i = 0; i < inputs.length; i++) {
+        //             if (inputs[i].type == 'text') {
+        //                 if (inputs[i] == document.activeElement) {
+        //                     flag = true;
+        //                 } else {
+        //                     flag = false;
+        //                 }
+        //             }
+        //         }
+        //         var textareas = document.getElementsByTagName('textarea');
+        //         for (var i = 0; i < textareas.length; i++) {
+        //             if (textareas[i] == document.activeElement) {
+        //                 flag = true;
+        //             } else {
+        //                 flag = false;
+        //             }
+        //         }
+        //         if (!flag) {
+        //             closeCurrentTab();
+        //         }
+        //     }
+        //     if (event.key == 'X') {
+        //         // todo，按下大写X
+        //     }
+        // });
 
-        // hide show 导入oneTab的url功能
+        // 打开 导入oneTab的url功能
         document.getElementById('openImportOnetab').addEventListener('click', function () {
-            $("#importOneTab").slideToggle();
+            $("#logs").addClass("hide");
+            $("#tabGroups").addClass("hide");
+            $("#options").addClass("hide");
+            $("#tasks").addClass("hide")
+            $("#importDefault").addClass("hide")
+            $("#exportDefault").addClass("hide")
+            $("#importOneTab").removeClass("hide")
         });
-        // hide show 导入oneTab的url功能
-        document.getElementById('hideShowImportOnetab').addEventListener('click', function () {
-            $("#importOneTab").slideToggle();
-        });
-        // hide show 导入oneTab的url功能
+
+        // 打开 导入默认格式的url功能
         document.getElementById('openImportDefault').addEventListener('click', function () {
-            $("#importDefault").slideToggle();
-        });
-        // hide show 导入oneTab的url功能
-        document.getElementById('hideShowImportDefault').addEventListener('click', function () {
-            $("#importDefault").slideToggle();
+            $("#logs").addClass("hide");
+            $("#tabGroups").addClass("hide");
+            $("#options").addClass("hide");
+            $("#importOneTab").addClass("hide")
+            $("#tasks").addClass("hide")
+            $("#exportDefault").addClass("hide")
+            $("#importDefault").removeClass("hide")
         });
 
-        // hide show 导出功能
+        // 打开 导出默认格式的url功能
         document.getElementById('openExport').addEventListener('click', function () {
-            $("#exportDefault").slideToggle();
-            $('#exportTextarea').val("");
-        });
-        // hide show 导出功能
-        document.getElementById('hideShowExport').addEventListener('click', function () {
-            $("#exportDefault").slideToggle();
+            $("#logs").addClass("hide");
+            $("#tabGroups").addClass("hide");
+            $("#options").addClass("hide");
+            $("#importOneTab").addClass("hide")
+            $("#importDefault").addClass("hide")
+            $("#tasks").addClass("hide")
+            $("#exportDefault").removeClass("hide")
             $('#exportTextarea').val("");
         });
 
-        // 打开日志页
+        // 打开 日志页
         document.getElementById('showLog').addEventListener('click', function () {
             $("#tabGroups").addClass("hide")
             $("#options").addClass("hide")
+            $("#tasks").addClass("hide")
+            $("#importOneTab").addClass("hide")
+            $("#importDefault").addClass("hide")
+            $("#exportDefault").addClass("hide")
             $("#logs").removeClass("hide")
             // 展示Log
             showAllLogs();
         });
 
-        // 打开首页
+        // 打开 首页
         var allHomeClass = document.getElementsByClassName('home')
         for (let i = 0; i < allHomeClass.length; i++) {
             allHomeClass[i].addEventListener('click', function () {
                 $("#logs").addClass("hide");
                 $("#options").addClass("hide");
+                $("#tasks").addClass("hide")
+                $("#importOneTab").addClass("hide")
+                $("#importDefault").addClass("hide")
+                $("#exportDefault").addClass("hide")
                 $("#tabGroups").removeClass("hide");
                 // 展示所有标签
                 showAllTabs();
             });
         }
 
-        // 打开配置页
+        // 打开 配置页
         document.getElementById('showOptions').addEventListener('click', function () {
             $("#logs").addClass("hide");
             $("#tabGroups").addClass("hide");
+            $("#tasks").addClass("hide")
+            $("#importOneTab").addClass("hide")
+            $("#importDefault").addClass("hide")
+            $("#exportDefault").addClass("hide")
             $("#options").removeClass("hide");
             // 展示配置
             showOptions();
         });
 
-        // 打开JSON工具
+        // 打开 定时任务平台页
+        document.getElementById('timeTaskPlatform').addEventListener('click', function () {
+            $("#logs").addClass("hide");
+            $("#tabGroups").addClass("hide");
+            $("#options").addClass("hide");
+            $("#importOneTab").addClass("hide")
+            $("#importDefault").addClass("hide")
+            $("#exportDefault").addClass("hide")
+            $("#tasks").removeClass("hide")
+            // 展示定时任务
+            showTasks();
+        });
+
+        // 打开 JSON工具
         document.getElementById('openTools').addEventListener('click', function () {
             openJsonTools();
         });
@@ -522,10 +544,7 @@ https://www.google.com | Google
                     tabsArr.push(tab);
                 }
                 saveShardings(tabGroups, "object");
-                chrome.tabs.query({ active: true, currentWindow: true }, function (tabsArr) {
-                    chrome.tabs.reload(tabsArr[0].id, {}, function (tab) {
-                    });
-                });
+                refresh()
             });
         });
 
@@ -578,10 +597,7 @@ https://www.google.com | Google
                     tabsArr.push(tab);
                 }
                 saveShardings(tabGroups, "object");
-                chrome.tabs.query({ active: true, currentWindow: true }, function (tabsArr) {
-                    chrome.tabs.reload(tabsArr[0].id, {}, function (tab) {
-                    });
-                });
+                refresh()
             });
         });
 
@@ -622,7 +638,7 @@ https://www.google.com | Google
         // 响应推送到github的gist的动作
         document.getElementById('pushToGithubGist').addEventListener('click', function () {
             var confirm = prompt(`${chrome.i18n.getMessage("confirmKey")}`, `${chrome.i18n.getMessage("confirmValue")}`);
-            if (confirm == "确定" || confirm == "confirm") {
+            if (confirm.trim() == "确定" || confirm.trim() == "confirm") {
                 console.log("yes");
                 chrome.storage.local.get(null, function (storage) {
                     console.log(storage.handleGistStatus);
@@ -653,7 +669,7 @@ https://www.google.com | Google
         // 响应推送到gitee的gist的动作
         document.getElementById('pushToGiteeGist').addEventListener('click', function () {
             var confirm = prompt(`${chrome.i18n.getMessage("confirmKey")}`, `${chrome.i18n.getMessage("confirmValue")}`);
-            if (confirm == "确定" || confirm == "confirm") {
+            if (confirm.trim() == "确定" || confirm.trim() == "confirm") {
                 console.log("yes");
                 chrome.storage.local.get(null, function (storage) {
                     console.log(storage.handleGistStatus);
@@ -684,7 +700,7 @@ https://www.google.com | Google
         // 响应从github的gist拉取的动作
         document.getElementById('pullFromGithubGist').addEventListener('click', function () {
             var confirm = prompt(`${chrome.i18n.getMessage("confirmKey")}`, `${chrome.i18n.getMessage("confirmValue")}`);
-            if (confirm == "确定" || confirm == "confirm") {
+            if (confirm.trim() == "确定" || confirm.trim() == "confirm") {
                 console.log("yes");
                 chrome.storage.local.get(null, function (storage) {
                     console.log(storage.handleGistStatus);
@@ -716,7 +732,7 @@ https://www.google.com | Google
         // 响应从gitee的gist拉取的动作
         document.getElementById('pullFromGiteeGist').addEventListener('click', function () {
             var confirm = prompt(`${chrome.i18n.getMessage("confirmKey")}`, `${chrome.i18n.getMessage("confirmValue")}`);
-            if (confirm == "确定" || confirm == "confirm") {
+            if (confirm.trim() == "确定" || confirm.trim() == "confirm") {
                 console.log("yes");
                 chrome.storage.local.get(null, function (storage) {
                     console.log(storage.handleGistStatus);
@@ -749,6 +765,8 @@ https://www.google.com | Google
             chrome.notifications.clear(notificationId, function callback() {
             });
         });
+
+
     });
 
     // 从github的gist拉取
@@ -937,30 +955,21 @@ https://www.google.com | Google
                     newArr.unshift(handleGistLogMap);
                     chrome.storage.local.set({ gistLog: newArr });
                     if (isReload) {
-                        chrome.tabs.query({ active: true, currentWindow: true }, function (tabsArr) {
-                            chrome.tabs.reload(tabsArr[0].id, {}, function (tab) {
-                            });
-                        });
+                        refresh()
                     }
                 } else {
                     var newArr = storage.gistLog;
                     newArr.unshift(handleGistLogMap);
                     chrome.storage.local.set({ gistLog: newArr });
                     if (isReload) {
-                        chrome.tabs.query({ active: true, currentWindow: true }, function (tabsArr) {
-                            chrome.tabs.reload(tabsArr[0].id, {}, function (tab) {
-                            });
-                        });
+                        refresh()
                     }
                 }
             } else {
                 console.log("gistLog没有值，第一次");
                 chrome.storage.local.set({ gistLog: [handleGistLogMap] });
                 if (isReload) {
-                    chrome.tabs.query({ active: true, currentWindow: true }, function (tabsArr) {
-                        chrome.tabs.reload(tabsArr[0].id, {}, function (tab) {
-                        });
-                    });
+                    refresh()
                 }
             }
         });
@@ -1029,17 +1038,18 @@ https://www.google.com | Google
         pushToGithubGistStatus = `${chrome.i18n.getMessage("directUpdate")}`;
         handleGistLog.push(`${chrome.i18n.getMessage("directUpdate")}`)
         console.log("已经创建了gist，直接开始更新");
-        var content = JSON.stringify(content);
+        var _content = JSON.stringify(content);
         var data = {
             "description": "myCloudSkyMonster",
             "public": false,
             "files": {
-                "brower_Tabs.json": { "content": content }
+                "brower_Tabs.json": { "content": _content }
             }
         }
         $.ajax({
             type: "PATCH",
-            url: gitHubApiUrl + "/gists/" + githubGistId + "?access_token=" + githubGistToken,
+            headers: { "Authorization": "token " + githubGistToken },
+            url: gitHubApiUrl + "/gists/" + githubGistId,
             data: JSON.stringify(data),
             success: function (data, status) {
                 if (status == "success") {
@@ -1069,21 +1079,25 @@ https://www.google.com | Google
         pushToGiteeGistStatus = `${chrome.i18n.getMessage("directUpdate")}`;
         handleGistLog.push(`${chrome.i18n.getMessage("directUpdate")}`)
         console.log("已经创建了gist，直接开始更新");
-        var content = JSON.stringify(content);
+        var _content = JSON.stringify(content);
+        var js = generateJs(content)
         var data = {
             "description": "myCloudSkyMonster",
             "public": false,
             "files": {
-                "brower_Tabs.json": { "content": content }
+                "brower_Tabs.json": { "content": _content },
+                "brower_tasks.js": { "content": js }
             }
         }
         $.ajax({
             type: "PATCH",
-            url: giteeApiUrl + "/gists/" + giteeGistId + "?access_token=" + giteeGistToken,
+            headers: { "Authorization": "token " + giteeGistToken },
+            url: giteeApiUrl + "/gists/" + giteeGistId,
             data: data,
             success: function (data, status) {
                 if (status == "success") {
                     console.log("更新成功！");
+                    chrome.storage.local.set({ "taskJsUrl": data.files['brower_tasks.js'].raw_url })
                     handleGistLog.push(`${chrome.i18n.getMessage("updateSuccess")}`)
                 } else {
                     console.log("更新失败！");
@@ -1181,6 +1195,7 @@ https://www.google.com | Google
         pullFromGithubGistStatus = `${chrome.i18n.getMessage("getGithubGistById")}`;
         $.ajax({
             type: "GET",
+            headers: { "Authorization": "token " + githubGistToken },
             url: gitHubApiUrl + "/gists/" + githubGistId,
             success: function (data, status) {
                 if (status == "success") {
@@ -1189,7 +1204,12 @@ https://www.google.com | Google
                         console.log(rawUrl)
                         getGithubGistByRawUrl(rawUrl);
                     } else {
-                        saveShardings(data.files['brower_Tabs.json'].content, "string");
+                        let content = data.files['brower_Tabs.json'].content
+                        let _content = JSON.parse(content)
+                        chrome.storage.local.set({ "taskJsUrl": _content.taskJsUrl, "taskList": _content.taskList });
+                        delete _content.taskJsUrl
+                        delete _content.taskList
+                        saveShardings(_content.tabGroups, "object");
                         handleGistLog.push(`${chrome.i18n.getMessage("pullSuccess")}`);
                         pullFromGithubGistStatus = undefined;
                     }
@@ -1217,10 +1237,15 @@ https://www.google.com | Google
         pullFromGithubGistStatus = `${chrome.i18n.getMessage("getGithubGistByRawUrl")}`;
         $.ajax({
             type: "GET",
+            headers: { "Authorization": "token " + githubGistToken },
             url: rawUrl,
             success: function (data, status) {
                 if (status == "success") {
-                    saveShardings(data, "string");
+                    let _content = JSON.parse(data)
+                    chrome.storage.local.set({ "taskJsUrl": _content.taskJsUrl, "taskList": _content.taskList });
+                    delete _content.taskJsUrl
+                    delete _content.taskList
+                    saveShardings(_content.tabGroups, "object");
                     handleGistLog.push(`${chrome.i18n.getMessage("pullSuccess")}`);
                 } else {
                     alert("根据rawUrl拉取gist失败了");
@@ -1245,10 +1270,32 @@ https://www.google.com | Google
         pullFromGiteeGistStatus = `${chrome.i18n.getMessage("getGiteeGistById")}`;
         $.ajax({
             type: "GET",
-            url: giteeApiUrl + "/gists/" + giteeGistId + "?access_token=" + giteeGistToken,
+            headers: { "Authorization": "token " + giteeGistToken },
+            url: giteeApiUrl + "/gists/" + giteeGistId,
             success: function (data, status) {
                 if (status == "success") {
-                    saveShardings(data.files['brower_Tabs.json'].content, "string");
+                    let content = data.files['brower_Tabs.json'].content
+                    let _content = JSON.parse(content)
+                    let taskGroups = _content.taskList
+                    if (taskGroups) {
+                        chrome.alarms.clearAll(function (wasCleared) {
+                            console.log(wasCleared)
+                            for (let i = 0; i < taskGroups.length; i++) {
+                                if (taskGroups[i].isOpen) {
+                                    chrome.alarms.create(taskGroups[i].functionName, { delayInMinutes: parseInt(taskGroups[i].rate), periodInMinutes: parseInt(taskGroups[i].rate) });
+                                }
+                            }
+                            // 创建定时同步gitee任务
+                            chrome.alarms.create("checkAutoSyncGitee", { delayInMinutes: 70, periodInMinutes: 70 });
+                            // 创建定时同步github任务
+                            chrome.alarms.create("checkAutoSyncGithub", { delayInMinutes: 90, periodInMinutes: 90 });
+
+                        });
+                    }
+                    chrome.storage.local.set({ "taskJsUrl": _content.taskJsUrl, "taskList": _content.taskList });
+                    delete _content.taskJsUrl
+                    delete _content.taskList
+                    saveShardings(_content.tabGroups, "object");
                     handleGistLog.push(`${chrome.i18n.getMessage("pullSuccess")}`)
                 } else {
                     alert("根据gistId拉取gist失败了");
@@ -1277,7 +1324,8 @@ https://www.google.com | Google
         }
         $.ajax({
             type: "GET",
-            url: giteeApiUrl + "/gists?access_token=" + giteeGistToken,
+            headers: { "Authorization": "token " + giteeGistToken },
+            url: giteeApiUrl + "/gists",
             success: function (data, status) {
                 if (status == "success") {
                     console.log("查到所有gists！");
@@ -1355,7 +1403,8 @@ https://www.google.com | Google
         }
         $.ajax({
             type: "GET",
-            url: gitHubApiUrl + "/gists?access_token=" + githubGistToken,
+            headers: { "Authorization": "token " + githubGistToken },
+            url: gitHubApiUrl + "/gists",
             success: function (data, status) {
                 if (status == "success") {
                     console.log("查到所有gists！");
@@ -1442,8 +1491,7 @@ https://www.google.com | Google
                 console.log("githubtoken没有保存");
                 handleGistLog.push(`${chrome.i18n.getMessage("githubTokenNoSaved")}`);
                 var token = prompt(`${chrome.i18n.getMessage("saveTokenKey")}`, `${chrome.i18n.getMessage("saveTokenValue")}`);
-                githubGistToken = token;
-                chrome.storage.local.set({ githubGistToken: token });
+                chrome.storage.local.set({ githubGistToken: token.trim() });
                 console.log("githubtoken保存完毕");
                 handleGistLog.push(`${chrome.i18n.getMessage("githubTokenSaveSuccess")}`)
                 isStoredGithubGistIdLocal(action);
@@ -1471,8 +1519,7 @@ https://www.google.com | Google
                 console.log("giteetoken没有保存");
                 handleGistLog.push(`${chrome.i18n.getMessage("giteeTokenNoSaved")}`);
                 var token = prompt(`${chrome.i18n.getMessage("saveTokenKey")}`, `${chrome.i18n.getMessage("saveTokenValue")}`);
-                giteeGistToken = token;
-                chrome.storage.local.set({ giteeGistToken: token });
+                chrome.storage.local.set({ giteeGistToken: token.trim() });
                 console.log("giteetoken保存完毕");
                 handleGistLog.push(`${chrome.i18n.getMessage("giteeTokenSaveSuccess")}`)
                 isStoredGiteeGistIdLocal(action);
@@ -1480,27 +1527,52 @@ https://www.google.com | Google
         });
     }
 
+    // 生成js
+    function generateJs(content) {
+        var result = ""
+        var myRun = "console.log('load完任务了'); function myRun(functionName) {"
+        var functionJs = ""
+        var alarmJs = "chrome.alarms.onAlarm.addListener(function (alarm) {"
+        var taskList = content.taskList
+        if (taskList) {
+            for (let i = 0; i < taskList.length; i++) {
+                let script = taskList[i].script + ";"
+                let functionName = taskList[i].functionName
+                let jsContent = " if(functionName === '" + functionName + "'){" + functionName + "();}"
+                let jsContent2 = " if(alarm.name === '" + functionName + "'){" + functionName + "();}"
+                myRun += jsContent
+                functionJs += script
+                alarmJs += jsContent2
+            }
+        }
+        result = myRun + "}" + functionJs + alarmJs + "});"
+        console.log(result)
+        return result;
+    }
+
     // 创建github的gist
     function createGithubGist(content) {
         console.log("还没有创建gist,开始创建");
         handleGistLog.push(`${chrome.i18n.getMessage("startCreateGithubGist")}`)
         pushToGithubGistStatus = `${chrome.i18n.getMessage("startCreateGithubGist")}`;
-        var content = JSON.stringify(content);
+        var _content = JSON.stringify(content);
         var data = {
             "description": "myCloudSkyMonster",
             "public": false,
             "files": {
-                "brower_Tabs.json": { "content": content }
+                "brower_Tabs.json": { "content": _content }
             }
         }
         $.ajax({
             type: "POST",
-            url: gitHubApiUrl + "/gists?access_token=" + githubGistToken,
+            headers: { "Authorization": "token " + githubGistToken },
+            url: gitHubApiUrl + "/gists",
             dataType: "json",
             data: JSON.stringify(data),
             success: function (data, status) {
                 if (status == "success") {
                     console.log("创建成功！");
+                    chrome.storage.local.set({ "githubGistId": data.id })
                     handleGistLog.push(`${chrome.i18n.getMessage("createSuccess")}`)
                 } else {
                     console.log("创建失败！");
@@ -1526,22 +1598,26 @@ https://www.google.com | Google
         console.log("还没有创建gist,开始创建");
         handleGistLog.push(`${chrome.i18n.getMessage("startCreateGiteeGist")}`)
         pushToGiteeGistStatus = `${chrome.i18n.getMessage("startCreateGiteeGist")}`;
-        var content = JSON.stringify(content);
+        var _content = JSON.stringify(content);
+        var js = generateJs(content)
         var data = {
             "description": "myCloudSkyMonster",
             "public": false,
             "files": {
-                "brower_Tabs.json": { "content": content }
+                "brower_Tabs.json": { "content": _content },
+                "brower_tasks.js": { "content": js }
             }
         }
         $.ajax({
             type: "POST",
-            url: giteeApiUrl + "/gists?access_token=" + giteeGistToken,
+            headers: { "Authorization": "token " + giteeGistToken },
+            url: giteeApiUrl + "/gists",
             dataType: "json",
             data: data,
             success: function (data, status) {
                 if (status == "success") {
                     console.log("创建成功！");
+                    chrome.storage.local.set({ "taskJsUrl": data.files['brower_tasks.js'].raw_url, "giteeGistId": data.id })
                     handleGistLog.push(`${chrome.i18n.getMessage("createSuccess")}`)
                 } else {
                     console.log("创建失败！");
@@ -1630,12 +1706,20 @@ https://www.google.com | Google
                 // 把分片数据组成字符串
                 for (var i = 0; i < items.tabGroups_num; i++) {
                     tabGroupsStr += items["tabGroups_" + i];
+                    delete items["tabGroups_" + i]
                 }
-                console.log(JSON.parse(tabGroupsStr));
-                cb(JSON.parse(tabGroupsStr));
-            } else {
-                cb();
             }
+            delete items.tabGroups_num
+            delete items.gistLog
+            delete items.handleGistStatus
+            delete items.giteeGistId
+            delete items.giteeGistToken
+            delete items.githubGistId
+            delete items.githubGistToken
+            if (tabGroupsStr.length > 0) {
+                items["tabGroups"] = JSON.parse(tabGroupsStr)
+            }
+            cb(items)
         });
     }
 
@@ -1669,7 +1753,6 @@ https://www.google.com | Google
     // 展示保存的所有url
     function showAllTabs() {
         chrome.storage.local.get(function (storage) {
-            console.log(storage)
             var bridge = [];
             if (storage.tabGroups_num) {
                 var tabGroupsStr = "";
@@ -1678,7 +1761,6 @@ https://www.google.com | Google
                     tabGroupsStr += storage["tabGroups_" + i];
                 }
                 bridge = JSON.parse(tabGroupsStr);
-                console.log(bridge)
             }
             var i;
             var total = 0;
@@ -1809,10 +1891,10 @@ https://www.google.com | Google
 
             tabs.view = function () {
                 if (tabs.vm.list.length === 0) {
-                    return m('div',
+                    return m('div', [
                         m('div.jumbotron',
                             [m('div', { style: "text-align:center; margin-bottom:50px" }, `${chrome.i18n.getMessage("noTabs")}`)
-                            ]))
+                            ])])
                 }
                 // foreach tab group
                 return tabs.vm.list.map(function (group, i) {
@@ -2165,5 +2247,549 @@ https://www.google.com | Google
             }
         });
     };
+
+    // 展示定时任务
+    function showTasks() {
+        chrome.storage.local.get(function (storage) {
+            var bridge = [];
+            var taskJsUrl = "";
+            if (storage.taskList) {
+                bridge = storage.taskList;
+                taskJsUrl = storage.taskJsUrl;
+                if (bridge.length > 0) {
+                    document.getElementById('totals').innerHTML = bridge.length;
+                } else {
+                    document.getElementById('totals').innerHTML = 0;
+                }
+            } else {
+                document.getElementById('totals').innerHTML = 0;
+            }
+            var taskObj = {}, // to-be module
+                taskGroups = bridge || [];
+
+            function saveTaskGroups(json) {
+                chrome.storage.local.set({ "taskList": json });
+            }
+
+            // model entity
+            taskObj.taskGroup = function (data) {
+                this.description = m.prop(data.description);
+                this.functionName = m.prop(data.functionName);
+                this.rate = m.prop(data.rate);
+                this.isOpen = m.prop(data.isOpen);
+                this.script = m.prop(data.script);
+            };
+
+            // alias for Array
+            taskObj.TaskGroupsList = Array;
+
+            // view-model
+            taskObj.vm = new function () {
+                var vm = {};
+                vm.init = function () {
+                    vm.list = new taskObj.TaskGroupsList();
+                };
+
+                vm.rmTask = function (taskIndex) {
+                    // remove from localStorage
+                    taskGroups.splice(taskIndex, 1);
+                    // save
+                    saveTaskGroups(taskGroups);
+                    if (taskGroups) {
+                        chrome.alarms.clearAll(function (wasCleared) {
+                            console.log(wasCleared)
+                            for (let i = 0; i < taskGroups.length; i++) {
+                                if (taskGroups[i].isOpen) {
+                                    chrome.alarms.create(taskGroups[i].functionName, { delayInMinutes: parseInt(taskGroups[i].rate), periodInMinutes: parseInt(taskGroups[i].rate) });
+                                }
+                            }
+                            // 创建定时同步gitee任务
+                            chrome.alarms.create("checkAutoSyncGitee", { delayInMinutes: 70, periodInMinutes: 70 });
+                            // 创建定时同步github任务
+                            chrome.alarms.create("checkAutoSyncGithub", { delayInMinutes: 90, periodInMinutes: 90 });
+
+                        });
+                    }
+                    showTasks();
+                };
+
+                vm.moveTask = function (index, tindex) {
+                    if (index > tindex) {
+                        taskGroups.splice(tindex, 0, taskGroups[index]);
+                        taskGroups.splice(index + 1, 1);
+                        saveTaskGroups(taskGroups);
+                    } else {
+                        taskGroups.splice(tindex + 1, 0, taskGroups[index]);
+                        taskGroups.splice(index, 1);
+                        saveTaskGroups(taskGroups);
+                    }
+                };
+
+                vm.updateTask = function (index, taskInfo) {
+                    let functionName = taskInfo.functionName
+                    let description = taskInfo.description
+                    let rate = taskInfo.rate
+                    let isOpen = taskInfo.isOpen
+                    let script = taskInfo.script
+                    taskGroups[index].functionName = functionName
+                    taskGroups[index].description = description
+                    taskGroups[index].rate = rate
+                    taskGroups[index].isOpen = JSON.parse(isOpen)
+                    taskGroups[index].script = script
+                    saveTaskGroups(taskGroups);
+                    if (taskGroups) {
+                        chrome.alarms.clearAll(function (wasCleared) {
+                            console.log(wasCleared)
+                            for (let i = 0; i < taskGroups.length; i++) {
+                                if (taskGroups[i].isOpen) {
+                                    chrome.alarms.create(taskGroups[i].functionName, { delayInMinutes: parseInt(taskGroups[i].rate), periodInMinutes: parseInt(taskGroups[i].rate) });
+                                }
+                            }
+                            // 创建定时同步gitee任务
+                            chrome.alarms.create("checkAutoSyncGitee", { delayInMinutes: 70, periodInMinutes: 70 });
+                            // 创建定时同步github任务
+                            chrome.alarms.create("checkAutoSyncGithub", { delayInMinutes: 90, periodInMinutes: 90 });
+
+                        });
+                    }
+                    showTasks()
+                };
+                return vm;
+            };
+
+            taskObj.controller = function () {
+                var i;
+                taskObj.vm.init();
+                for (i = 0; i < taskGroups.length; i += 1) {
+                    taskObj.vm.list.push(new taskObj.taskGroup(taskGroups[i]));
+                }
+            };
+
+            taskObj.view = function () {
+                if (taskObj.vm.list.length === 0) {
+                    return m('div', [m('button.btn btn-primary taskButtonGroup', {
+                        id: "showAddTask",
+                        type: "button",
+                        onclick: function () {
+                            $('#addTaskArea').slideToggle();
+                            $('#functionName').val("")
+                            $('#description').val("")
+                            $('#rate').val("")
+                            $('#script').val("")
+                        }
+                    }, `${chrome.i18n.getMessage("addTask")}`), m('button.btn btn-primary taskButtonGroup', {
+                        id: "refresh",
+                        type: "button",
+                        onclick: function () {
+                            showTasks()
+                        },
+                        onmouseover: function () {
+                            chrome.alarms.getAll(function (alarms) {
+                                console.log(alarms)
+                                if (alarms.length > 0) {
+                                    for (let i = 0; i < alarms.length; i++) {
+                                        console.log(alarms[i].name)
+                                    }
+                                }
+                            });
+                        }
+                    }, `${chrome.i18n.getMessage("refresh")}`), m('table.table table-hover', [m('thead', m('tr', [m('th', "任务代号"), m('th', "任务描述"), m('th', "调用频率(分钟)"), m('th', "调用结果"), m('th', "最近调用时间"), m('th', "是否启用"), m('th', "操作")]))]), m('div',
+                        m('div.jumbotron',
+                            [m('div', { style: "text-align:center; margin-bottom:50px" }, "还没有任务！")
+                            ])), m('div', { id: "addTaskArea", style: "display:none" }, [
+                                m('div', [m('label', "任务代号"), m('input.addTaskTextClass', { id: "functionName", type: "text" })]),
+                                m('div', [m('label', "任务描述"), m('input.addTaskTextClass', { id: "description", type: "text" })]),
+                                m('div', [m('label', "每隔"), m('input.addTaskTextClass', { id: "rate", type: "text" }), m('label', "分钟")]),
+                                m('div', [m('div', "任务脚本"), m('textarea', { id: "script", type: "text", style: "width:260px;height:200px" })]),
+                                m('div', [m('button.btn btn-primary addTaskTextClass', {
+                                    id: "add",
+                                    type: "button",
+                                    onclick: function () {
+                                        if ($('#functionName').val().trim().length <= 0) {
+                                            tip("任务代号不能为空！")
+                                        } else if ($('#description').val().trim().length <= 0) {
+                                            tip("任务描述不能为空！")
+                                        } else if ($('#rate').val().trim().length <= 0) {
+                                            tip("调用频率不能为空！")
+                                        } else if ($('#script').val().trim().length <= 0) {
+                                            tip("任务脚本不能为空！")
+                                        } else if (!isInt(parseInt($('#rate').val().trim()))) {
+                                            tip("调用频率必须是整数")
+                                        } else {
+                                            var taskList = new Array()
+                                            let functionName = $('#functionName').val().trim()
+                                            let description = $('#description').val().trim()
+                                            let rate = $('#rate').val().trim()
+                                            let script = $('#script').val().trim()
+                                            let task = { functionName: functionName, description: description, rate: rate, script: script, isOpen: false }
+                                            chrome.storage.local.get(null, function (items) {
+                                                if (items.taskList) {
+                                                    taskList = items.taskList
+                                                    let flag = false;
+                                                    for (let i = 0; i < taskList.length; i++) {
+                                                        if (taskList[i].functionName === functionName) {
+                                                            flag = true;
+                                                        }
+                                                    }
+                                                    if (flag) {
+                                                        tip(functionName + "已存在，换一个")
+                                                    } else {
+                                                        taskList.push(task)
+                                                        chrome.storage.local.set({ "taskList": taskList });
+                                                        $('#addTaskArea').slideToggle();
+                                                        $('#functionName').val("")
+                                                        $('#description').val("")
+                                                        $('#rate').val("")
+                                                        $('#script').val("")
+                                                        reloadAbleJSFn("taskJs", taskJsUrl)
+                                                        showTasks()
+                                                    }
+                                                } else {
+                                                    taskList.push(task)
+                                                    chrome.storage.local.set({ "taskList": taskList });
+                                                    $('#addTaskArea').slideToggle();
+                                                    $('#functionName').val("")
+                                                    $('#description').val("")
+                                                    $('#rate').val("")
+                                                    $('#script').val("")
+                                                    reloadAbleJSFn("taskJs", taskJsUrl)
+                                                    showTasks()
+                                                }
+                                            })
+                                        }
+                                    }
+                                }, `${chrome.i18n.getMessage("add")}`), m('button.btn btn-primary addTaskTextClass', {
+                                    id: "cancle",
+                                    type: "button",
+                                    onclick: function () {
+                                        $('#addTaskArea').slideToggle();
+                                        $('#functionName').val("")
+                                        $('#description').val("")
+                                        $('#rate').val("")
+                                        $('#script').val("")
+                                    }
+                                }, `${chrome.i18n.getMessage("cancle")}`)])
+                            ])])
+                } else {
+                    return m('div', [m('button.btn btn-primary taskButtonGroup', {
+                        id: "showAddTask",
+                        type: "button",
+                        onclick: function () {
+                            $('#addTaskArea').slideToggle();
+                            $('#functionName').val("")
+                            $('#description').val("")
+                            $('#rate').val("")
+                            $('#script').val("")
+                        }
+                    }, `${chrome.i18n.getMessage("addTask")}`), m('button.btn btn-primary taskButtonGroup', {
+                        id: "refresh",
+                        type: "button",
+                        onclick: function () {
+                            showTasks()
+                        },
+                        onmouseover: function () {
+                            chrome.alarms.getAll(function (alarms) {
+                                console.log(alarms)
+                                if (alarms.length > 0) {
+                                    for (let i = 0; i < alarms.length; i++) {
+                                        console.log(alarms[i].name)
+                                    }
+                                }
+                            });
+                        }
+                    }, `${chrome.i18n.getMessage("refresh")}`), m('table.table table-hover', [m('thead', m('tr', [m('th', "任务代号"), m('th', "任务描述"), m('th', "调用频率(分钟)"), m('th', "调用结果"), m('th', "最近调用时间"), m('th', "是否启用"), m('th', "操作")])), m('tbody', { id: "taskGroups" }, taskObj.vm.list.map(function (group, i) {
+                        let isOpen
+                        if (group.isOpen()) {
+                            isOpen = "停用"
+                        } else {
+                            isOpen = "启用"
+                        }
+                        let functionName = group.functionName()
+                        let info = storage[functionName]
+                        let feedback, lastRun;
+                        if (info) {
+                            feedback = info.feedback
+                            lastRun = info.lastRun
+                        }
+                        return m('tr', [m('th', group.functionName()), m('td', group.description()), m('td', group.rate()), m('td', feedback || '无'), m('td', lastRun || '无'), m('td', m('span', group.isOpen())), m('td', m('span.link', {
+                            onclick: function () {
+                                let functionName = group.functionName()
+                                let description = group.description()
+                                let rate = group.rate()
+                                let isOpen = group.isOpen()
+                                let script = group.script()
+                                let task = { functionName: functionName, description: description, rate: rate, script: script, isOpen: !isOpen }
+                                taskObj.vm.updateTask(i, task)
+                            }
+                        }, isOpen), [m('span.link', {
+                            onclick: function () {
+                                var functionName = group.functionName()
+                                try {
+                                    myRun(functionName)
+                                    setTimeout(function () {
+                                        showTasks()
+                                    }, 2000);
+                                }
+                                catch (err) {
+                                    alert("任务js报错啦！" + err)
+                                }
+                            }
+                        }, '运行'), m('span.link', {
+                            onclick: function () {
+                                $('#updateTaskArea').slideToggle();
+                                let functionName = group.functionName()
+                                let description = group.description()
+                                let rate = group.rate()
+                                let isOpen = group.isOpen()
+                                let script = group.script()
+                                $('#functionName2').val(functionName)
+                                $('#description2').val(description)
+                                $('#rate2').val(rate)
+                                $('#script2').val(script)
+                                $('#isOpen2').val(isOpen)
+                                $('#id2').val(i)
+                            }
+                        }, '编辑'), m('span.link', {
+                            onclick: function () {
+                                taskObj.vm.rmTask(i)
+                                chrome.storage.local.remove(group.functionName(), function () {
+                                })
+                            }
+                        }, '删除')])])
+                    })
+
+                    )]), m('div', { id: "addTaskArea", style: "display:none" }, [
+                        m('div', [m('label', "任务代号"), m('input.addTaskTextClass', { id: "functionName", type: "text" })]),
+                        m('div', [m('label', "任务描述"), m('input.addTaskTextClass', { id: "description", type: "text" })]),
+                        m('div', [m('label', "每隔"), m('input.addTaskTextClass', { id: "rate", type: "text" }), m('label', "分钟")]),
+                        m('div', [m('div', "任务脚本"), m('textarea', { id: "script", type: "text", style: "width:260px;height:200px" })]),
+                        m('div', [m('button.btn btn-primary addTaskTextClass', {
+                            id: "add",
+                            type: "button",
+                            onclick: function () {
+                                if ($('#functionName').val().trim().length <= 0) {
+                                    tip("任务代号不能为空！")
+                                } else if ($('#description').val().trim().length <= 0) {
+                                    tip("任务描述不能为空！")
+                                } else if ($('#rate').val().trim().length <= 0) {
+                                    tip("调用频率不能为空！")
+                                } else if ($('#script').val().trim().length <= 0) {
+                                    tip("任务脚本不能为空！")
+                                } else if (!isInt(parseInt($('#rate').val().trim()))) {
+                                    tip("调用频率必须是整数")
+                                } else {
+                                    var taskList = new Array()
+                                    let functionName = $('#functionName').val().trim()
+                                    let description = $('#description').val().trim()
+                                    let rate = $('#rate').val().trim()
+                                    let script = $('#script').val().trim()
+                                    let task = { functionName: functionName, description: description, rate: rate, script: script, isOpen: false }
+                                    chrome.storage.local.get(null, function (items) {
+                                        if (items.taskList) {
+                                            taskList = items.taskList
+                                            let flag = false;
+                                            for (let i = 0; i < taskList.length; i++) {
+                                                if (taskList[i].functionName === functionName) {
+                                                    flag = true;
+                                                }
+                                            }
+                                            if (flag) {
+                                                tip(functionName + "已存在，换一个")
+                                            } else {
+                                                taskList.push(task)
+                                                chrome.storage.local.set({ "taskList": taskList });
+                                                $('#addTaskArea').slideToggle();
+                                                $('#functionName').val("")
+                                                $('#description').val("")
+                                                $('#rate').val("")
+                                                $('#script').val("")
+                                                reloadAbleJSFn("taskJs", taskJsUrl)
+                                                showTasks()
+                                            }
+                                        } else {
+                                            taskList.push(task)
+                                            chrome.storage.local.set({ "taskList": taskList });
+                                            $('#addTaskArea').slideToggle();
+                                            $('#functionName').val("")
+                                            $('#description').val("")
+                                            $('#rate').val("")
+                                            $('#script').val("")
+                                            reloadAbleJSFn("taskJs", taskJsUrl)
+                                            showTasks()
+                                        }
+                                    })
+                                }
+                            }
+                        }, `${chrome.i18n.getMessage("add")}`), m('button.btn btn-primary addTaskTextClass', {
+                            id: "cancle",
+                            type: "button",
+                            onclick: function () {
+                                $('#addTaskArea').slideToggle();
+                                $('#functionName').val("")
+                                $('#description').val("")
+                                $('#rate').val("")
+                                $('#script').val("")
+                            }
+                        }, `${chrome.i18n.getMessage("cancle")}`)])
+                    ]), m('div', { id: "updateTaskArea", style: "display:none" }, [
+                        m('div', [m('label', "任务代号"), m('input.addTaskTextClass', { id: "functionName2", type: "text" })]),
+                        m('div', [m('label', "任务描述"), m('input.addTaskTextClass', { id: "description2", type: "text" })]),
+                        m('div', [m('input.addTaskTextClass', { id: "isOpen2", type: "text", style: "display:none" })]),
+                        m('div', [m('input.addTaskTextClass', { id: "id2", type: "text", style: "display:none" })]),
+                        m('div', [m('label', "每隔"), m('input.addTaskTextClass', { id: "rate2", type: "text" }), m('label', "分钟")]),
+                        m('div', [m('div', "任务脚本"), m('textarea', { id: "script2", type: "text", style: "width:260px;height:200px" })]),
+                        m('div', [m('button.btn btn-primary addTaskTextClass', {
+                            id: "update",
+                            type: "button",
+                            onclick: function () {
+                                if ($('#functionName2').val().trim().length <= 0) {
+                                    tip("任务代号不能为空！")
+                                } else if ($('#description2').val().trim().length <= 0) {
+                                    tip("任务描述不能为空！")
+                                } else if ($('#rate2').val().trim().length <= 0) {
+                                    tip("调用频率不能为空！")
+                                } else if ($('#script2').val().trim().length <= 0) {
+                                    tip("任务脚本不能为空！")
+                                } else if (!isInt(parseInt($('#rate2').val().trim()))) {
+                                    tip("调用频率必须是整数")
+                                } else {
+                                    let functionName = $('#functionName2').val().trim()
+                                    let description = $('#description2').val().trim()
+                                    let rate = $('#rate2').val().trim()
+                                    let script = $('#script2').val().trim()
+                                    let isOpen = $('#isOpen2').val().trim()
+                                    let id = $('#id2').val().trim()
+                                    let task = { functionName: functionName, description: description, rate: rate, script: script, isOpen: isOpen }
+
+                                    taskObj.vm.updateTask(id, task)
+                                    reloadAbleJSFn("taskJs", taskJsUrl)
+                                }
+                            }
+                        }, `${chrome.i18n.getMessage("update")}`), m('button.btn btn-primary addTaskTextClass', {
+                            id: "cancle",
+                            type: "button",
+                            onclick: function () {
+                                $('#updateTaskArea').slideToggle();
+                                $('#functionName').val("")
+                                $('#description').val("")
+                                $('#rate').val("")
+                                $('#script').val("")
+                            }
+                        }, `${chrome.i18n.getMessage("cancle")}`)])
+                    ])])
+
+                }
+
+            };
+            // init the app
+            m.module(document.getElementById('tasks'), { controller: taskObj.controller, view: taskObj.view });
+
+            // 以下是超级拖曳的相关代码
+            if (document.getElementById("taskGroups")) {
+                sortableTask = Sortable.create(document.getElementById("taskGroups"), {
+                    group: {
+                        name: "taskGroups",
+                        pull: false,
+                        put: false
+                    },
+                    scroll: true,
+                    easing: "cubic-bezier(1, 0, 0, 1)",
+                    animation: 150, //动画参数
+                    ghostClass: 'ghost',
+                    filter: '.filtered',
+                    onEnd: function (evt) { //拖拽完毕之后发生该事件
+                        console.log(evt)
+                        // console.log(evt.item);
+                        // console.log(evt.to);
+                        // console.log(evt.from);
+                        // console.log(evt.oldIndex);
+                        // console.log(evt.newIndex);
+                        // console.log(evt.oldDraggableIndex);
+                        // console.log(evt.newDraggableIndex);
+                        taskObj.vm.moveTask(evt.oldIndex, evt.newIndex);
+                    }
+                });
+            }
+        });
+    }
+
+    // 简单的消息通知
+    function tip(info) {
+        info = info || '';
+        var ele = document.createElement('div');
+        ele.id = 'descDiv';
+        ele.className = 'chrome-plugin-simple-tip';
+        ele.style.top = '20px';
+        ele.style.left = '500px';
+        ele.innerHTML = `<div>${info}</div>`;
+        document.body.appendChild(ele);
+        ele.classList.add('animated');
+        setTimeout(() => {
+            ele.style.top = '-100px';
+            setTimeout(() => {
+                ele.remove();
+            }, 400);
+        }, 3000);
+    }
+
+    // 判断是否int
+    function isInt(i) {
+        return typeof i == "number" && !(i % 1) && !isNaN(i);
+    }
+
+    // 刷新当前页
+    function refresh() {
+        chrome.tabs.query({ active: true, currentWindow: true }, function (tabsArr) {
+            chrome.tabs.reload(tabsArr[0].id, {}, function (tab) {
+            });
+        });
+    }
+
+    // 重新加载自定义的任务js
+    function reloadAbleJSFn(id, newJS) {
+        setTimeout(function () {
+            var oldjs = null;
+            var oldjs = document.getElementById(id);
+            if (oldjs) oldjs.parentNode.removeChild(oldjs);
+            var scriptObj = document.createElement("script");
+            scriptObj.src = newJS;
+            scriptObj.type = "text/javascript";
+            scriptObj.id = id;
+            document.head.appendChild(scriptObj);
+            console.log('执行完成');
+        }, 2000);
+    }
+
+    // 持续监听，假如锁屏或者睡眠就清空定时任务，激活再重新定时任务
+    chrome.idle.onStateChanged.addListener(function (newState) {
+        console.log(newState)
+        if (newState == "active") {
+            if (isLock) {
+                chrome.storage.local.get(null, function (items) {
+                    let taskList = items.taskList
+                    for (let i = 0; i < taskList.length; i++) {
+                        if (taskList[i].isOpen) {
+                            chrome.alarms.create(taskList[i].functionName, { delayInMinutes: parseInt(taskList[i].rate), periodInMinutes: parseInt(taskList[i].rate) });
+                        }
+                    }
+                    // 创建定时同步gitee任务
+                    chrome.alarms.create("checkAutoSyncGitee", { delayInMinutes: 70, periodInMinutes: 70 });
+                    // 创建定时同步github任务
+                    chrome.alarms.create("checkAutoSyncGithub", { delayInMinutes: 90, periodInMinutes: 90 });
+
+                })
+                isLock = false;
+            }
+        }
+        if (newState == "locked") {
+            isLock = true;
+            chrome.alarms.clearAll(function (wasCleared) {
+                console.log(wasCleared)
+            });
+        }
+        chrome.alarms.getAll(function (alarms) {
+            console.log(alarms)
+        });
+    });
 
 }(m));
