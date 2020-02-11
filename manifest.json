@@ -65,16 +65,6 @@
             ],
             "css": [],
             "run_at": "document_start"
-        },
-        {
-            "matches": [
-                "http://91porn.com/*"
-            ],
-            "js": [
-                "js/nineone.js"
-            ],
-            "css": [],
-            "run_at": "document_start"
         }
     ],
     "web_accessible_resources": [
