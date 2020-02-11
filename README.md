@@ -118,11 +118,11 @@
 
 10. 手动push或pull到github或者gitee的gist
 
-   进入展示页，最上面的**Github API 状态** 显示当前跟github通讯是否正常，**Gitee API 状态** 显示当前跟gitee通讯是否正常，点击**gist功能**，有五个选项，**推送到github的gist里**，**从github的gist里拉取**，**推送到gitee的gist里**，**从gitee的gist里拉取**，按字面意思选择功能，这里面会有个token的强制要求，这个token用于授权。
+    进入展示页，最上面的**Github API 状态** 显示当前跟github通讯是否正常，**Gitee API 状态** 显示当前跟gitee通讯是否正常，点击**gist功能**，有五个选项，**推送到github的gist里**，**从github的gist里拉取**，**推送到gitee的gist里**，**从gitee的gist里拉取**，按字面意思选择功能，这里面会有个token的强制要求，这个token用于授权。
 
-   - 获取github的token的步骤，进入[github](https://github.com)，登录后，右上角头像点击，选择setting，拉到下面，选择Developer settings，点击Personal access tokens，再点击Generate new token，输入密码，输入一个看起来有意义能明白啥用途的名字，比如： my-onetab-syncing-settings ，拉下来，**注意只勾选gist，其他的不要勾选**，生成后，要**把展示的token另外找地方备份记录一下**，只有在第一次创建的时候才会显示的，错过了只能重来。
+       - 获取github的token的步骤，进入[github](https://github.com)，登录后，右上角头像点击，选择setting，拉到下面，选择Developer settings，点击Personal access tokens，再点击Generate new token，输入密码，输入一个看起来有意义能明白啥用途的名字，比如： my-onetab-syncing-settings ，拉下来，**注意只勾选gist，其他的不要勾选**，生成后，要**把展示的token另外找地方备份记录一下**，只有在第一次创建的时候才会显示的，错过了只能重来。
 
-   - 获取gitee的token的步骤，进入[gitee](https://gitee.com)，登录后，右上角头像点击，选择设置，往下拉，左边找私人令牌，点击进入后，右上角生成新令牌，输入一个看起来有意义能明白啥用途的名字，比如： my-onetab-syncing-settings ，**注意只勾选gist，其他的不要勾选**，提交后，输入密码，生成后，要**把展示的token另外找地方备份记录一下**，只有在第一次创建的时候才会显示的，错过了只能重来。
+       - 获取gitee的token的步骤，进入[gitee](https://gitee.com)，登录后，右上角头像点击，选择设置，往下拉，左边找私人令牌，点击进入后，右上角生成新令牌，输入一个看起来有意义能明白啥用途的名字，比如： my-onetab-syncing-settings ，**注意只勾选gist，其他的不要勾选**，提交后，输入密码，生成后，要**把展示的token另外找地方备份记录一下**，只有在第一次创建的时候才会显示的，错过了只能重来。
 
 11. 自动同步功能
 
