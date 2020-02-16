@@ -80,6 +80,13 @@
                 "mac": "Command+Q"
             },
             "description": "__MSG_toggleFeatureSaveAllTabs__"
+        },
+        "toggle-feature-save-current": {
+            "suggested_key": {
+                "default": "Alt+Q",
+                "mac": "Alt+Q"
+            },
+            "description": "__MSG_toggleFeatureSaveCurrentTabs__"
         }
     }
 }

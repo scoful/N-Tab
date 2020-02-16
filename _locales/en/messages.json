@@ -11,6 +11,9 @@
 	"toggleFeatureSaveAllTabs": {
 		"message": "toggle feature save all tabs"
 	},
+	"toggleFeatureSaveCurrentTabs": {
+		"message": "toggle feature save current tabs"
+	},
 	"sendCurrentTab": {
 		"message": "send current tab"
 	},
@@ -55,6 +58,15 @@
 	},
 	"restoreValueLive": {
 		"message": "  Leave the links alone"
+	},
+	"openBackgroundAfterSendTab": {
+		"message": "After clicked \"send current tab\":"
+	},
+	"openBackgroundAfterSendTabYes": {
+		"message": "Show all tabs"
+	},
+	"openBackgroundAfterSendTabNo": {
+		"message": "Don't show all tabs"
 	},
 	"saveButtonValue": {
 		"message": "Save options"

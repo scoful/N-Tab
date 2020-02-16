@@ -2201,6 +2201,11 @@ https://www.google.com | Google
             } else {
                 $('input[name="deleteTabOnOpen"][value="' + opts.deleteTabOnOpen + '"]').prop('checked', 'checked');
             }
+            if (opts.openBackgroundAfterSendTab === undefined) {
+                $('input[name="openBackgroundAfterSendTab"][value="yes"]').prop('checked', 'checked');
+            } else {
+                $('input[name="openBackgroundAfterSendTab"][value="' + opts.openBackgroundAfterSendTab + '"]').prop('checked', 'checked');
+            }
         });
         document.getElementById("options").innerHTML = `
             <div class="option">
@@ -2212,16 +2217,27 @@ https://www.google.com | Google
                     <p><label for="deleteTabOnOpen"><input type="radio" name="deleteTabOnOpen" value="no">${chrome.i18n.getMessage("restoreValueLive")}</label></p>
                 </div>
             </div>
+            <div class="option">
+            <div class="desc">
+                <p>${chrome.i18n.getMessage("openBackgroundAfterSendTab")}</p>
+            </div>
+            <div class="choices">
+                <p><label for="openBackgroundAfterSendTab"><input type="radio" name="openBackgroundAfterSendTab" value="yes">${chrome.i18n.getMessage("openBackgroundAfterSendTabYes")}</label></p>
+                <p><label for="openBackgroundAfterSendTab"><input type="radio" name="openBackgroundAfterSendTab" value="no">${chrome.i18n.getMessage("openBackgroundAfterSendTabNo")}</label></p>
+            </div>
+        </div>
             <button id="save">${chrome.i18n.getMessage("saveButtonValue")}</button>
             <div id="saved">${chrome.i18n.getMessage("savedValue")}</div>
         `
         // 保存配置
         document.getElementById('save').addEventListener('click', function () {
             var deleteTabOnOpen = document.querySelector('input[name="deleteTabOnOpen"]:checked').value;
+            var openBackgroundAfterSendTab = document.querySelector('input[name="openBackgroundAfterSendTab"]:checked').value;
 
             chrome.storage.local.set({
                 options: {
-                    deleteTabOnOpen: deleteTabOnOpen
+                    deleteTabOnOpen: deleteTabOnOpen,
+                    openBackgroundAfterSendTab: openBackgroundAfterSendTab
                 }
             }, function () { // show "settings saved" notice thing
                 document.getElementById('saved').style.display = 'block';

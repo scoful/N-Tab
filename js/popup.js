@@ -86,7 +86,7 @@
 
         // 发送当前tab
         document.getElementById('save-current').addEventListener('click', function () {
-            chrome.tabs.query({ url: ["https://*/*", "http://*/*"], active: true, currentWindow: true }, function (tabsArr) {
+            chrome.tabs.query({ url: ["https://*/*", "http://*/*"], highlighted: true, currentWindow: true }, function (tabsArr) {
                 chrome.runtime.sendMessage({ action: 'save-current', tabsArr: tabsArr }, function (res) {
                     if (res === 'ok') {
                         window.close();

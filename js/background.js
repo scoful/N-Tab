@@ -467,13 +467,24 @@ chrome.runtime.onMessage.addListener(function (req, sender, sendRes) {
             sendRes('ok'); // acknowledge
             break;
         case 'save-current': // 保存当前tab
-            if (req.tabsArr.length > 0) {
-                saveTabs(req.tabsArr);
-                openBackgroundPage();
-                closeTabs(req.tabsArr);
-            } else {
-                openBackgroundPage();
-            }
+            chrome.storage.local.get(function (storage) {
+                let opts = storage.options
+                let openBackgroundAfterSendTab = "yes"
+                if (opts) {
+                    openBackgroundAfterSendTab = opts.openBackgroundAfterSendTab || "yes"
+                }
+                if (req.tabsArr.length > 0) {
+                    saveTabs(req.tabsArr);
+                    if (openBackgroundAfterSendTab === "yes") {
+                        openBackgroundPage();
+                    }
+                    closeTabs(req.tabsArr);
+                } else {
+                    if (openBackgroundAfterSendTab === "yes") {
+                        openBackgroundPage();
+                    }
+                }
+            })
             sendRes('ok'); // acknowledge
             break;
         case 'save-others': // 保存其他tab
@@ -914,15 +925,27 @@ function closeTabs(tabsArr) {
 chrome.contextMenus.create({
     title: `${chrome.i18n.getMessage("sendCurrentTab")}`,
     onclick: function () {
-        chrome.tabs.query({ url: ["https://*/*", "http://*/*"], active: true, currentWindow: true }, function (tabsArr) {
-            if (tabsArr.length > 0) {
-                saveTabs(tabsArr);
-                openBackgroundPage();
-                closeTabs(tabsArr);
-            } else {
-                openBackgroundPage();
-            }
-        });
+        chrome.storage.local.get(function (storage) {
+            chrome.tabs.query({ url: ["https://*/*", "http://*/*"], highlighted: true, currentWindow: true }, function (tabsArr) {
+                let opts = storage.options
+                let openBackgroundAfterSendTab = "yes"
+                if (opts) {
+                    openBackgroundAfterSendTab = opts.openBackgroundAfterSendTab || "yes"
+                }
+                if (tabsArr.length > 0) {
+                    saveTabs(tabsArr);
+                    if (openBackgroundAfterSendTab === "yes") {
+                        openBackgroundPage();
+                    }
+                    closeTabs(tabsArr);
+                } else {
+                    if (openBackgroundAfterSendTab === "yes") {
+                        openBackgroundPage();
+                    }
+                }
+
+            });
+        })
     }
 });
 
@@ -1117,11 +1140,36 @@ chrome.alarms.onAlarm.addListener(function (alarm) {
 
 // 持续监听是否按了manifest设置的快捷键
 chrome.commands.onCommand.addListener(function (command) {
-    chrome.tabs.query({ url: ["https://*/*", "http://*/*"], currentWindow: true }, function (tabsArr) {
-        saveTabs(tabsArr);
-        openBackgroundPage();
-        closeTabs(tabsArr);
-    });
+    if (command === "toggle-feature-save-all") {
+        chrome.tabs.query({ url: ["https://*/*", "http://*/*"], currentWindow: true }, function (tabsArr) {
+            saveTabs(tabsArr);
+            openBackgroundPage();
+            closeTabs(tabsArr);
+        });
+    }
+    if (command === "toggle-feature-save-current") {
+        chrome.storage.local.get(function (storage) {
+            chrome.tabs.query({ url: ["https://*/*", "http://*/*"], highlighted: true, currentWindow: true }, function (tabsArr) {
+                let opts = storage.options
+                let openBackgroundAfterSendTab = "yes"
+                if (opts) {
+                    openBackgroundAfterSendTab = opts.openBackgroundAfterSendTab || "yes"
+                }
+                if (tabsArr.length > 0) {
+                    saveTabs(tabsArr);
+                    if (openBackgroundAfterSendTab === "yes") {
+                        openBackgroundPage();
+                    }
+                    closeTabs(tabsArr);
+                } else {
+                    if (openBackgroundAfterSendTab === "yes") {
+                        openBackgroundPage();
+                    }
+                }
+            });
+        })
+    }
+
 });
 
 // 持续监听storage是否修改

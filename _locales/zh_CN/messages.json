@@ -11,6 +11,9 @@
 	"toggleFeatureSaveAllTabs": {
 		"message": "快捷键触发功能-发送所有标签"
 	},
+	"toggleFeatureSaveCurrentTabs": {
+		"message": "快捷键触发功能-发送当前标签"
+	},
 	"sendCurrentTab": {
 		"message": "发送当前标签"
 	},
@@ -55,6 +58,15 @@
 	},
 	"restoreValueLive": {
 		"message": "打开标签但不将其从标签列表中删除"
+	},
+	"openBackgroundAfterSendTab": {
+		"message": "点击“发送当前标签”后："
+	},
+	"openBackgroundAfterSendTabYes": {
+		"message": "打开展示页"
+	},
+	"openBackgroundAfterSendTabNo": {
+		"message": "不打开展示页"
 	},
 	"saveButtonValue": {
 		"message": "保存配置"
