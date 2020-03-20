@@ -965,6 +965,7 @@ function remind(minute) {
             // 时间到，清除定时器
             clearTimeout(timeoutId);
             surplusTime = undefined;
+            chrome.contextMenus.update("1", { title: `${chrome.i18n.getMessage("remindStatus")}` }, function callback() { })
         }, minute * 60 * 1000);
         var endDateStr = new Date();
         var min = endDateStr.getMinutes();
@@ -1000,7 +1001,7 @@ function timeDown(endDateStr) {
     timeoutId = setTimeout(function () {
         timeDown(endDateStr);
     }, 1000)
-
+    chrome.contextMenus.update("1", { title: surplusTime }, function callback() { })
 }
 
 // 判断是否int
@@ -1192,5 +1193,176 @@ chrome.storage.onChanged.addListener(function (changes, areaName) {
         startPushToGiteeGist();
     } else {
         console.log("不要同步")
+    }
+});
+
+
+chrome.contextMenus.create({
+    id: "1",
+    title: `${chrome.i18n.getMessage("remindStatus")}`,
+    contexts: ["browser_action"]
+});
+
+chrome.contextMenus.create({
+    id: "2",
+    title: `${chrome.i18n.getMessage("generateQr")}`,
+    contexts: ["browser_action"],
+    onclick: function () {
+        chrome.tabs.query({ url: ["https://*/*", "http://*/*"], active: true, currentWindow: true }, function (tab) {
+            console.log(tab)
+            if (tab.length > 0) {
+                data = tab[0].url;
+                let qrInfo = `<img id="qr" src = "http://qr.topscan.com/api.php?text=" + ${data}>`
+                sendMessageToContentScript("generateQr", qrInfo);
+            }
+        });
+    }
+});
+
+chrome.contextMenus.create({
+    id: "3",
+    title: `${chrome.i18n.getMessage("tabsMenu")}`,
+    contexts: ["browser_action"]
+});
+
+chrome.contextMenus.create({
+    id: "4",
+    title: `${chrome.i18n.getMessage("showAllTabs")}`,
+    contexts: ["browser_action"],
+    onclick: function () {
+        openBackgroundPage();
+    },
+    parentId: "3"
+});
+
+chrome.contextMenus.create({
+    id: "5",
+    title: `${chrome.i18n.getMessage("sendAllTabs")}`,
+    contexts: ["browser_action"],
+    onclick: function () {
+        chrome.tabs.query({ url: ["https://*/*", "http://*/*"], currentWindow: true }, function (req) {
+            if (req.length > 0) {
+                saveTabs(req);
+                openBackgroundPage();
+                closeTabs(req);
+            } else {
+                openBackgroundPage();
+            }
+        });
+    },
+    parentId: "3"
+});
+
+
+chrome.contextMenus.create({
+    id: "6",
+    title: `${chrome.i18n.getMessage("sendCurrentTab")}`,
+    contexts: ["browser_action"],
+    onclick: function () {
+        chrome.storage.local.get(function (storage) {
+            let opts = storage.options
+            let openBackgroundAfterSendTab = "yes"
+            if (opts) {
+                openBackgroundAfterSendTab = opts.openBackgroundAfterSendTab || "yes"
+            }
+            chrome.tabs.query({ url: ["https://*/*", "http://*/*"], highlighted: true, currentWindow: true }, function (req) {
+                if (req.length > 0) {
+                    saveTabs(req);
+                    if (openBackgroundAfterSendTab === "yes") {
+                        openBackgroundPage();
+                    }
+                    closeTabs(req);
+                } else {
+                    if (openBackgroundAfterSendTab === "yes") {
+                        openBackgroundPage();
+                    }
+                }
+            });
+        })
+    },
+    parentId: "3"
+});
+
+
+chrome.contextMenus.create({
+    id: "7",
+    title: `${chrome.i18n.getMessage("sendOtherTabs")}`,
+    contexts: ["browser_action"],
+    onclick: function () {
+        chrome.tabs.query({ url: ["https://*/*", "http://*/*"], active: false, currentWindow: true }, function (req) {
+            if (req.length > 0) {
+                saveTabs(req);
+                openBackgroundPage();
+                closeTabs(req);
+            } else {
+                openBackgroundPage();
+            }
+        });
+    },
+    parentId: "3"
+});
+
+
+chrome.contextMenus.create({
+    id: "8",
+    title: `${chrome.i18n.getMessage("remindMenu")}`,
+    contexts: ["browser_action"]
+});
+
+chrome.contextMenus.create({
+    id: "9",
+    title: `${chrome.i18n.getMessage("fiveMinuteRemind")}`,
+    contexts: ["browser_action"],
+    onclick: function () {
+        remind(5);
+    },
+    parentId: "8"
+});
+
+
+chrome.contextMenus.create({
+    id: "10",
+    title: `${chrome.i18n.getMessage("tenMinuteRemind")}`,
+    contexts: ["browser_action"],
+    onclick: function () {
+        remind(10);
+    },
+    parentId: "8"
+});
+
+
+chrome.contextMenus.create({
+    id: "11",
+    title: `${chrome.i18n.getMessage("fortyMinuteRemind")}`,
+    contexts: ["browser_action"],
+    onclick: function () {
+        remind(40);
+    },
+    parentId: "8"
+});
+
+
+chrome.contextMenus.create({
+    id: "12",
+    title: `${chrome.i18n.getMessage("customMinuteRemind")}`,
+    contexts: ["browser_action"],
+    onclick: function () {
+        var minute = prompt(`${chrome.i18n.getMessage("pleaseInputCustomMinute")}`, 120);
+        if (!isInt(parseInt(minute.trim()))) {
+            alert(`${chrome.i18n.getMessage("inputNumber")}`)
+        } else {
+            remind(Number(minute.trim()));
+        }
+    },
+    parentId: "8"
+});
+
+
+chrome.contextMenus.create({
+    id: "13",
+    title: `${chrome.i18n.getMessage("openJsonTools")}`,
+    contexts: ["browser_action"],
+    onclick: function () {
+        chrome.tabs.create({ index: 0, url: chrome.extension.getURL('json.html') });
     }
 });

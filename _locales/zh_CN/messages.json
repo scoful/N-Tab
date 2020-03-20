@@ -424,5 +424,14 @@
 	},
 	"refresh": {
 		"message": "刷新"
+	},
+	"generateQr": {
+		"message": "网址生成二维码"
+	},
+	"tabsMenu": {
+		"message": "标签功能菜单"
+	},
+	"remindMenu": {
+		"message": "定时功能菜单"
 	}
 }
