@@ -433,5 +433,8 @@
 	},
 	"remindMenu": {
 		"message": "remind menu"
+	},
+	"markdownToc": {
+		"message": "Markdown Toc Generator"
 	}
 }

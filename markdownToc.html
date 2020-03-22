@@ -1,0 +1,94 @@
+<html lang="en">
+
+<head>
+  <title>生成Markdown目录(github可用)</title>
+  <meta charset="UTF-8">
+  <script src="js/jquery-2.2.2.min.js"></script>
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .body{
+      margin: 10px;
+    }
+    .btn {
+      margin: 15px;
+    }
+
+    div.column {
+      display: inline-block;
+      height: 500px;
+      width: 49%;
+      position: relative;
+    }
+
+    textarea {
+      display: block;
+      position: absolute;
+      top: 30px;
+      width: 100%;
+      right: 0;
+      bottom: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="body">
+    <h1>Markdown目录生成器(github可用)</h1>
+    <div>
+      <div class=column>
+        复制Markdown内容到左边
+        <textarea id=md>
+
+# 第一级目录
+
+平平无奇天乐古
+
+## 第二级目录
+
+悔创阿里杰克马
+
+### 第三级目录
+
+不知妻美强东刘
+
+#### 第四级目录
+
+北大还行贝宁撒
+
+##### 第五级目录
+
+普通家庭化腾马
+
+###### 第六级目录
+
+先挣一亿健林王
+
+# 1. halo world
+
+## 1.1 world is small
+
+## 1.2 markdown very good
+
+# 2. chrome is a platform
+
+# 3. google amazing
+
+## 3.1 gmail hh
+
+## 3.2 alibaba is my dream
+        
+      </textarea>
+      </div>
+      <div class=column>
+        生成目录在右边
+        <textarea id=toc>
+      </textarea>
+      </div>
+      <button id="generate" type="button" class="btn btn-primary">生成</button>
+    </div>
+  </div>
+  <script src="js/markdownToc.js"></script>
+
+</body>
+
+</html>

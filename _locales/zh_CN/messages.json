@@ -433,5 +433,8 @@
 	},
 	"remindMenu": {
 		"message": "定时功能菜单"
+	},
+	"markdownToc": {
+		"message": "Markdown目录生成器"
 	}
 }
