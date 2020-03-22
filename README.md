@@ -2,22 +2,23 @@
 
 **目录**
 ----
-* [cloudSkyMonster(云空)](#cloudskymonster(云空))
-  * [快速使用](#快速使用)
-  * [背景介绍](#背景介绍)
-  * [实现功能](#实现功能)
-  * [安装方法](#安装方法)
-  * [使用方法](#使用方法)
-  * [一些总结](#一些总结)
-  * [To Do List](#to-do-list)
-  * [Discussing](#discussing)
-  * [感谢以下大神的肩膀](#感谢以下大神的肩膀)
+* [cloudSkyMonster(云空)](#cloudskymonster云空)
+    * [快速使用](#快速使用)
+    * [背景介绍](#背景介绍)
+    * [实现功能](#实现功能)
+    * [安装方法](#安装方法)
+    * [使用方法](#使用方法)
+    * [一些总结](#一些总结)
+    * [To Do List](#to-do-list)
+    * [Discussing](#discussing)
+    * [感谢以下大神的肩膀](#感谢以下大神的肩膀)
 
-## 快速使用 ##
+
+## 快速使用
 
 **PS：** 不想看长篇大论的介绍和功能说明，直接看[安装方法](#安装方法)
 
-## 背景介绍 ##
+## 背景介绍
 
 1. 本项目是一个Chrome插件
 2. 量身定做的，根据个人使用浏览器习惯，需要的一些功能的集合，突出重点**集合**，虽然很多功能在不同的插件都有实现了，但是开太多插件严重占用内存，用一个插件就搞定所有功能是本插件的目的:smirk:。
@@ -66,9 +67,10 @@
 9. 匹配广州图书馆wifi登录页，登录后会自动2小时倒计时弹窗提醒(广图的wifi有效期2小时)
 10. 匹配百度网盘外链转存页，支持不需勾选一键转存，打破超过3000文件数限制(只支持最新的外链分享，即那种生成分享链接和提取码的方式)
 11. 中英国际化切换，渣渣英语，渣渣翻译，包涵包涵
+12. Markdown目录生成器，支持github的readme
 
 
-## 安装方法 ##
+## 安装方法
 
 1. 第一次使用本插件会弹窗要求输入一个token，是gitee的，用于自动同步备份标签等信息，获取gitee的token的方法：
 
@@ -88,7 +90,7 @@
 
 
 
-## 使用方法 ##
+## 使用方法
 
 1. 打开某个网页，文字翻译，用法如下：
 
@@ -224,32 +226,70 @@
 
        
 
-20. 未完待续
+20. Markdown目录生成器
 
-     
+    用于生成Markdown目录，支持github的readme
+    
+21. 未完待续
+
+      
 
 ## 一些总结
 
 - 万丈高楼平地起，感谢小茗同学的这个博文，看完这个就懂怎么开发插件了，[《Chrome插件开发全攻略》配套完整Demo](https://github.com/sxei/chrome-plugin-demo)
+
 - 本插件存的网址是放在浏览器的storage里的，chrome的storage分sync storage和local storage，顾名思义，一种是可同步的，一种是只本地的，sync storage需要登录chrome的设备之间才会同步。但是呢，sync storage的总存放空间太小了，只有102400字节=100kb，而local storage，总大小有5242880字节=5mb，所以本插件使用的是local storage，如果想实现tab同步的话，可以push到gist，再从另一台机子pull下来。
+
 - 不明来历的插件不要随便装，插件的权限太高了，很危险，比如可以直接替换原来的js里的function，可以直接获取原来js里定义的变量，可以直接覆盖掉原来的html结构，可以直接使用cookies，可以在对方没有公开api的情况下直接模拟，可以随便跨域，可以直接对http请求做拦截，注入，加Referer等等。
+
 - 终于搞明白了，如何让异步回调的代码按顺序for循环，asyc+await+promise，promise的话推荐这个博文，看完就懂了，[JS如何让异步回调的代码在for循环里按顺序一个执行完再执行下一个，使用asyc+await+promise](https://blog.csdn.net/Scoful/article/details/103701308)
+
 - 学了个超简单的前端框架，名字很拗口，**Mithril** 是一个现代化的 JavaScript 框架，用于构建单页面应用。它非常小巧（< 8kb gzip），且内置了路由和 XHR 工具。[源码](https://github.com/MithrilJS/mithril.js)，[中文教程](http://www.mithriljs.net/index.html)，非常简单，看一下例子就懂了。
+
 - 学了超级拖曳，**Sortable**是一个功能强大，简单，还有动画效果的工具，[官方多种demo](https://sortablejs.github.io/Sortable/)，[源码](https://github.com/SortableJS/Sortable)，主要关注一下事件处理，还有就是嵌套拖曳的时候，数据保存问题。
+
 - 学习了[momentjs](http://momentjs.cn/)，用于时间日期处理。
+
 - 学习了boostrap，用于响应式布局，[英文官网](https://getbootstrap.com/)，[中文网](https://www.bootcss.com/)
+
 - gitee用的数据库是mysql，而且是不支持保存emoji表情的，:weary:，可能是版本太低也可能是字符集问题。​
+
 - github的api，如果返回的数据太大，会进行截断，需要注意，而gitee的就不会，可能没考虑过这个问题
+
 - 翻译用的是有道api，这是好早以前申请的，请求频率限制为每小时1000次，[文档](http://fanyi.youdao.com/openapi?path=data-mode)
+
 - 生成二维码用的是网上找的一个api，http://qr.topscan.com/api.php?text=https://www.baidu.com text后加要生成的二维码的内容就ok，侵 告 删。
+
 - github的根据gistId获取gist，居然不用token也能获取私有的，理论上存在被人撞到私有gist的可能，gitee则需要
+
 - 已测试过，展示页存放1w+标签都支持，只是渲染的时候开始卡了，应该很少人有1w+保存的标签吧，虽然在chrome插件商店看过有人的onetab有1w+标签，:joy: ,如果需要，后面再加分页。
+
 - 简单讲一下定时任务平台的实现思路，新增一个任务后，会同步到gitee的gist里，生成一个js文件，然后再重载这个js文件，就可以调用了。
 
+- github的Markdown目录生成，跟普通的目录不一样，普通的用
+
+  ```
+  @[TOC](自定义标题)
+  ```
+
+  github有自己的规则，用
+
+  ```
+   [第一级目录](#第一级目录)
+  ```
+  
+  总结一下：
+  
+  - 中文
+    - 中文没啥说的，就照搬，
+  - 英文
+    - 所有字母都变成小写，空格用-来代替
+  - 不管中英文，都要去掉特殊字符
 
 
 
-## To Do List ##
+
+## To Do List
 
 - 优化代码，修改bug
 - 根据需求再添加新功能
@@ -260,7 +300,7 @@
 
 
 
-## Discussing ##
+## Discussing
 
 - [在github上提问](https://github.com/scoful/cloudSkyMonster/issues/new "在github上提问")
 - wechat：scoful
