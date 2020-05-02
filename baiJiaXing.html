@@ -1,0 +1,63 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>英文数字转换百家姓</title>
+    <script src="js/jquery-2.2.2.min.js"></script>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .body {
+            margin: 10px;
+        }
+
+        .btn {
+            margin: 15px;
+        }
+
+        div.column {
+            display: inline-block;
+            height: 500px;
+            width: 49%;
+            position: relative;
+        }
+
+        textarea {
+            display: block;
+            position: absolute;
+            top: 30px;
+            width: 100%;
+            right: 0;
+            bottom: 0;
+        }
+
+        .aaa {
+            margin-left: 40%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="body">
+        <h1>英文数字转换百家姓</h1>
+        <div>
+            <div class=column>
+                英文或数字在左边
+                <textarea id=original>
+</textarea>
+            </div>
+            <div class=column>
+                百家姓在右边
+                <textarea id=family>
+</textarea>
+            </div>
+        </div>
+        <div>
+            <button id="toFamily" type="button" class="btn btn-primary">>>>>转换成百家姓</button>
+            <button id="toOriginal" type="button" class="btn btn-primary aaa"><<<<转换成原文</button>
+        </div>
+    </div>
+    <script src="js/baiJiaXing.js"></script>
+</body>
+
+
+</html>
