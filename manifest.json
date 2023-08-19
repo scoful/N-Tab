@@ -45,20 +45,9 @@
                 "css/contentScript.css"
             ],
             "run_at": "document_start"
-        },
-        {
-            "matches": [
-                "http://10.0.18.10:9098/Radius/reader/routerFirst*"
-            ],
-            "js": [
-                "js/gzLibrary.js"
-            ],
-            "css": [],
-            "run_at": "document_start"
         }
     ],
     "web_accessible_resources": [
-        "js/gzLibraryInject.js"
     ],
     "homepage_url": "https://github.com/scoful/cloudSkyMonster",
     "default_locale": "zh_CN",
