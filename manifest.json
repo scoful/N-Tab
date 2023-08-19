@@ -55,21 +55,10 @@
             ],
             "css": [],
             "run_at": "document_start"
-        },
-        {
-            "matches": [
-                "https://pan.baidu.com/s/*"
-            ],
-            "js": [
-                "js/baiduPan.js"
-            ],
-            "css": [],
-            "run_at": "document_start"
         }
     ],
     "web_accessible_resources": [
-        "js/gzLibraryInject.js",
-        "js/baiduPanInject.js"
+        "js/gzLibraryInject.js"
     ],
     "homepage_url": "https://github.com/scoful/cloudSkyMonster",
     "default_locale": "zh_CN",

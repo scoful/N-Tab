@@ -164,10 +164,6 @@
 
      在打开链接为http://10.0.18.10:9098/Radius/reader/routerFirst 才会触发，输入账号密码登录后会自动在2小时后弹窗提醒(广图的wifi有效期2小时)
 
-17. 匹配百度网盘(只支持最新的外链分享，即那种生成分享链接和提取码的方式)
-
-     在打开链接为https://pan.baidu.com/s/ 才会触发，页面上多一个按钮，不用勾选要转存的文件，直接点击按钮，默认一次性转存这个外链分享的所有文件，用于突破百度网盘的文件外链转存个数限制(目前是一个文件夹调用一次转存api，效率有点低，还需多多测试)
-
 18. 中英文国际化切换
 
      切换英文chrome的方法：如果打开了chrome，先关闭，然后新建一个chrom浏览器快捷方式，右键快捷方式，属性，在目标栏的最后面加上，（--前面有空格）
@@ -313,8 +309,5 @@
 
 [giteeAPI文档](https://gitee.com/api/v5/)
 
-[百度网盘API文档](https://pan.baidu.com/union/document/entrance)
-
 [Bootstrap中文网](https://www.bootcss.com/)
 
-[二维码生成api](http://www.topscan.com/pingtai)
