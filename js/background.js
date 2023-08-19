@@ -35,7 +35,7 @@ window.onload = function () {
 document.addEventListener('DOMContentLoaded', function () {
     console.log("load完background了");
     var script = document.createElement('script');
-    script.src = "js/jquery-2.2.2.min.js";
+    script.src = "js/jquery-3.0.0.min.js";
     document.head.appendChild(script);
     var script2 = document.createElement('script');
     script2.src = "js/moment.min.js";

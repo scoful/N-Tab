@@ -38,7 +38,7 @@
                 "<all_urls>"
             ],
             "js": [
-                "js/jquery-2.2.2.min.js",
+                "js/jquery-3.0.0.min.js",
                 "js/contentScript.js"
             ],
             "css": [
