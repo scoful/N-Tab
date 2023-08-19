@@ -32,9 +32,6 @@
 	"customMinuteRemind": {
 		"message": "remind after custom minute"
 	},
-	"openJsonTools": {
-		"message": "JSON Tools"
-	},
 	"cuttingLine": {
 		"message": "I am cutting line"
 	},

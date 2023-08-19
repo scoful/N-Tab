@@ -1358,11 +1358,4 @@ chrome.contextMenus.create({
 });
 
 
-chrome.contextMenus.create({
-    id: "13",
-    title: `${chrome.i18n.getMessage("openJsonTools")}`,
-    contexts: ["browser_action"],
-    onclick: function () {
-        chrome.tabs.create({ index: 0, url: chrome.extension.getURL('json.html') });
-    }
-});
+

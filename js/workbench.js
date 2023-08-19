@@ -2254,21 +2254,6 @@ https://www.google.com | Google
         });
     };
 
-    // 打开JSON工具页
-    function openJsonTools() {
-        chrome.tabs.query({ url: "chrome-extension://*/json.html*", currentWindow: true }, function (tab) {
-            if (tab.length >= 1) {
-                chrome.tabs.move(tab[0].id, { index: 0 }, function callback() {
-                    chrome.tabs.highlight({ tabs: 0 }, function callback() {
-                    });
-                });
-                chrome.tabs.reload(tab[0].id, {}, function (tab) {
-                });
-            } else {
-                chrome.tabs.create({ index: 0, url: chrome.extension.getURL('json.html') });
-            }
-        });
-    };
 
     // 打开 Markdown目录生成器
     function openMarkdownToc() {

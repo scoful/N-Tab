@@ -32,9 +32,6 @@
 	"customMinuteRemind": {
 		"message": "自定义分钟提醒"
 	},
-	"openJsonTools": {
-		"message": "JSON工具"
-	},
 	"cuttingLine": {
 		"message": "我是分割线"
 	},

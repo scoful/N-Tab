@@ -45,9 +45,6 @@
                 <div id="custom-minute" class="menu-entry">${chrome.i18n.getMessage("customMinuteRemind")}</div>
             </div>
             <div class="row">
-                <div id="open_json_html" class="menu-entry">${chrome.i18n.getMessage("openJsonTools")}</div>
-            </div>
-            <div class="row">
                 <div id="" class="menu-entry" style="color:red;">${chrome.i18n.getMessage("cuttingLine")}</div>
             </div>
             `;
@@ -94,10 +91,6 @@
                 });
             });
 
-            // 打开json工具页
-            document.getElementById('open_json_html').addEventListener('click', function () {
-                chrome.tabs.create({ index: 0, url: chrome.extension.getURL('json.html') });
-            });
 
             // 测试用
             // document.getElementById('testGithub').addEventListener('click', function () {
