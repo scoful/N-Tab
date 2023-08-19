@@ -93,7 +93,6 @@
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
                                 aria-haspopup="true" aria-expanded="false">${chrome.i18n.getMessage("otherFunction")}<span class="caret"></span></a>
                             <ul id="others" class="dropdown-menu">
-                                <li id="openTools"><a href="#">${chrome.i18n.getMessage("openJsonTools")}</a></li>
                                 <li id="timeTaskPlatform"><a href="#">定时任务平台</a></li>
                                 <li id="markdownToc"><a href="#">${chrome.i18n.getMessage("markdownToc")}</a></li>
                                 <li id="showLog"><a href="#">${chrome.i18n.getMessage("showLog")}</a></li>
@@ -505,10 +504,6 @@ https://www.google.com | Google
             showTasks();
         });
 
-        // 打开 JSON工具
-        document.getElementById('openTools').addEventListener('click', function () {
-            openJsonTools();
-        });
 
         // 打开 Markdown目录生成器
         document.getElementById('markdownToc').addEventListener('click', function () {
