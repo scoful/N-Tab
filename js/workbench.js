@@ -94,7 +94,6 @@
                                 aria-haspopup="true" aria-expanded="false">${chrome.i18n.getMessage("otherFunction")}<span class="caret"></span></a>
                             <ul id="others" class="dropdown-menu">
                                 <li id="timeTaskPlatform"><a href="#">定时任务平台</a></li>
-                                <li id="markdownToc"><a href="#">${chrome.i18n.getMessage("markdownToc")}</a></li>
                                 <li id="showLog"><a href="#">${chrome.i18n.getMessage("showLog")}</a></li>
                                 <li id="showOptions"><a href="#">${chrome.i18n.getMessage("optionsValue")}</a></li>
                                 <li role="separator" class="divider"></li>
@@ -504,11 +503,6 @@ https://www.google.com | Google
             showTasks();
         });
 
-
-        // 打开 Markdown目录生成器
-        document.getElementById('markdownToc').addEventListener('click', function () {
-            openMarkdownToc();
-        });
 
         // 把从onetab导出的数据导入
         document.getElementById('importOnetabMode').addEventListener('click', function () {
@@ -2249,22 +2243,6 @@ https://www.google.com | Google
         });
     };
 
-
-    // 打开 Markdown目录生成器
-    function openMarkdownToc() {
-        chrome.tabs.query({ url: "chrome-extension://*/markdownToc.html*", currentWindow: true }, function (tab) {
-            if (tab.length >= 1) {
-                chrome.tabs.move(tab[0].id, { index: 0 }, function callback() {
-                    chrome.tabs.highlight({ tabs: 0 }, function callback() {
-                    });
-                });
-                chrome.tabs.reload(tab[0].id, {}, function (tab) {
-                });
-            } else {
-                chrome.tabs.create({ index: 0, url: chrome.extension.getURL('markdownToc.html') });
-            }
-        });
-    };
 
     // 展示定时任务
     function showTasks() {
