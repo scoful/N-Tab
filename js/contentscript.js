@@ -53,14 +53,6 @@ chrome.runtime.onMessage.addListener(function (req, sender, sendRes) {
             sendRes('ok'); // acknowledge
             tip(req.message);
             break;
-        case 'generateQr':
-            sendRes('ok'); // acknowledge
-            var screenWidth = document.body.clientWidth + document.body.scrollLeft;
-            pageX = screenWidth / 2
-            pageY = 70
-            scrollTop = 0
-            tip(req.message);
-            break;
         default:
             sendRes('nope'); // acknowledge
             break;

@@ -1204,22 +1204,6 @@ chrome.contextMenus.create({
 });
 
 chrome.contextMenus.create({
-    id: "2",
-    title: `${chrome.i18n.getMessage("generateQr")}`,
-    contexts: ["browser_action"],
-    onclick: function () {
-        chrome.tabs.query({ url: ["https://*/*", "http://*/*"], active: true, currentWindow: true }, function (tab) {
-            console.log(tab)
-            if (tab.length > 0) {
-                data = tab[0].url;
-                let qrInfo = `<img id="qr" src = "http://qr.topscan.com/api.php?text=" + ${data}>`
-                sendMessageToContentScript("generateQr", qrInfo);
-            }
-        });
-    }
-});
-
-chrome.contextMenus.create({
     id: "3",
     title: `${chrome.i18n.getMessage("tabsMenu")}`,
     contexts: ["browser_action"]

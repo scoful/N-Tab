@@ -10,12 +10,6 @@
         var data;
         if (navigator.userAgent.toLowerCase().match(/qqbrowser/) != null) {
 
-            chrome.tabs.query({ active: true, currentWindow: true }, function (tab) {
-                data = tab[0].url;
-                $("#qr").attr("src", "http://qr.topscan.com/api.php?text=" + data);
-                $("#qr").css({ "width": "200px", "height": "200px" });
-            });
-
             document.getElementById("menu").innerHTML = `
             <div class="row">
                 <div id="surplusTime" class="menu-entry"></div>

@@ -422,9 +422,6 @@
 	"refresh": {
 		"message": "refresh"
 	},
-	"generateQr": {
-		"message": "url generate QrCode"
-	},
 	"tabsMenu": {
 		"message": "tabs menu"
 	},
