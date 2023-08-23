@@ -93,7 +93,6 @@
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
                                 aria-haspopup="true" aria-expanded="false">${chrome.i18n.getMessage("otherFunction")}<span class="caret"></span></a>
                             <ul id="others" class="dropdown-menu">
-                                <li id="timeTaskPlatform"><a href="#">定时任务平台</a></li>
                                 <li id="showLog"><a href="#">${chrome.i18n.getMessage("showLog")}</a></li>
                                 <li id="showOptions"><a href="#">${chrome.i18n.getMessage("optionsValue")}</a></li>
                                 <li role="separator" class="divider"></li>
@@ -166,7 +165,6 @@ https://www.google.com | Google
                 <div id="tabGroups"></div>
                 <div id="logs"></div>
                 <div id="options" class="div-top"></div>
-                <div id="tasks"></div>
             </div>
             <hr>
             <div class="blog-footer">
@@ -419,7 +417,6 @@ https://www.google.com | Google
             $("#logs").addClass("hide");
             $("#tabGroups").addClass("hide");
             $("#options").addClass("hide");
-            $("#tasks").addClass("hide")
             $("#importDefault").addClass("hide")
             $("#exportDefault").addClass("hide")
             $("#importOneTab").removeClass("hide")
@@ -431,7 +428,6 @@ https://www.google.com | Google
             $("#tabGroups").addClass("hide");
             $("#options").addClass("hide");
             $("#importOneTab").addClass("hide")
-            $("#tasks").addClass("hide")
             $("#exportDefault").addClass("hide")
             $("#importDefault").removeClass("hide")
         });
@@ -443,7 +439,6 @@ https://www.google.com | Google
             $("#options").addClass("hide");
             $("#importOneTab").addClass("hide")
             $("#importDefault").addClass("hide")
-            $("#tasks").addClass("hide")
             $("#exportDefault").removeClass("hide")
             $('#exportTextarea').val("");
         });
@@ -452,7 +447,6 @@ https://www.google.com | Google
         document.getElementById('showLog').addEventListener('click', function () {
             $("#tabGroups").addClass("hide")
             $("#options").addClass("hide")
-            $("#tasks").addClass("hide")
             $("#importOneTab").addClass("hide")
             $("#importDefault").addClass("hide")
             $("#exportDefault").addClass("hide")
@@ -467,7 +461,6 @@ https://www.google.com | Google
             allHomeClass[i].addEventListener('click', function () {
                 $("#logs").addClass("hide");
                 $("#options").addClass("hide");
-                $("#tasks").addClass("hide")
                 $("#importOneTab").addClass("hide")
                 $("#importDefault").addClass("hide")
                 $("#exportDefault").addClass("hide")
@@ -481,7 +474,6 @@ https://www.google.com | Google
         document.getElementById('showOptions').addEventListener('click', function () {
             $("#logs").addClass("hide");
             $("#tabGroups").addClass("hide");
-            $("#tasks").addClass("hide")
             $("#importOneTab").addClass("hide")
             $("#importDefault").addClass("hide")
             $("#exportDefault").addClass("hide")
@@ -489,20 +481,6 @@ https://www.google.com | Google
             // 展示配置
             showOptions();
         });
-
-        // 打开 定时任务平台页
-        document.getElementById('timeTaskPlatform').addEventListener('click', function () {
-            $("#logs").addClass("hide");
-            $("#tabGroups").addClass("hide");
-            $("#options").addClass("hide");
-            $("#importOneTab").addClass("hide")
-            $("#importDefault").addClass("hide")
-            $("#exportDefault").addClass("hide")
-            $("#tasks").removeClass("hide")
-            // 展示定时任务
-            showTasks();
-        });
-
 
         // 把从onetab导出的数据导入
         document.getElementById('importOnetabMode').addEventListener('click', function () {
@@ -2243,471 +2221,6 @@ https://www.google.com | Google
         });
     };
 
-
-    // 展示定时任务
-    function showTasks() {
-        chrome.storage.local.get(function (storage) {
-            var bridge = [];
-            var taskJsUrl = "";
-            if (storage.taskList) {
-                bridge = storage.taskList;
-                taskJsUrl = storage.taskJsUrl;
-                if (bridge.length > 0) {
-                    document.getElementById('totals').innerHTML = bridge.length;
-                } else {
-                    document.getElementById('totals').innerHTML = 0;
-                }
-            } else {
-                document.getElementById('totals').innerHTML = 0;
-            }
-            var taskObj = {}, // to-be module
-                taskGroups = bridge || [];
-
-            function saveTaskGroups(json) {
-                chrome.storage.local.set({ "taskList": json });
-            }
-
-            // model entity
-            taskObj.taskGroup = function (data) {
-                this.description = m.prop(data.description);
-                this.functionName = m.prop(data.functionName);
-                this.rate = m.prop(data.rate);
-                this.isOpen = m.prop(data.isOpen);
-                this.script = m.prop(data.script);
-            };
-
-            // alias for Array
-            taskObj.TaskGroupsList = Array;
-
-            // view-model
-            taskObj.vm = new function () {
-                var vm = {};
-                vm.init = function () {
-                    vm.list = new taskObj.TaskGroupsList();
-                };
-
-                vm.rmTask = function (taskIndex) {
-                    // remove from localStorage
-                    taskGroups.splice(taskIndex, 1);
-                    // save
-                    saveTaskGroups(taskGroups);
-                    if (taskGroups) {
-                        chrome.alarms.clearAll(function (wasCleared) {
-                            console.log(wasCleared)
-                            for (let i = 0; i < taskGroups.length; i++) {
-                                if (taskGroups[i].isOpen) {
-                                    chrome.alarms.create(taskGroups[i].functionName, { delayInMinutes: parseInt(taskGroups[i].rate), periodInMinutes: parseInt(taskGroups[i].rate) });
-                                }
-                            }
-                            // 创建定时同步gitee任务
-                            chrome.alarms.create("checkAutoSyncGitee", { delayInMinutes: 70, periodInMinutes: 70 });
-                            // 创建定时同步github任务
-                            chrome.alarms.create("checkAutoSyncGithub", { delayInMinutes: 90, periodInMinutes: 90 });
-
-                        });
-                    }
-                    showTasks();
-                };
-
-                vm.moveTask = function (index, tindex) {
-                    if (index > tindex) {
-                        taskGroups.splice(tindex, 0, taskGroups[index]);
-                        taskGroups.splice(index + 1, 1);
-                        saveTaskGroups(taskGroups);
-                    } else {
-                        taskGroups.splice(tindex + 1, 0, taskGroups[index]);
-                        taskGroups.splice(index, 1);
-                        saveTaskGroups(taskGroups);
-                    }
-                };
-
-                vm.updateTask = function (index, taskInfo) {
-                    let functionName = taskInfo.functionName
-                    let description = taskInfo.description
-                    let rate = taskInfo.rate
-                    let isOpen = taskInfo.isOpen
-                    let script = taskInfo.script
-                    taskGroups[index].functionName = functionName
-                    taskGroups[index].description = description
-                    taskGroups[index].rate = rate
-                    taskGroups[index].isOpen = JSON.parse(isOpen)
-                    taskGroups[index].script = script
-                    saveTaskGroups(taskGroups);
-                    if (taskGroups) {
-                        chrome.alarms.clearAll(function (wasCleared) {
-                            console.log(wasCleared)
-                            for (let i = 0; i < taskGroups.length; i++) {
-                                if (taskGroups[i].isOpen) {
-                                    chrome.alarms.create(taskGroups[i].functionName, { delayInMinutes: parseInt(taskGroups[i].rate), periodInMinutes: parseInt(taskGroups[i].rate) });
-                                }
-                            }
-                            // 创建定时同步gitee任务
-                            chrome.alarms.create("checkAutoSyncGitee", { delayInMinutes: 70, periodInMinutes: 70 });
-                            // 创建定时同步github任务
-                            chrome.alarms.create("checkAutoSyncGithub", { delayInMinutes: 90, periodInMinutes: 90 });
-
-                        });
-                    }
-                    showTasks()
-                };
-                return vm;
-            };
-
-            taskObj.controller = function () {
-                var i;
-                taskObj.vm.init();
-                for (i = 0; i < taskGroups.length; i += 1) {
-                    taskObj.vm.list.push(new taskObj.taskGroup(taskGroups[i]));
-                }
-            };
-
-            taskObj.view = function () {
-                if (taskObj.vm.list.length === 0) {
-                    return m('div', [m('button.btn btn-primary taskButtonGroup', {
-                        id: "showAddTask",
-                        type: "button",
-                        onclick: function () {
-                            $('#addTaskArea').slideToggle();
-                            $('#functionName').val("")
-                            $('#description').val("")
-                            $('#rate').val("")
-                            $('#script').val("")
-                        }
-                    }, `${chrome.i18n.getMessage("addTask")}`), m('button.btn btn-primary taskButtonGroup', {
-                        id: "refresh",
-                        type: "button",
-                        onclick: function () {
-                            showTasks()
-                        },
-                        onmouseover: function () {
-                            chrome.alarms.getAll(function (alarms) {
-                                console.log(alarms)
-                                if (alarms.length > 0) {
-                                    for (let i = 0; i < alarms.length; i++) {
-                                        console.log(alarms[i].name)
-                                    }
-                                }
-                            });
-                        }
-                    }, `${chrome.i18n.getMessage("refresh")}`), m('table.table table-hover', [m('thead', m('tr', [m('th', "任务代号"), m('th', "任务描述"), m('th', "调用频率(分钟)"), m('th', "调用结果"), m('th', "最近调用时间"), m('th', "是否启用"), m('th', "操作")]))]), m('div',
-                        m('div.jumbotron',
-                            [m('div', { style: "text-align:center; margin-bottom:50px" }, "还没有任务！")
-                            ])), m('div', { id: "addTaskArea", style: "display:none" }, [
-                                m('div', [m('label', "任务代号"), m('input.addTaskTextClass', { id: "functionName", type: "text" })]),
-                                m('div', [m('label', "任务描述"), m('input.addTaskTextClass', { id: "description", type: "text" })]),
-                                m('div', [m('label', "每隔"), m('input.addTaskTextClass', { id: "rate", type: "text" }), m('label', "分钟")]),
-                                m('div', [m('div', "任务脚本"), m('textarea', { id: "script", type: "text", style: "width:260px;height:200px" })]),
-                                m('div', [m('button.btn btn-primary addTaskTextClass', {
-                                    id: "add",
-                                    type: "button",
-                                    onclick: function () {
-                                        if ($('#functionName').val().trim().length <= 0) {
-                                            tip("任务代号不能为空！")
-                                        } else if ($('#description').val().trim().length <= 0) {
-                                            tip("任务描述不能为空！")
-                                        } else if ($('#rate').val().trim().length <= 0) {
-                                            tip("调用频率不能为空！")
-                                        } else if ($('#script').val().trim().length <= 0) {
-                                            tip("任务脚本不能为空！")
-                                        } else if (!isInt(parseInt($('#rate').val().trim()))) {
-                                            tip("调用频率必须是整数")
-                                        } else {
-                                            var taskList = new Array()
-                                            let functionName = $('#functionName').val().trim()
-                                            let description = $('#description').val().trim()
-                                            let rate = $('#rate').val().trim()
-                                            let script = $('#script').val().trim()
-                                            let task = { functionName: functionName, description: description, rate: rate, script: script, isOpen: false }
-                                            chrome.storage.local.get(null, function (items) {
-                                                if (items.taskList) {
-                                                    taskList = items.taskList
-                                                    let flag = false;
-                                                    for (let i = 0; i < taskList.length; i++) {
-                                                        if (taskList[i].functionName === functionName) {
-                                                            flag = true;
-                                                        }
-                                                    }
-                                                    if (flag) {
-                                                        tip(functionName + "已存在，换一个")
-                                                    } else {
-                                                        taskList.push(task)
-                                                        chrome.storage.local.set({ "taskList": taskList });
-                                                        $('#addTaskArea').slideToggle();
-                                                        $('#functionName').val("")
-                                                        $('#description').val("")
-                                                        $('#rate').val("")
-                                                        $('#script').val("")
-                                                        reloadAbleJSFn("taskJs", taskJsUrl)
-                                                        showTasks()
-                                                    }
-                                                } else {
-                                                    taskList.push(task)
-                                                    chrome.storage.local.set({ "taskList": taskList });
-                                                    $('#addTaskArea').slideToggle();
-                                                    $('#functionName').val("")
-                                                    $('#description').val("")
-                                                    $('#rate').val("")
-                                                    $('#script').val("")
-                                                    reloadAbleJSFn("taskJs", taskJsUrl)
-                                                    showTasks()
-                                                }
-                                            })
-                                        }
-                                    }
-                                }, `${chrome.i18n.getMessage("add")}`), m('button.btn btn-primary addTaskTextClass', {
-                                    id: "cancle",
-                                    type: "button",
-                                    onclick: function () {
-                                        $('#addTaskArea').slideToggle();
-                                        $('#functionName').val("")
-                                        $('#description').val("")
-                                        $('#rate').val("")
-                                        $('#script').val("")
-                                    }
-                                }, `${chrome.i18n.getMessage("cancle")}`)])
-                            ])])
-                } else {
-                    return m('div', [m('button.btn btn-primary taskButtonGroup', {
-                        id: "showAddTask",
-                        type: "button",
-                        onclick: function () {
-                            $('#addTaskArea').slideToggle();
-                            $('#functionName').val("")
-                            $('#description').val("")
-                            $('#rate').val("")
-                            $('#script').val("")
-                        }
-                    }, `${chrome.i18n.getMessage("addTask")}`), m('button.btn btn-primary taskButtonGroup', {
-                        id: "refresh",
-                        type: "button",
-                        onclick: function () {
-                            showTasks()
-                        },
-                        onmouseover: function () {
-                            chrome.alarms.getAll(function (alarms) {
-                                console.log(alarms)
-                                if (alarms.length > 0) {
-                                    for (let i = 0; i < alarms.length; i++) {
-                                        console.log(alarms[i].name)
-                                    }
-                                }
-                            });
-                        }
-                    }, `${chrome.i18n.getMessage("refresh")}`), m('table.table table-hover', [m('thead', m('tr', [m('th', "任务代号"), m('th', "任务描述"), m('th', "调用频率(分钟)"), m('th', "调用结果"), m('th', "最近调用时间"), m('th', "是否启用"), m('th', "操作")])), m('tbody', { id: "taskGroups" }, taskObj.vm.list.map(function (group, i) {
-                        let isOpen
-                        if (group.isOpen()) {
-                            isOpen = "停用"
-                        } else {
-                            isOpen = "启用"
-                        }
-                        let functionName = group.functionName()
-                        let info = storage[functionName]
-                        let feedback, lastRun;
-                        if (info) {
-                            feedback = info.feedback
-                            lastRun = info.lastRun
-                        }
-                        return m('tr', [m('th', group.functionName()), m('td', group.description()), m('td', group.rate()), m('td', feedback || '无'), m('td', lastRun || '无'), m('td', m('span', group.isOpen())), m('td', m('span.link', {
-                            onclick: function () {
-                                let functionName = group.functionName()
-                                let description = group.description()
-                                let rate = group.rate()
-                                let isOpen = group.isOpen()
-                                let script = group.script()
-                                let task = { functionName: functionName, description: description, rate: rate, script: script, isOpen: !isOpen }
-                                taskObj.vm.updateTask(i, task)
-                            }
-                        }, isOpen), [m('span.link', {
-                            onclick: function () {
-                                var functionName = group.functionName()
-                                try {
-                                    myRun(functionName)
-                                    setTimeout(function () {
-                                        showTasks()
-                                    }, 2000);
-                                }
-                                catch (err) {
-                                    alert("任务js报错啦！" + err)
-                                }
-                            }
-                        }, '运行'), m('span.link', {
-                            onclick: function () {
-                                $('#updateTaskArea').slideToggle();
-                                let functionName = group.functionName()
-                                let description = group.description()
-                                let rate = group.rate()
-                                let isOpen = group.isOpen()
-                                let script = group.script()
-                                $('#functionName2').val(functionName)
-                                $('#description2').val(description)
-                                $('#rate2').val(rate)
-                                $('#script2').val(script)
-                                $('#isOpen2').val(isOpen)
-                                $('#id2').val(i)
-                            }
-                        }, '编辑'), m('span.link', {
-                            onclick: function () {
-                                taskObj.vm.rmTask(i)
-                                chrome.storage.local.remove(group.functionName(), function () {
-                                })
-                            }
-                        }, '删除')])])
-                    })
-
-                    )]), m('div', { id: "addTaskArea", style: "display:none" }, [
-                        m('div', [m('label', "任务代号"), m('input.addTaskTextClass', { id: "functionName", type: "text" })]),
-                        m('div', [m('label', "任务描述"), m('input.addTaskTextClass', { id: "description", type: "text" })]),
-                        m('div', [m('label', "每隔"), m('input.addTaskTextClass', { id: "rate", type: "text" }), m('label', "分钟")]),
-                        m('div', [m('div', "任务脚本"), m('textarea', { id: "script", type: "text", style: "width:260px;height:200px" })]),
-                        m('div', [m('button.btn btn-primary addTaskTextClass', {
-                            id: "add",
-                            type: "button",
-                            onclick: function () {
-                                if ($('#functionName').val().trim().length <= 0) {
-                                    tip("任务代号不能为空！")
-                                } else if ($('#description').val().trim().length <= 0) {
-                                    tip("任务描述不能为空！")
-                                } else if ($('#rate').val().trim().length <= 0) {
-                                    tip("调用频率不能为空！")
-                                } else if ($('#script').val().trim().length <= 0) {
-                                    tip("任务脚本不能为空！")
-                                } else if (!isInt(parseInt($('#rate').val().trim()))) {
-                                    tip("调用频率必须是整数")
-                                } else {
-                                    var taskList = new Array()
-                                    let functionName = $('#functionName').val().trim()
-                                    let description = $('#description').val().trim()
-                                    let rate = $('#rate').val().trim()
-                                    let script = $('#script').val().trim()
-                                    let task = { functionName: functionName, description: description, rate: rate, script: script, isOpen: false }
-                                    chrome.storage.local.get(null, function (items) {
-                                        if (items.taskList) {
-                                            taskList = items.taskList
-                                            let flag = false;
-                                            for (let i = 0; i < taskList.length; i++) {
-                                                if (taskList[i].functionName === functionName) {
-                                                    flag = true;
-                                                }
-                                            }
-                                            if (flag) {
-                                                tip(functionName + "已存在，换一个")
-                                            } else {
-                                                taskList.push(task)
-                                                chrome.storage.local.set({ "taskList": taskList });
-                                                $('#addTaskArea').slideToggle();
-                                                $('#functionName').val("")
-                                                $('#description').val("")
-                                                $('#rate').val("")
-                                                $('#script').val("")
-                                                reloadAbleJSFn("taskJs", taskJsUrl)
-                                                showTasks()
-                                            }
-                                        } else {
-                                            taskList.push(task)
-                                            chrome.storage.local.set({ "taskList": taskList });
-                                            $('#addTaskArea').slideToggle();
-                                            $('#functionName').val("")
-                                            $('#description').val("")
-                                            $('#rate').val("")
-                                            $('#script').val("")
-                                            reloadAbleJSFn("taskJs", taskJsUrl)
-                                            showTasks()
-                                        }
-                                    })
-                                }
-                            }
-                        }, `${chrome.i18n.getMessage("add")}`), m('button.btn btn-primary addTaskTextClass', {
-                            id: "cancle",
-                            type: "button",
-                            onclick: function () {
-                                $('#addTaskArea').slideToggle();
-                                $('#functionName').val("")
-                                $('#description').val("")
-                                $('#rate').val("")
-                                $('#script').val("")
-                            }
-                        }, `${chrome.i18n.getMessage("cancle")}`)])
-                    ]), m('div', { id: "updateTaskArea", style: "display:none" }, [
-                        m('div', [m('label', "任务代号"), m('input.addTaskTextClass', { id: "functionName2", type: "text" })]),
-                        m('div', [m('label', "任务描述"), m('input.addTaskTextClass', { id: "description2", type: "text" })]),
-                        m('div', [m('input.addTaskTextClass', { id: "isOpen2", type: "text", style: "display:none" })]),
-                        m('div', [m('input.addTaskTextClass', { id: "id2", type: "text", style: "display:none" })]),
-                        m('div', [m('label', "每隔"), m('input.addTaskTextClass', { id: "rate2", type: "text" }), m('label', "分钟")]),
-                        m('div', [m('div', "任务脚本"), m('textarea', { id: "script2", type: "text", style: "width:260px;height:200px" })]),
-                        m('div', [m('button.btn btn-primary addTaskTextClass', {
-                            id: "update",
-                            type: "button",
-                            onclick: function () {
-                                if ($('#functionName2').val().trim().length <= 0) {
-                                    tip("任务代号不能为空！")
-                                } else if ($('#description2').val().trim().length <= 0) {
-                                    tip("任务描述不能为空！")
-                                } else if ($('#rate2').val().trim().length <= 0) {
-                                    tip("调用频率不能为空！")
-                                } else if ($('#script2').val().trim().length <= 0) {
-                                    tip("任务脚本不能为空！")
-                                } else if (!isInt(parseInt($('#rate2').val().trim()))) {
-                                    tip("调用频率必须是整数")
-                                } else {
-                                    let functionName = $('#functionName2').val().trim()
-                                    let description = $('#description2').val().trim()
-                                    let rate = $('#rate2').val().trim()
-                                    let script = $('#script2').val().trim()
-                                    let isOpen = $('#isOpen2').val().trim()
-                                    let id = $('#id2').val().trim()
-                                    let task = { functionName: functionName, description: description, rate: rate, script: script, isOpen: isOpen }
-
-                                    taskObj.vm.updateTask(id, task)
-                                    reloadAbleJSFn("taskJs", taskJsUrl)
-                                }
-                            }
-                        }, `${chrome.i18n.getMessage("update")}`), m('button.btn btn-primary addTaskTextClass', {
-                            id: "cancle",
-                            type: "button",
-                            onclick: function () {
-                                $('#updateTaskArea').slideToggle();
-                                $('#functionName').val("")
-                                $('#description').val("")
-                                $('#rate').val("")
-                                $('#script').val("")
-                            }
-                        }, `${chrome.i18n.getMessage("cancle")}`)])
-                    ])])
-
-                }
-
-            };
-            // init the app
-            m.module(document.getElementById('tasks'), { controller: taskObj.controller, view: taskObj.view });
-
-            // 以下是超级拖曳的相关代码
-            if (document.getElementById("taskGroups")) {
-                sortableTask = Sortable.create(document.getElementById("taskGroups"), {
-                    group: {
-                        name: "taskGroups",
-                        pull: false,
-                        put: false
-                    },
-                    scroll: true,
-                    easing: "cubic-bezier(1, 0, 0, 1)",
-                    animation: 150, //动画参数
-                    ghostClass: 'ghost',
-                    filter: '.filtered',
-                    onEnd: function (evt) { //拖拽完毕之后发生该事件
-                        console.log(evt)
-                        // console.log(evt.item);
-                        // console.log(evt.to);
-                        // console.log(evt.from);
-                        // console.log(evt.oldIndex);
-                        // console.log(evt.newIndex);
-                        // console.log(evt.oldDraggableIndex);
-                        // console.log(evt.newDraggableIndex);
-                        taskObj.vm.moveTask(evt.oldIndex, evt.newIndex);
-                    }
-                });
-            }
-        });
-    }
 
     // 简单的消息通知
     function tip(info) {

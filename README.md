@@ -54,8 +54,6 @@
    - 支持锁定或解锁整个标签组，即锁定后标签组和标签不能删除，不能拖曳，但能被占位
    - 支持快速上浮某个标签组到顶部
    - 支持命名标签组
-4. 定时任务平台
-   - 支持定时任务的管理，可用于定时签到、定时刷新等用途，PS：这个功能要求必须保持登录gitee状态
 5. 定时提醒功能
    - 5分钟弹窗提醒
    - 10分钟弹窗提醒
@@ -171,45 +169,6 @@
 
      **PS：** 假如不生效，检查是否chrom真的关闭，查看任务管理器，进程是否还在，这是chrome的一个设置选项，**关闭 Google Chrome 后继续运行后台应用**，关闭这个选项就能真正关闭chrome，再尝试切换英文chrome。
 
-     
-
-19. 定时任务平台的使用
-
-     - 严重依赖gitee，所以这个功能必须已经添加了gitee的权限token，并且要保持gitee的登录状态
-
-     - 任务代号=js脚本里的函数名
-
-     - 脚本的编写有要求，通过捕获throw出的结果来反馈结果
-
-     - 调用频率指的是每隔N分钟调用一次脚本
-
-     - 操作的启用、停用是定时调用的开关
-
-     - 操作的运行是用于立即运行一次看结果，每次编辑改动了js后，等5秒后再尝试，运行的结果会显示在调用结果和最近调用时间上，同时使用开发者工具，体验更佳
-
-     - 附上一个脚本例子，用于签到v2ex的
-
-       ```
-       async function signInV2ex() {
-               try {
-                   console.log("signInV2ex")
-                   var ret = await axios.get('https://www.v2ex.com/mission/daily');
-                   if (/登录</.test(ret.data)) throw '需要登录';
-                   if (/每日登录奖励已领取/.test(ret.data)) throw '已领取';
-                   let m = /redeem\?once=(.*?)'/.exec(ret.data);
-                   if (!m) throw '失败1';
-                   await axios.get('https://www.v2ex.com/mission/daily/redeem?once=' + m[1]);
-                   var ret = await axios.get('https://www.v2ex.com/mission/daily');
-                   if (/每日登录奖励已领取/.test(ret.data)) return '成功';
-                   throw '失败2';
-               } catch (error) {
-                   chrome.storage.local.set({ "signInV2ex": { "feedback": error, "lastRun": moment().format('YYYY-MM-DD HH:mm:ss') } });
-               }
-           };
-       ```
-
-       
-    
     
 21. 未完待续
 
