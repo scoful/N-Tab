@@ -171,6 +171,7 @@ https://www.google.com | Google
             <p class="pull-right"><a href="#">${chrome.i18n.getMessage("backToTop")}</a></p>
             <p>${chrome.i18n.getMessage("sourceCode")}<a
                     href="https://github.com/scoful/cloudSkyMonster">GitHub</a>.</p>
+            <p>有问题可直接联系微信：scoful 请注明来处和来意哦~</p>
             <hr>
             </div>
         </div>
@@ -1937,7 +1938,7 @@ https://www.google.com | Google
                                     tabs.vm.updateGroup(i, { groupTitle: val })
                                 }
                             }),
-                            m('span.group-date', moment(group.date()).format('YYYY-MM-DD, HH:mm:ss')),
+                            m('span.group-date', moment(group.date()).format('YYYY-MM-DD HH:mm:ss')),
                             ' ',
                             m('span.restore-all', {
                                 onclick: function () {

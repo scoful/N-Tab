@@ -1,6 +1,6 @@
 {
 	"pluginDesc": {
-		"message": "多功能插件，说明书请看github https://github.com/scoful/cloudSkyMonster"
+		"message": "浏览器标签管理工具，对标OneTab，效率助手"
 	},
 	"showAllTabs": {
 		"message": "展示收集的标签"
@@ -357,7 +357,7 @@
 		"message": "秒"
 	},
 	"sourceCode": {
-		"message": "😃对本项目的源码有兴趣的话欢迎移步star-->"
+		"message": "对本项目的源码有兴趣的话欢迎移步star-> "
 	},
 	"usedSpace": {
 		"message": "已使用："
