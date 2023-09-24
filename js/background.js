@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // 获取tab数量并在pop上显示
     chrome.tabs.query({ currentWindow: true }, function (tab) {
         chrome.browserAction.setBadgeText({ text: tab.length + "" });
-        chrome.browserAction.setBadgeBackgroundColor({ color: [255, 0, 0, 255] });
+        chrome.browserAction.setBadgeBackgroundColor({ color: "#0038a8" });
     });
     chrome.storage.local.get(function (storage) {
         console.log(storage);
@@ -547,21 +547,21 @@ function sendMessageToContentScript(action, message) {
 chrome.tabs.onActivated.addListener(function callback() {
     chrome.tabs.query({}, function (tab) {
         chrome.browserAction.setBadgeText({ text: tab.length + "" });
-        chrome.browserAction.setBadgeBackgroundColor({ color: [255, 0, 0, 255] });
+        chrome.browserAction.setBadgeBackgroundColor({ color: "#0038a8" });
     });
 });
 // 持续监听，当tab被关闭的时候刷新一下pop上badge的tab的数量
 chrome.tabs.onRemoved.addListener(function callback() {
     chrome.tabs.query({}, function (tab) {
         chrome.browserAction.setBadgeText({ text: tab.length + "" });
-        chrome.browserAction.setBadgeBackgroundColor({ color: [255, 0, 0, 255] });
+        chrome.browserAction.setBadgeBackgroundColor({ color: "#0038a8" });
     });
 });
 // 持续监听，当tab被创建的时候刷新一下pop上badge的tab的数量
 chrome.tabs.onCreated.addListener(function callback() {
     chrome.tabs.query({}, function (tab) {
         chrome.browserAction.setBadgeText({ text: tab.length + "" });
-        chrome.browserAction.setBadgeBackgroundColor({ color: [255, 0, 0, 255] });
+        chrome.browserAction.setBadgeBackgroundColor({ color: "#0038a8" });
     });
 });
 
