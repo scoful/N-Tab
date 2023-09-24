@@ -70,7 +70,7 @@
 
    进入[gitee](https://gitee.com)，登录后，右上角头像点击，选择设置，往下拉，左边找私人令牌，点击进入后，右上角生成新令牌，输入一个看起来有意义能明白啥用途的名字，比如： my-onetab-syncing-settings ，**注意只勾选gist，其他的不要勾选**，提交后，输入密码，生成后，要**把展示的token另外找地方备份记录一下**，只有在第一次创建的时候才会显示的，错过了只能重来。PS：假如不小心输入错误，把插件删了重新加载就行了，注意导出备份。
 
-2. 下载[最新的crx](https://github.com/scoful/cloudSkyMonster/releases)文件，要选择解压缩到文件名，不要解压缩到当前目录，或者直接下载源码；
+2. 下载[最新的crx](https://github.com/scoful/cloudSkyMonster/releases)文件，或者下载zip文件，选择解压缩到文件名，不要解压缩到当前目录，或者直接下载源码；
 
 3. 打开Chrome浏览器或其他支持Chrome内核的浏览器，找到并点开“扩展程序”项；
 
