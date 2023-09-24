@@ -1,6 +1,6 @@
 {
 	"pluginDesc": {
-		"message": "Browser Tab Management Tool: Comparable to OneTab, Efficiency Assistant"
+		"message": "Browser Tab Management Tool: Comparable to OneTab"
 	},
 	"showAllTabs": {
 		"message": "show all tabs"
@@ -357,7 +357,7 @@
 		"message": " second "
 	},
 	"sourceCode": {
-		"message": "😃The source code for CloudSkyMonster is available at "
+		"message": "The source code for CloudSkyMonster is available at "
 	},
 	"usedSpace": {
 		"message": "usedSpace : "
