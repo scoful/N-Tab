@@ -114,7 +114,7 @@
 		"message": "Please input \"confirm\" to ensure: "
 	},
 	"confirmValue": {
-		"message": "Warn!!! It will be override, please deep think about it !!!"
+		"message": "Warn!!! It will be override, please deep think about it !!! Please input \"confirm\" to ensure"
 	},
 	"importToLocal": {
 		"message": "import to local"
@@ -427,5 +427,20 @@
 	},
 	"remindMenu": {
 		"message": "remind menu"
+	},
+	"showError": {
+		"message": "Error!"
+	},
+	"goToOptions": {
+		"message": "Please go to the options page for configuration."
+	},
+	"githubToken": {
+		"message": "GitHub Token"
+	},
+	"giteeToken": {
+		"message": "Gitee Token"
+	},
+	"input": {
+		"message": "Please input "
 	}
 }

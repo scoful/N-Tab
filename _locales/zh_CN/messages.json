@@ -48,7 +48,7 @@
 		"message": "查看配置"
 	},
 	"restoreKey": {
-		"message": "点击“恢复全部”或恢复单个标签时："
+		"message": "点击“打开整组”或点击单个标签时："
 	},
 	"restoreValueDelete": {
 		"message": "打开标签并将其从标签列表中删除"
@@ -57,13 +57,13 @@
 		"message": "打开标签但不将其从标签列表中删除"
 	},
 	"openBackgroundAfterSendTab": {
-		"message": "点击“发送当前标签”后："
+		"message": "点击“发送当前标签”或“发送所有标签”或“发送其他标签”后："
 	},
 	"openBackgroundAfterSendTabYes": {
-		"message": "打开展示页"
+		"message": "打开后台页"
 	},
 	"openBackgroundAfterSendTabNo": {
-		"message": "不打开展示页"
+		"message": "不打开后台页"
 	},
 	"saveButtonValue": {
 		"message": "保存配置"
@@ -114,7 +114,7 @@
 		"message": "请输入\"确定\"表示确认："
 	},
 	"confirmValue": {
-		"message": "会覆盖的，小心谨慎思考这操作到底要不要！！！"
+		"message": "会覆盖的，小心谨慎思考这操作到底要不要！！！请输入\"确定\"表示确认"
 	},
 	"importToLocal": {
 		"message": "导入"
@@ -427,5 +427,20 @@
 	},
 	"remindMenu": {
 		"message": "定时功能菜单"
+	},
+	"showError": {
+		"message": "出错了！"
+	},
+	"goToOptions": {
+		"message": "请去配置页面进行配置！"
+	},
+	"githubToken": {
+		"message": "GitHub Token"
+	},
+	"giteeToken": {
+		"message": "Gitee Token"
+	},
+	"input": {
+		"message": "请输入"
 	}
 }

@@ -563,13 +563,18 @@ https://www.google.com | Google
         // 响应推送到github的gist的动作
         document.getElementById('pushToGithubGist').addEventListener('click', function () {
             var confirm = prompt(`${chrome.i18n.getMessage("confirmKey")}`, `${chrome.i18n.getMessage("confirmValue")}`);
-            if (confirm.trim() == "确定" || confirm.trim() == "confirm") {
+            if (confirm.trim() === "确定" || confirm.trim() === "confirm") {
                 console.log("yes");
                 chrome.storage.local.get(null, function (storage) {
+                    if (!storage.githubGistToken) {
+                        console.log("githubGistToken没有保存");
+                        showAlert(`${chrome.i18n.getMessage("showError")}`,`${chrome.i18n.getMessage("githubTokenNoSaved")}`+"\n"+`${chrome.i18n.getMessage("goToOptions")}`)
+                        return
+                    }
                     console.log(storage.handleGistStatus);
                     if (storage.handleGistStatus) {
                         console.log("handleGistStatus有值");
-                        if (storage.handleGistStatus.type == "IDLE") {
+                        if (storage.handleGistStatus.type === "IDLE") {
                             pushToGithubGist();
                         } else {
                             var time = moment().format('YYYY-MM-DD HH:mm:ss');
@@ -594,13 +599,18 @@ https://www.google.com | Google
         // 响应推送到gitee的gist的动作
         document.getElementById('pushToGiteeGist').addEventListener('click', function () {
             var confirm = prompt(`${chrome.i18n.getMessage("confirmKey")}`, `${chrome.i18n.getMessage("confirmValue")}`);
-            if (confirm.trim() == "确定" || confirm.trim() == "confirm") {
+            if (confirm.trim() === "确定" || confirm.trim() === "confirm") {
                 console.log("yes");
                 chrome.storage.local.get(null, function (storage) {
+                    if (!storage.giteeGistToken) {
+                        console.log("giteeGistToken没有保存");
+                        showAlert(`${chrome.i18n.getMessage("showError")}`,`${chrome.i18n.getMessage("giteeTokenNoSaved")}`+"\n"+`${chrome.i18n.getMessage("goToOptions")}`)
+                        return
+                    }
                     console.log(storage.handleGistStatus);
                     if (storage.handleGistStatus) {
                         console.log("handleGistStatus有值");
-                        if (storage.handleGistStatus.type == "IDLE") {
+                        if (storage.handleGistStatus.type === "IDLE") {
                             pushToGiteeGist();
                         } else {
                             var time = moment().format('YYYY-MM-DD HH:mm:ss');
@@ -625,13 +635,18 @@ https://www.google.com | Google
         // 响应从github的gist拉取的动作
         document.getElementById('pullFromGithubGist').addEventListener('click', function () {
             var confirm = prompt(`${chrome.i18n.getMessage("confirmKey")}`, `${chrome.i18n.getMessage("confirmValue")}`);
-            if (confirm.trim() == "确定" || confirm.trim() == "confirm") {
+            if (confirm.trim() === "确定" || confirm.trim() === "confirm") {
                 console.log("yes");
                 chrome.storage.local.get(null, function (storage) {
+                    if (!storage.githubGistToken) {
+                        console.log("githubGistToken没有保存");
+                        showAlert(`${chrome.i18n.getMessage("showError")}`,`${chrome.i18n.getMessage("githubTokenNoSaved")}`+"\n"+`${chrome.i18n.getMessage("goToOptions")}`)
+                        return
+                    }
                     console.log(storage.handleGistStatus);
                     if (storage.handleGistStatus) {
                         console.log("handleGistStatus有值");
-                        if (storage.handleGistStatus.type == "IDLE") {
+                        if (storage.handleGistStatus.type === "IDLE") {
                             pullFromGithubGist();
                         } else {
                             var time = moment().format('YYYY-MM-DD HH:mm:ss');
@@ -657,13 +672,18 @@ https://www.google.com | Google
         // 响应从gitee的gist拉取的动作
         document.getElementById('pullFromGiteeGist').addEventListener('click', function () {
             var confirm = prompt(`${chrome.i18n.getMessage("confirmKey")}`, `${chrome.i18n.getMessage("confirmValue")}`);
-            if (confirm.trim() == "确定" || confirm.trim() == "confirm") {
+            if (confirm.trim() === "确定" || confirm.trim() === "confirm") {
                 console.log("yes");
                 chrome.storage.local.get(null, function (storage) {
+                    if (!storage.giteeGistToken) {
+                        console.log("giteeGistToken没有保存");
+                        showAlert(`${chrome.i18n.getMessage("showError")}`,`${chrome.i18n.getMessage("giteeTokenNoSaved")}`+"\n"+`${chrome.i18n.getMessage("goToOptions")}`)
+                        return
+                    }
                     console.log(storage.handleGistStatus);
                     if (storage.handleGistStatus) {
                         console.log("handleGistStatus有值");
-                        if (storage.handleGistStatus.type == "IDLE") {
+                        if (storage.handleGistStatus.type === "IDLE") {
                             pullFromGiteeGist();
                         } else {
                             var time = moment().format('YYYY-MM-DD HH:mm:ss');
@@ -2122,7 +2142,7 @@ https://www.google.com | Google
 
     // 展示配置
     function showOptions() {
-        chrome.storage.local.get('options', function (storage) {
+        chrome.storage.local.get(null, function (storage) {
             var opts = storage.options || {};
 
             if (opts.deleteTabOnOpen === undefined) {
@@ -2134,6 +2154,14 @@ https://www.google.com | Google
                 $('input[name="openBackgroundAfterSendTab"][value="yes"]').prop('checked', 'checked');
             } else {
                 $('input[name="openBackgroundAfterSendTab"][value="' + opts.openBackgroundAfterSendTab + '"]').prop('checked', 'checked');
+            }
+
+            // 如果已经有保存token就直接列出
+            if (storage.githubGistToken) {
+                document.getElementById("githubToken").value= storage.githubGistToken
+            }
+            if (storage.giteeGistToken) {
+                document.getElementById("giteeToken").value= storage.giteeGistToken
             }
         });
         document.getElementById("options").innerHTML = `
@@ -2147,14 +2175,39 @@ https://www.google.com | Google
                 </div>
             </div>
             <div class="option">
-            <div class="desc">
-                <p>${chrome.i18n.getMessage("openBackgroundAfterSendTab")}</p>
+                <div class="desc">
+                    <p>${chrome.i18n.getMessage("openBackgroundAfterSendTab")}</p>
+                </div>
+                <div class="choices">
+                    <p><label for="openBackgroundAfterSendTab"><input type="radio" name="openBackgroundAfterSendTab" value="yes">${chrome.i18n.getMessage("openBackgroundAfterSendTabYes")}</label></p>
+                    <p><label for="openBackgroundAfterSendTab"><input type="radio" name="openBackgroundAfterSendTab" value="no">${chrome.i18n.getMessage("openBackgroundAfterSendTabNo")}</label></p>
+                </div>
             </div>
-            <div class="choices">
-                <p><label for="openBackgroundAfterSendTab"><input type="radio" name="openBackgroundAfterSendTab" value="yes">${chrome.i18n.getMessage("openBackgroundAfterSendTabYes")}</label></p>
-                <p><label for="openBackgroundAfterSendTab"><input type="radio" name="openBackgroundAfterSendTab" value="no">${chrome.i18n.getMessage("openBackgroundAfterSendTabNo")}</label></p>
+
+            <div class="form-group row">
+              <label for="password" class="col-sm-2 control-label">${chrome.i18n.getMessage("githubToken")}:</label>
+              <div class="col-sm-5">
+                <div class="input-group">
+                  <input type="password" class="form-control" id="githubToken" placeholder="${chrome.i18n.getMessage("input")}${chrome.i18n.getMessage("githubToken")}">
+                  <div class="input-group-addon">
+                    <span class="glyphicon glyphicon-eye-open" id="changeEye"></span>
+                  </div>
+                </div>
+              </div>
             </div>
-        </div>
+            
+            <div class="form-group row">
+              <label for="password" class="col-sm-2 control-label">${chrome.i18n.getMessage("giteeToken")}:</label>
+              <div class="col-sm-5">
+                <div class="input-group">
+                  <input type="password" class="form-control" id="giteeToken" placeholder="${chrome.i18n.getMessage("input")}${chrome.i18n.getMessage("giteeToken")}">
+                  <div class="input-group-addon">
+                    <span class="glyphicon glyphicon-eye-open" id="changeEye2"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
             <button id="save">${chrome.i18n.getMessage("saveButtonValue")}</button>
             <div id="saved">${chrome.i18n.getMessage("savedValue")}</div>
         `
@@ -2162,18 +2215,46 @@ https://www.google.com | Google
         document.getElementById('save').addEventListener('click', function () {
             var deleteTabOnOpen = document.querySelector('input[name="deleteTabOnOpen"]:checked').value;
             var openBackgroundAfterSendTab = document.querySelector('input[name="openBackgroundAfterSendTab"]:checked').value;
+            let githubGistToken = document.getElementById("githubToken").value
+            let giteeGistToken = document.getElementById("giteeToken").value
 
             chrome.storage.local.set({
                 options: {
                     deleteTabOnOpen: deleteTabOnOpen,
                     openBackgroundAfterSendTab: openBackgroundAfterSendTab
-                }
+                },
+                githubGistToken: githubGistToken,
+                giteeGistToken: giteeGistToken
             }, function () { // show "settings saved" notice thing
                 document.getElementById('saved').style.display = 'block';
                 window.setTimeout(function () {
                     document.getElementById('saved').style.display = 'none';
                 }, 1000);
             });
+        });
+        document.getElementById('changeEye').addEventListener('click', function () {
+            var passwordInput = document.getElementById("githubToken");
+            var visibilityIcon = document.getElementById("changeEye");
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                visibilityIcon.className = "glyphicon glyphicon-eye-close";
+            } else {
+                passwordInput.type = "password";
+                visibilityIcon.className = "glyphicon glyphicon-eye-open";
+            }
+        });
+        document.getElementById('changeEye2').addEventListener('click', function () {
+            var passwordInput = document.getElementById("giteeToken");
+            var visibilityIcon = document.getElementById("changeEye2");
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                visibilityIcon.className = "glyphicon glyphicon-eye-close";
+            } else {
+                passwordInput.type = "password";
+                visibilityIcon.className = "glyphicon glyphicon-eye-open";
+            }
         });
     };
 
@@ -2195,6 +2276,36 @@ https://www.google.com | Google
                 ele.remove();
             }, 400);
         }, 3000);
+    }
+
+    // 统一的弹窗提示
+    function showAlert(title, message) {
+        var modalHtml = `
+        <div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="alertModalLabel">${title}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                ${message}
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+        var modalContainer = document.createElement('div');
+        modalContainer.innerHTML = modalHtml;
+        document.body.appendChild(modalContainer);
+
+        $('#alertModal').modal('show');
     }
 
     // 判断是否int
