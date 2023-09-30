@@ -33,18 +33,6 @@
             var script1 = document.createElement('script');
             script1.src = "js/axios.min.js";
             document.head.appendChild(script1);
-            if (items.taskJsUrl) {
-                var script2 = document.createElement('script');
-                script2.src = items.taskJsUrl;
-                script2.id = "taskJs";
-                document.head.appendChild(script2);
-            }
-            if (!items.giteeGistToken) {
-                console.log("giteetoken没有保存");
-                var token = prompt(`${chrome.i18n.getMessage("saveTokenKey")}`, `${chrome.i18n.getMessage("saveTokenValue")}`);
-                chrome.storage.local.set({ giteeGistToken: token.trim() });
-                console.log("giteetoken保存完毕");
-            }
         })
 
         chrome.alarms.getAll(function (alarms) {
@@ -186,16 +174,9 @@ https://www.google.com | Google
         // 检查跟gitee的通讯是否正常
         checkGiteeStatus();
         chrome.storage.local.get(null, function (items) {
-            var total = new Array();
-            for (var i = 0; i < 100; i++) {
-                total.push("tabGroups_" + i);
-            };
             // 一load完就算一下storage占用了多少空间
-            chrome.storage.local.getBytesInUse(total, function (bytes) {
-                console.log("total is " + bytes / 1024 / 1024 + "mb");
-            });
             chrome.storage.local.getBytesInUse(null, function (bytes) {
-                console.log("total2 is " + bytes / 1024 / 1024 + "mb");
+                console.log("total is " + bytes / 1024 / 1024 + "mb");
                 document.getElementById('usage').innerHTML = `${chrome.i18n.getMessage("usedSpace")}${Math.round(bytes / 1024 / 1024 * 100) / 100}mb/5mb`;
             });
 
@@ -382,36 +363,6 @@ https://www.google.com | Google
         });
         // 展示所有标签
         showAllTabs();
-        // // TODO 本来想实现在空标签页和chrome://extensions/这种特殊页面也可以按x直接关闭，问题：空标签页和chrome://extensions/没有load contentscript，目前只是实现在后台展示页按x关闭
-        // $(document).keyup(function (event) {
-        //     if (event.key == 'x') {
-        //         var inputs = document.getElementsByTagName('input');
-        //         let flag = false;
-        //         for (var i = 0; i < inputs.length; i++) {
-        //             if (inputs[i].type == 'text') {
-        //                 if (inputs[i] == document.activeElement) {
-        //                     flag = true;
-        //                 } else {
-        //                     flag = false;
-        //                 }
-        //             }
-        //         }
-        //         var textareas = document.getElementsByTagName('textarea');
-        //         for (var i = 0; i < textareas.length; i++) {
-        //             if (textareas[i] == document.activeElement) {
-        //                 flag = true;
-        //             } else {
-        //                 flag = false;
-        //             }
-        //         }
-        //         if (!flag) {
-        //             closeCurrentTab();
-        //         }
-        //     }
-        //     if (event.key == 'X') {
-        //         // todo，按下大写X
-        //     }
-        // });
 
         // 打开 导入oneTab的url功能
         document.getElementById('openImportOnetab').addEventListener('click', function () {
@@ -1915,7 +1866,9 @@ https://www.google.com | Google
                                     let val = $("#groupTitle" + i).html();
                                     $("#groupTitle" + i).slideToggle(100);
                                     $("#groupTitleInput" + i).slideToggle(1000);
-                                    $("#groupTitleInput" + i).focus()
+                                    setTimeout(function() {
+                                        $("#groupTitleInput" + i).focus();
+                                    }, 100);
                                     $("#groupTitleInput" + i).val(val)
                                 }
                             }, groupTitle),
@@ -1977,7 +1930,9 @@ https://www.google.com | Google
                                     let val = $("#groupTitle" + i).html();
                                     $("#groupTitle" + i).slideToggle(100);
                                     $("#groupTitleInput" + i).slideToggle(1000);
-                                    $("#groupTitleInput" + i).focus()
+                                    setTimeout(function() {
+                                        $("#groupTitleInput" + i).focus();
+                                    }, 100);
                                     $("#groupTitleInput" + i).val(val)
                                 }
                             }, `${chrome.i18n.getMessage("nameThis")}`),
