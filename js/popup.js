@@ -4,10 +4,12 @@
     // 定义一个n次循环定时器
     var intervalId;
 
-    // 一打开popup就获取当前tab的地址并生成二维码
     document.addEventListener('DOMContentLoaded', function () {
         console.log("load完popup了");
-        var data;
+        // 点击插件图标直接跳到后台管理页
+        var bg = chrome.extension.getBackgroundPage();
+        bg.openBackgroundPage(); // 访问bg的函数
+        // 适配QQ浏览器
         if (navigator.userAgent.toLowerCase().match(/qqbrowser/) != null) {
 
             document.getElementById("menu").innerHTML = `
@@ -85,25 +87,6 @@
                 });
             });
 
-
-            // 测试用
-            // document.getElementById('testGithub').addEventListener('click', function () {
-            //     // chrome.tabs.create({ index: 0, url: chrome.extension.getURL('woc.html') });
-            //     console.log("点了")
-            //     chrome.runtime.sendMessage({ action: 'testGithub' }, function (res) {
-            //         if (res === 'ok') {
-            //         }
-            //     });
-            // });
-            // document.getElementById('test').addEventListener('click', function () {
-            //     // chrome.tabs.create({ index: 0, url: chrome.extension.getURL('woc.html') });
-            //     console.log("点了")
-            //     chrome.runtime.sendMessage({ action: 'test' }, function (res) {
-            //         if (res === 'ok') {
-            //         }
-            //     });
-            // });
-
             // 5分钟定时提醒
             document.getElementById('five-minute').addEventListener('click', function () {
                 chrome.runtime.sendMessage({ action: 'five-minute' }, function (res) {
@@ -167,9 +150,6 @@
             <div id="" class="menu-entry" style="color:red;">${chrome.i18n.getMessage("deadLine")}</div>
         </div>
         `;
-        // <div class="row">
-        //     <div id="test" class="menu-entry" style="color:red;">test</div>
-        // </div>
 
     });
 
