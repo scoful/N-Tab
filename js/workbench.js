@@ -37,8 +37,9 @@
         chrome.alarms.getAll(function (alarms) {
             console.log(alarms)
         });
-        document.body.innerHTML = `
-        <nav class="navbar navbar-default navbar-fixed-top" style="position:relative">
+
+        // 动态加载菜单
+        document.querySelector(".navbar").innerHTML = `
             <div class="container">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
@@ -106,8 +107,10 @@
                 </div>
                 <!--/.nav-collapse -->
             </div>
-        </nav>
-        <div class="container theme-showcase" role="main">
+        `;
+
+        // 动态加载内容
+        document.getElementById("body").innerHTML = `
         <div>
                 <div id="importOneTab"  class="hide">
                     <span>${chrome.i18n.getMessage("hideShowImportOnetabFunction")}</span>
@@ -153,7 +156,7 @@ https://www.google.com | Google
                 <div id="logs"></div>
                 <div id="options" class="div-top"></div>
             </div>
-            <a href="#navbar" class="btn btn-primary fixed-bottom-right">${chrome.i18n.getMessage("backToTop")}</a>
+            <a href="#top" class="btn btn-primary fixed-bottom-right">${chrome.i18n.getMessage("backToTop")}</a>
             <hr>
             <div class="blog-footer">
             <p>${chrome.i18n.getMessage("sourceCode")}<a
@@ -164,6 +167,7 @@ https://www.google.com | Google
         </div>
 
         `;
+
         // 控制导航阴影
         $("#navbar ul li").click(function () {
             $(this).addClass("active").siblings().removeClass("active");
