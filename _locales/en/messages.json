@@ -81,7 +81,7 @@
 		"message": "Home"
 	},
 	"hideShowImportOnetabFunction": {
-		"message": "import Onetab mode"
+		"message": "import OneTab mode"
 	},
 	"hideShowImportDefaultFunction": {
 		"message": "import default mode"
@@ -123,7 +123,7 @@
 		"message": "export to local"
 	},
 	"importWarn": {
-		"message": "PS:The import contents is from oneTab extension, Format refer to the example above: Newline means grouping, | before is URL, and | behind is title, and | have spaces on both sides"
+		"message": "PS:The import contents is from OneTab extension, Format refer to the example above: Newline means grouping, | before is URL, and | behind is title, and | have spaces on both sides"
 	},
 	"exportWarn": {
 		"message": "PS:The export contents save by yourself, Format description: Newline means grouping, | before is URL, and | behind is title, and | have spaces on both sides"

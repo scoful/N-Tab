@@ -81,7 +81,7 @@
 		"message": "首页"
 	},
 	"hideShowImportOnetabFunction": {
-		"message": "导入Onetab格式"
+		"message": "导入OneTab格式"
 	},
 	"hideShowImportDefaultFunction": {
 		"message": "导入默认格式"
@@ -123,7 +123,7 @@
 		"message": "导出"
 	},
 	"importWarn": {
-		"message": "PS：导入的是从onetab导出的内容，参照以上的例子，格式说明：换行表示分组，|前面是网址，|后面是标题，|两边都有空格"
+		"message": "PS：导入的是从OneTab导出的内容，参照以上的例子，格式说明：换行表示分组，|前面是网址，|后面是标题，|两边都有空格"
 	},
 	"exportWarn": {
 		"message": "PS：导出后自行复制保存，格式说明：换行表示分组，|前面是网址，|后面是标题，|两边都有空格"
