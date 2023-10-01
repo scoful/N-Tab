@@ -7,8 +7,7 @@
     document.addEventListener('DOMContentLoaded', function () {
         console.log("load完popup了");
         // 点击插件图标直接跳到后台管理页
-        var bg = chrome.extension.getBackgroundPage();
-        bg.openBackgroundPage(); // 访问bg的函数
+        chrome.runtime.sendMessage({action: 'openbackgroundpage'});
         // 适配QQ浏览器
         if (navigator.userAgent.toLowerCase().match(/qqbrowser/) != null) {
 
