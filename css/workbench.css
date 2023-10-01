@@ -1,3 +1,7 @@
+* {
+    text-shadow: transparent 0 0 0, rgba(0, 0, 0, 0.68) 0 0 0 !important;
+}
+
 .group-amount {
     font-size: 120%;
 }

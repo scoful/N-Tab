@@ -2111,6 +2111,7 @@ https://www.google.com | Google
                     <p><label for="deleteTabOnOpen"><input type="radio" name="deleteTabOnOpen" value="no">${chrome.i18n.getMessage("restoreValueLive")}</label></p>
                 </div>
             </div>
+            <hr>
             <div class="option">
                 <div class="desc">
                     <p>${chrome.i18n.getMessage("openBackgroundAfterSendTab")}</p>
@@ -2120,7 +2121,7 @@ https://www.google.com | Google
                     <p><label for="openBackgroundAfterSendTab"><input type="radio" name="openBackgroundAfterSendTab" value="no">${chrome.i18n.getMessage("openBackgroundAfterSendTabNo")}</label></p>
                 </div>
             </div>
-
+            <hr>
             <div class="form-group row">
               <label for="password" class="col-sm-2 control-label">${chrome.i18n.getMessage("githubToken")}:</label>
               <div class="col-sm-5">
@@ -2144,7 +2145,7 @@ https://www.google.com | Google
                 </div>
               </div>
             </div>
-            
+            <hr>
             <button id="save">${chrome.i18n.getMessage("saveButtonValue")}</button>
             <div id="saved">${chrome.i18n.getMessage("savedValue")}</div>
         `
