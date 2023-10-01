@@ -412,7 +412,7 @@ function setHandleGistLog(type, handleGistLog) {
 };
 
 
-// 操作gist的全局状态
+// 操作gist的全局状态，1分钟自动解锁，防止死锁
 function setHandleGistStatus(status) {
     var expireTime = moment().add(1, 'minutes').format('YYYY-MM-DD HH:mm:ss');
     var gistStatusMap = { type: status, expireTime: expireTime };
@@ -926,7 +926,13 @@ chrome.storage.onChanged.addListener(function (changes, areaName) {
     }
     if (areaName === "local" && flag) {
         console.log("要同步")
-        startPushToGiteeGist();
+        chrome.storage.local.get(null, function (items) {
+            var autoSync = items.autoSync
+            if (autoSync == true) {
+                console.log("autoSync open")
+                startPushToGiteeGist();
+            }
+        });
     } else {
         console.log("不要同步")
     }
