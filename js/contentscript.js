@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // 主动发送消息给后台
 function sendMessageToBackground(action, message) {
-    chrome.runtime.sendMessage({ action: action, message: message }, function (res) {
+    chrome.runtime.sendMessage({action: action, message: message}, function (res) {
         if (res === 'ok') {
             console.log("content-->background发送的消息被消费了");
         }
@@ -62,8 +62,7 @@ chrome.runtime.onMessage.addListener(function (req, sender, sendRes) {
 // 删除生成的div
 function deleteDiv() {
     var my = document.getElementById("descDiv");
-    if (my != null)
-        my.parentNode.removeChild(my);
+    if (my != null) my.parentNode.removeChild(my);
 }
 
 // 简单的消息通知

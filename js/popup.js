@@ -1,4 +1,4 @@
-; (function (m) {
+;(function (m) {
     'use strict';
     console.log("popup_js is done!");
     // 定义一个n次循环定时器
@@ -47,8 +47,8 @@
 
             // 发送所有tab
             document.getElementById('save-all').addEventListener('click', function () {
-                chrome.tabs.query({ url: ["https://*/*", "http://*/*"], currentWindow: true }, function (tabsArr) {
-                    chrome.runtime.sendMessage({ action: 'save-all', tabsArr: tabsArr }, function (res) {
+                chrome.tabs.query({url: ["https://*/*", "http://*/*"], currentWindow: true}, function (tabsArr) {
+                    chrome.runtime.sendMessage({action: 'save-all', tabsArr: tabsArr}, function (res) {
                         if (res === 'ok') {
                             window.close();
                         }
@@ -58,8 +58,10 @@
 
             // 发送其他tab
             document.getElementById('save-others').addEventListener('click', function () {
-                chrome.tabs.query({ url: ["https://*/*", "http://*/*"], active: false, currentWindow: true }, function (tabsArr) {
-                    chrome.runtime.sendMessage({ action: 'save-others', tabsArr: tabsArr }, function (res) {
+                chrome.tabs.query({
+                    url: ["https://*/*", "http://*/*"], active: false, currentWindow: true
+                }, function (tabsArr) {
+                    chrome.runtime.sendMessage({action: 'save-others', tabsArr: tabsArr}, function (res) {
                         if (res === 'ok') {
                             window.close();
                         }
@@ -69,8 +71,10 @@
 
             // 发送当前tab
             document.getElementById('save-current').addEventListener('click', function () {
-                chrome.tabs.query({ url: ["https://*/*", "http://*/*"], highlighted: true, currentWindow: true }, function (tabsArr) {
-                    chrome.runtime.sendMessage({ action: 'save-current', tabsArr: tabsArr }, function (res) {
+                chrome.tabs.query({
+                    url: ["https://*/*", "http://*/*"], highlighted: true, currentWindow: true
+                }, function (tabsArr) {
+                    chrome.runtime.sendMessage({action: 'save-current', tabsArr: tabsArr}, function (res) {
                         if (res === 'ok') {
                             window.close();
                         }
@@ -80,7 +84,7 @@
 
             // open background page
             document.getElementById('open-background-page').addEventListener('click', function () {
-                chrome.runtime.sendMessage({ action: 'openbackgroundpage' }, function (res) {
+                chrome.runtime.sendMessage({action: 'openbackgroundpage'}, function (res) {
                     if (res === 'ok') {
                         window.close();
                     }
@@ -89,7 +93,7 @@
 
             // 5分钟定时提醒
             document.getElementById('five-minute').addEventListener('click', function () {
-                chrome.runtime.sendMessage({ action: 'five-minute' }, function (res) {
+                chrome.runtime.sendMessage({action: 'five-minute'}, function (res) {
                     if (res === 'ok') {
                         window.close();
                     }
@@ -98,7 +102,7 @@
 
             // 10分钟定时提醒
             document.getElementById('ten-minute').addEventListener('click', function () {
-                chrome.runtime.sendMessage({ action: 'ten-minute' }, function (res) {
+                chrome.runtime.sendMessage({action: 'ten-minute'}, function (res) {
                     if (res === 'ok') {
                         window.close();
                     }
@@ -107,7 +111,7 @@
 
             // 40分钟定时提醒
             document.getElementById('forty-minute').addEventListener('click', function () {
-                chrome.runtime.sendMessage({ action: 'forty-minute' }, function (res) {
+                chrome.runtime.sendMessage({action: 'forty-minute'}, function (res) {
                     if (res === 'ok') {
                         window.close();
                     }
@@ -120,7 +124,7 @@
                 if (!isInt(parseInt(minute.trim()))) {
                     alert(`${chrome.i18n.getMessage("inputNumber")}`)
                 } else {
-                    chrome.runtime.sendMessage({ action: 'custom-minute', message: minute.trim() }, function (res) {
+                    chrome.runtime.sendMessage({action: 'custom-minute', message: minute.trim()}, function (res) {
                         if (res === 'ok') {
                             window.close();
                         }
@@ -142,7 +146,8 @@
             } else {
                 clearInterval(intervalId);
                 document.getElementById('surplusTime').innerHTML = `${chrome.i18n.getMessage("remindStatus")}`;
-            };
+            }
+            ;
         }
 
         document.getElementById("deadLine").innerHTML = `
@@ -159,7 +164,7 @@
     }
 
     // 列出当前窗口打开的tab，方便浏览
-    chrome.tabs.query({ currentWindow: true }, function (allTabs) {
+    chrome.tabs.query({currentWindow: true}, function (allTabs) {
         var tabs = {};
 
         tabs.TabsList = Array;
@@ -170,7 +175,8 @@
                 vm.list = new tabs.TabsList();
             };
             vm.rmTab = function (index) {
-                chrome.tabs.remove(tabs.vm.list[index].id, function callback() { });
+                chrome.tabs.remove(tabs.vm.list[index].id, function callback() {
+                });
                 tabs.vm.list.splice(index, 1);
             };
             return vm;
@@ -180,7 +186,7 @@
             var i;
             tabs.vm.init();
             for (i = 0; i < allTabs.length; i += 1) {
-                var tab = { "title": allTabs[i].title, "id": allTabs[i].id, "favIconUrl": allTabs[i].favIconUrl };
+                var tab = {"title": allTabs[i].title, "id": allTabs[i].id, "favIconUrl": allTabs[i].favIconUrl};
                 tabs.vm.list.push(tab);
             }
         };
@@ -199,27 +205,22 @@
                 }
                 return m('div.row', {
                     onclick: function () {
-                        chrome.tabs.highlight({ tabs: i }, function callback() {
+                        chrome.tabs.highlight({tabs: i}, function callback() {
                         });
                     }
-                }, [
-                    m("div.menu-entry", [m('span.delete-link', {
-                        onclick: function (event) {
-                            tabs.vm.rmTab(i);
-                            event.stopPropagation();
-                        }
-                    }),
-                    m('img', {
-                        src: favIconUrl, height: '15', width: '15'
-                    }),
-                        ' ',
-                    m("span", {}, tab.title)])
-                ]);
+                }, [m("div.menu-entry", [m('span.delete-link', {
+                    onclick: function (event) {
+                        tabs.vm.rmTab(i);
+                        event.stopPropagation();
+                    }
+                }), m('img', {
+                    src: favIconUrl, height: '15', width: '15'
+                }), ' ', m("span", {}, tab.title)])]);
             });
         };
 
         // init the app
-        m.module(document.getElementById('allTabs'), { controller: tabs.controller, view: tabs.view });
+        m.module(document.getElementById('allTabs'), {controller: tabs.controller, view: tabs.view});
     });
 
 }(m));

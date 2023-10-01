@@ -45,17 +45,17 @@ document.addEventListener('DOMContentLoaded', function () {
     document.head.appendChild(script3);
 
     // 获取tab数量并在pop上显示
-    chrome.tabs.query({ currentWindow: true }, function (tab) {
-        chrome.browserAction.setBadgeText({ text: tab.length + "" });
-        chrome.browserAction.setBadgeBackgroundColor({ color: "#0038a8" });
+    chrome.tabs.query({currentWindow: true}, function (tab) {
+        chrome.browserAction.setBadgeText({text: tab.length + ""});
+        chrome.browserAction.setBadgeBackgroundColor({color: "#0038a8"});
     });
     chrome.storage.local.get(function (storage) {
         console.log(storage);
     });
     // 创建定时同步gitee任务
-    chrome.alarms.create("checkAutoSyncGitee", { delayInMinutes: 70, periodInMinutes: 70 });
+    chrome.alarms.create("checkAutoSyncGitee", {delayInMinutes: 70, periodInMinutes: 70});
     // 创建定时同步github任务
-    chrome.alarms.create("checkAutoSyncGithub", { delayInMinutes: 90, periodInMinutes: 90 });
+    chrome.alarms.create("checkAutoSyncGithub", {delayInMinutes: 90, periodInMinutes: 90});
 
 });
 
@@ -293,22 +293,19 @@ function updateGithubGist(content) {
     var _content = JSON.stringify(content);
     var js = generateJs(content)
     var data = {
-        "description": "myCloudSkyMonster",
-        "public": false,
-        "files": {
-            "brower_Tabs.json": { "content": _content },
-            "brower_tasks.js": { "content": js }
+        "description": "myCloudSkyMonster", "public": false, "files": {
+            "brower_Tabs.json": {"content": _content}, "brower_tasks.js": {"content": js}
         }
     }
     $.ajax({
         type: "PATCH",
-        headers: { "Authorization": "token " + githubGistToken },
+        headers: {"Authorization": "token " + githubGistToken},
         url: gitHubApiUrl + "/gists/" + githubGistId,
         data: JSON.stringify(data),
         success: function (data, status) {
             if (status == "success") {
                 console.log("更新成功")
-                chrome.storage.local.set({ "taskJsUrl": data.files['brower_tasks.js'].raw_url })
+                chrome.storage.local.set({"taskJsUrl": data.files['brower_tasks.js'].raw_url})
                 handleGithubGistLog.push(`${chrome.i18n.getMessage("updateSuccess")}`)
             } else {
                 console.log("更新失败")
@@ -355,22 +352,19 @@ function updateGiteeGist(content) {
     var _content = JSON.stringify(content);
     var js = generateJs(content)
     var data = {
-        "description": "myCloudSkyMonster",
-        "public": false,
-        "files": {
-            "brower_Tabs.json": { "content": _content },
-            "brower_tasks.js": { "content": js }
+        "description": "myCloudSkyMonster", "public": false, "files": {
+            "brower_Tabs.json": {"content": _content}, "brower_tasks.js": {"content": js}
         }
     }
     $.ajax({
         type: "PATCH",
-        headers: { "Authorization": "token " + giteeGistToken },
+        headers: {"Authorization": "token " + giteeGistToken},
         url: giteeApiUrl + "/gists/" + giteeGistId,
         data: data,
         success: function (data, status) {
             if (status == "success") {
                 console.log("更新成功")
-                chrome.storage.local.set({ "taskJsUrl": data.files['brower_tasks.js'].raw_url })
+                chrome.storage.local.set({"taskJsUrl": data.files['brower_tasks.js'].raw_url})
                 handleGiteeGistLog.push(`${chrome.i18n.getMessage("updateSuccess")}`)
             } else {
                 console.log("更新失败")
@@ -390,7 +384,7 @@ function updateGiteeGist(content) {
 
 // 构造操作gist的日志结构
 function setHandleGistLog(type, handleGistLog) {
-    var handleGistLogMap = { id: genObjectId(), handleGistType: type, handleGistLogs: handleGistLog };
+    var handleGistLogMap = {id: genObjectId(), handleGistType: type, handleGistLogs: handleGistLog};
     chrome.storage.local.get(null, function (storage) {
         if (storage.gistLog) {
             console.log("gistLog有值");
@@ -398,15 +392,15 @@ function setHandleGistLog(type, handleGistLog) {
                 var newArr = storage.gistLog;
                 newArr.splice(-1, 1)
                 newArr.unshift(handleGistLogMap);
-                chrome.storage.local.set({ gistLog: newArr });
+                chrome.storage.local.set({gistLog: newArr});
             } else {
                 var newArr = storage.gistLog;
                 newArr.unshift(handleGistLogMap);
-                chrome.storage.local.set({ gistLog: newArr });
+                chrome.storage.local.set({gistLog: newArr});
             }
         } else {
             console.log("gistLog没有值，第一次");
-            chrome.storage.local.set({ gistLog: [handleGistLogMap] });
+            chrome.storage.local.set({gistLog: [handleGistLogMap]});
         }
     });
 };
@@ -415,8 +409,8 @@ function setHandleGistLog(type, handleGistLog) {
 // 操作gist的全局状态，1分钟自动解锁，防止死锁
 function setHandleGistStatus(status) {
     var expireTime = moment().add(1, 'minutes').format('YYYY-MM-DD HH:mm:ss');
-    var gistStatusMap = { type: status, expireTime: expireTime };
-    chrome.storage.local.set({ handleGistStatus: gistStatusMap });
+    var gistStatusMap = {type: status, expireTime: expireTime};
+    chrome.storage.local.set({handleGistStatus: gistStatusMap});
 };
 
 // 调用有道翻译api
@@ -424,9 +418,7 @@ function translateFunc(txt) {
     console.log("开始翻译！");
     var url = "https://fanyi.youdao.com/openapi.do?keyfrom=lulua-net&key=620584095&type=data&doctype=json&version=1.1&q=" + txt;
     $.ajax({
-        type: "GET",
-        url: url,
-        success: function (data, status) {
+        type: "GET", url: url, success: function (data, status) {
             if (status == "success") {
                 if (data.translation) {
                     console.log(data.translation[0]);
@@ -435,11 +427,9 @@ function translateFunc(txt) {
             } else {
                 sendMessageToContentScript("translateResult", "--FAILED--!");
             }
-        },
-        error: function (xhr, errorText, errorType) {
+        }, error: function (xhr, errorText, errorType) {
             sendMessageToContentScript("translateResult", "--ERROR,may be lost network--!");
-        },
-        complete: function () {
+        }, complete: function () {
             //do something
         }
     })
@@ -534,8 +524,8 @@ chrome.runtime.onMessage.addListener(function (req, sender, sendRes) {
 
 // 向content-script主动发送消息
 function sendMessageToContentScript(action, message) {
-    chrome.tabs.query({ active: true, currentWindow: true }, function (res) {
-        chrome.tabs.sendMessage(res[0].id, { action: action, message: message }, function (response) {
+    chrome.tabs.query({active: true, currentWindow: true}, function (res) {
+        chrome.tabs.sendMessage(res[0].id, {action: action, message: message}, function (response) {
             if (response === 'ok') {
                 console.log("background-->content发送的消息被消费了");
             }
@@ -546,22 +536,22 @@ function sendMessageToContentScript(action, message) {
 // 持续监听，当tab被激活的时候刷新一下pop上badge的tab的数量
 chrome.tabs.onActivated.addListener(function callback() {
     chrome.tabs.query({}, function (tab) {
-        chrome.browserAction.setBadgeText({ text: tab.length + "" });
-        chrome.browserAction.setBadgeBackgroundColor({ color: "#0038a8" });
+        chrome.browserAction.setBadgeText({text: tab.length + ""});
+        chrome.browserAction.setBadgeBackgroundColor({color: "#0038a8"});
     });
 });
 // 持续监听，当tab被关闭的时候刷新一下pop上badge的tab的数量
 chrome.tabs.onRemoved.addListener(function callback() {
     chrome.tabs.query({}, function (tab) {
-        chrome.browserAction.setBadgeText({ text: tab.length + "" });
-        chrome.browserAction.setBadgeBackgroundColor({ color: "#0038a8" });
+        chrome.browserAction.setBadgeText({text: tab.length + ""});
+        chrome.browserAction.setBadgeBackgroundColor({color: "#0038a8"});
     });
 });
 // 持续监听，当tab被创建的时候刷新一下pop上badge的tab的数量
 chrome.tabs.onCreated.addListener(function callback() {
     chrome.tabs.query({}, function (tab) {
-        chrome.browserAction.setBadgeText({ text: tab.length + "" });
-        chrome.browserAction.setBadgeBackgroundColor({ color: "#0038a8" });
+        chrome.browserAction.setBadgeText({text: tab.length + ""});
+        chrome.browserAction.setBadgeBackgroundColor({color: "#0038a8"});
     });
 });
 
@@ -576,8 +566,7 @@ var genObjectId = function () {
 
 // makes a tab group, filters it and saves it to localStorage
 function saveTabs(tabsArr) {
-    var tabGroup = makeTabGroup(tabsArr),
-        cleanTabGroup = filterTabGroup(tabGroup);
+    var tabGroup = makeTabGroup(tabsArr), cleanTabGroup = filterTabGroup(tabGroup);
 
     saveTabGroup(cleanTabGroup);
 }
@@ -587,10 +576,9 @@ function makeTabGroup(tabsArr) {
     var date;
     date = dateFormat("YYYY-mm-dd HH:MM:SS", new Date());
     var tabGroup = {
-        date: date,
-        id: genObjectId() // clever way to quickly get a unique ID
+        date: date, id: genObjectId() // clever way to quickly get a unique ID
     };
-    let res = tabsArr.map(({ title, url }) => ({ title, url }));
+    let res = tabsArr.map(({title, url}) => ({title, url}));
     tabGroup.tabs = res;
     tabGroup.isLock = false;
     tabGroup.groupTitle = '';
@@ -627,24 +615,23 @@ function saveTabGroup(tabGroup) {
 
 // 打开background页
 function openBackgroundPage() {
-    chrome.tabs.query({ url: "chrome-extension://*/workbench.html*", currentWindow: true }, function (tab) {
+    chrome.tabs.query({url: "chrome-extension://*/workbench.html*", currentWindow: true}, function (tab) {
         if (tab.length >= 1) {
-            chrome.tabs.move(tab[0].id, { index: 0 }, function callback() {
-                chrome.tabs.highlight({ tabs: 0 }, function callback() {
+            chrome.tabs.move(tab[0].id, {index: 0}, function callback() {
+                chrome.tabs.highlight({tabs: 0}, function callback() {
                 });
             });
             chrome.tabs.reload(tab[0].id, {}, function (tab) {
             });
         } else {
-            chrome.tabs.create({ index: 0, url: chrome.extension.getURL('workbench.html') });
+            chrome.tabs.create({index: 0, url: chrome.extension.getURL('workbench.html')});
         }
     });
 }
 
 // close all the tabs in the provided array of Tab objects
 function closeTabs(tabsArr) {
-    var tabsToClose = [],
-        i;
+    var tabsToClose = [], i;
 
     for (i = 0; i < tabsArr.length; i += 1) {
         tabsToClose.push(tabsArr[i].id);
@@ -659,10 +646,11 @@ function closeTabs(tabsArr) {
 
 // 创建右键菜单，发送当前tab
 chrome.contextMenus.create({
-    title: `${chrome.i18n.getMessage("sendCurrentTab")}`,
-    onclick: function () {
+    title: `${chrome.i18n.getMessage("sendCurrentTab")}`, onclick: function () {
         chrome.storage.local.get(function (storage) {
-            chrome.tabs.query({ url: ["https://*/*", "http://*/*"], highlighted: true, currentWindow: true }, function (tabsArr) {
+            chrome.tabs.query({
+                url: ["https://*/*", "http://*/*"], highlighted: true, currentWindow: true
+            }, function (tabsArr) {
                 let opts = storage.options
                 let openBackgroundAfterSendTab = "yes"
                 if (opts) {
@@ -695,13 +683,14 @@ function remind(minute) {
                 iconUrl: 'images/128.png',
                 title: 'TIME UP',
                 message: minute + `${chrome.i18n.getMessage("timeUpMessage")}`,
-                buttons: [{ "title": `${chrome.i18n.getMessage("close")}` }],
+                buttons: [{"title": `${chrome.i18n.getMessage("close")}`}],
                 requireInteraction: true
             });
             // 时间到，清除定时器
             clearTimeout(timeoutId);
             surplusTime = undefined;
-            chrome.contextMenus.update("1", { title: `${chrome.i18n.getMessage("remindStatus")}` }, function callback() { })
+            chrome.contextMenus.update("1", {title: `${chrome.i18n.getMessage("remindStatus")}`}, function callback() {
+            })
         }, minute * 60 * 1000);
         var endDateStr = new Date();
         var min = endDateStr.getMinutes();
@@ -737,7 +726,8 @@ function timeDown(endDateStr) {
     timeoutId = setTimeout(function () {
         timeDown(endDateStr);
     }, 1000)
-    chrome.contextMenus.update("1", { title: surplusTime }, function callback() { })
+    chrome.contextMenus.update("1", {title: surplusTime}, function callback() {
+    })
 }
 
 // 判断是否int
@@ -761,16 +751,19 @@ function dateFormat(fmt, date) {
         ret = new RegExp("(" + k + ")").exec(fmt);
         if (ret) {
             fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")));
-        };
-    };
+        }
+        ;
+    }
+    ;
     return fmt;
 }
 
 // 关闭当前tab
 function closeCurrentTab() {
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabsArr) {
-        chrome.storage.local.set({ 'xCommandUrl': tabsArr[0].url });
-        chrome.tabs.remove(tabsArr[0].id, function () { });
+    chrome.tabs.query({active: true, currentWindow: true}, function (tabsArr) {
+        chrome.storage.local.set({'xCommandUrl': tabsArr[0].url});
+        chrome.tabs.remove(tabsArr[0].id, function () {
+        });
     });
 }
 
@@ -778,7 +771,7 @@ function closeCurrentTab() {
 function restartLastClosedTab() {
     chrome.storage.local.get('xCommandUrl', function (storage) {
         if (storage.xCommandUrl) {
-            chrome.tabs.create({ index: 0, url: storage.xCommandUrl });
+            chrome.tabs.create({index: 0, url: storage.xCommandUrl});
         }
     });
 }
@@ -847,8 +840,8 @@ chrome.idle.onStateChanged.addListener(function (newState) {
     console.log(newState)
     if (newState == "active") {
         if (isLock) {
-            chrome.alarms.create("checkAutoSyncGitee", { delayInMinutes: 70, periodInMinutes: 70 });
-            chrome.alarms.create("checkAutoSyncGithub", { delayInMinutes: 90, periodInMinutes: 90 });
+            chrome.alarms.create("checkAutoSyncGitee", {delayInMinutes: 70, periodInMinutes: 70});
+            chrome.alarms.create("checkAutoSyncGithub", {delayInMinutes: 90, periodInMinutes: 90});
             isLock = false;
         }
     }
@@ -878,7 +871,7 @@ chrome.alarms.onAlarm.addListener(function (alarm) {
 // 持续监听是否按了manifest设置的快捷键
 chrome.commands.onCommand.addListener(function (command) {
     if (command === "toggle-feature-save-all") {
-        chrome.tabs.query({ url: ["https://*/*", "http://*/*"], currentWindow: true }, function (tabsArr) {
+        chrome.tabs.query({url: ["https://*/*", "http://*/*"], currentWindow: true}, function (tabsArr) {
             saveTabs(tabsArr);
             openBackgroundPage();
             closeTabs(tabsArr);
@@ -886,7 +879,9 @@ chrome.commands.onCommand.addListener(function (command) {
     }
     if (command === "toggle-feature-save-current") {
         chrome.storage.local.get(function (storage) {
-            chrome.tabs.query({ url: ["https://*/*", "http://*/*"], highlighted: true, currentWindow: true }, function (tabsArr) {
+            chrome.tabs.query({
+                url: ["https://*/*", "http://*/*"], highlighted: true, currentWindow: true
+            }, function (tabsArr) {
                 let opts = storage.options
                 let openBackgroundAfterSendTab = "yes"
                 if (opts) {
@@ -940,33 +935,22 @@ chrome.storage.onChanged.addListener(function (changes, areaName) {
 
 
 chrome.contextMenus.create({
-    id: "1",
-    title: `${chrome.i18n.getMessage("remindStatus")}`,
-    contexts: ["browser_action"]
+    id: "1", title: `${chrome.i18n.getMessage("remindStatus")}`, contexts: ["browser_action"]
 });
 
 chrome.contextMenus.create({
-    id: "3",
-    title: `${chrome.i18n.getMessage("tabsMenu")}`,
-    contexts: ["browser_action"]
+    id: "3", title: `${chrome.i18n.getMessage("tabsMenu")}`, contexts: ["browser_action"]
 });
 
 chrome.contextMenus.create({
-    id: "4",
-    title: `${chrome.i18n.getMessage("showAllTabs")}`,
-    contexts: ["browser_action"],
-    onclick: function () {
+    id: "4", title: `${chrome.i18n.getMessage("showAllTabs")}`, contexts: ["browser_action"], onclick: function () {
         openBackgroundPage();
-    },
-    parentId: "3"
+    }, parentId: "3"
 });
 
 chrome.contextMenus.create({
-    id: "5",
-    title: `${chrome.i18n.getMessage("sendAllTabs")}`,
-    contexts: ["browser_action"],
-    onclick: function () {
-        chrome.tabs.query({ url: ["https://*/*", "http://*/*"], currentWindow: true }, function (req) {
+    id: "5", title: `${chrome.i18n.getMessage("sendAllTabs")}`, contexts: ["browser_action"], onclick: function () {
+        chrome.tabs.query({url: ["https://*/*", "http://*/*"], currentWindow: true}, function (req) {
             if (req.length > 0) {
                 saveTabs(req);
                 openBackgroundPage();
@@ -975,23 +959,21 @@ chrome.contextMenus.create({
                 openBackgroundPage();
             }
         });
-    },
-    parentId: "3"
+    }, parentId: "3"
 });
 
 
 chrome.contextMenus.create({
-    id: "6",
-    title: `${chrome.i18n.getMessage("sendCurrentTab")}`,
-    contexts: ["browser_action"],
-    onclick: function () {
+    id: "6", title: `${chrome.i18n.getMessage("sendCurrentTab")}`, contexts: ["browser_action"], onclick: function () {
         chrome.storage.local.get(function (storage) {
             let opts = storage.options
             let openBackgroundAfterSendTab = "yes"
             if (opts) {
                 openBackgroundAfterSendTab = opts.openBackgroundAfterSendTab || "yes"
             }
-            chrome.tabs.query({ url: ["https://*/*", "http://*/*"], highlighted: true, currentWindow: true }, function (req) {
+            chrome.tabs.query({
+                url: ["https://*/*", "http://*/*"], highlighted: true, currentWindow: true
+            }, function (req) {
                 if (req.length > 0) {
                     saveTabs(req);
                     if (openBackgroundAfterSendTab === "yes") {
@@ -1005,17 +987,13 @@ chrome.contextMenus.create({
                 }
             });
         })
-    },
-    parentId: "3"
+    }, parentId: "3"
 });
 
 
 chrome.contextMenus.create({
-    id: "7",
-    title: `${chrome.i18n.getMessage("sendOtherTabs")}`,
-    contexts: ["browser_action"],
-    onclick: function () {
-        chrome.tabs.query({ url: ["https://*/*", "http://*/*"], active: false, currentWindow: true }, function (req) {
+    id: "7", title: `${chrome.i18n.getMessage("sendOtherTabs")}`, contexts: ["browser_action"], onclick: function () {
+        chrome.tabs.query({url: ["https://*/*", "http://*/*"], active: false, currentWindow: true}, function (req) {
             if (req.length > 0) {
                 saveTabs(req);
                 openBackgroundPage();
@@ -1024,15 +1002,12 @@ chrome.contextMenus.create({
                 openBackgroundPage();
             }
         });
-    },
-    parentId: "3"
+    }, parentId: "3"
 });
 
 
 chrome.contextMenus.create({
-    id: "8",
-    title: `${chrome.i18n.getMessage("remindMenu")}`,
-    contexts: ["browser_action"]
+    id: "8", title: `${chrome.i18n.getMessage("remindMenu")}`, contexts: ["browser_action"]
 });
 
 chrome.contextMenus.create({

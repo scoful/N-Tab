@@ -1,4 +1,4 @@
-; (function (m) {
+;(function (m) {
     'use strict';
     var githubGistToken;
     var giteeGistToken;
@@ -192,11 +192,11 @@ https://www.google.com | Google
                     onSwitchChange: function (event, state) {
                         if (state == true) {
                             $('#dragTitle').bootstrapSwitch("state", false, true)
-                            chrome.storage.local.set({ "dragType": "dragUrls" });
+                            chrome.storage.local.set({"dragType": "dragUrls"});
                             refresh()
                         } else {
                             $('#dragTitle').bootstrapSwitch("state", true, true)
-                            chrome.storage.local.set({ "dragType": "dragTitle" });
+                            chrome.storage.local.set({"dragType": "dragTitle"});
                             refresh()
                         }
                     }
@@ -210,11 +210,11 @@ https://www.google.com | Google
                     onSwitchChange: function (event, state) {
                         if (state == true) {
                             $('#dragUrls').bootstrapSwitch("state", false, true)
-                            chrome.storage.local.set({ "dragType": "dragTitle" });
+                            chrome.storage.local.set({"dragType": "dragTitle"});
                             refresh()
                         } else {
                             $('#dragUrls').bootstrapSwitch("state", true, true)
-                            chrome.storage.local.set({ "dragType": "dragUrls" });
+                            chrome.storage.local.set({"dragType": "dragUrls"});
                             refresh()
                         }
                     }
@@ -229,11 +229,11 @@ https://www.google.com | Google
                     onSwitchChange: function (event, state) {
                         if (state == true) {
                             $('#dragTitle').bootstrapSwitch("state", false, true)
-                            chrome.storage.local.set({ "dragType": "dragUrls" });
+                            chrome.storage.local.set({"dragType": "dragUrls"});
                             refresh()
                         } else {
                             $('#dragTitle').bootstrapSwitch("state", true, true)
-                            chrome.storage.local.set({ "dragType": "dragTitle" });
+                            chrome.storage.local.set({"dragType": "dragTitle"});
                             refresh()
                         }
                     }
@@ -247,11 +247,11 @@ https://www.google.com | Google
                     onSwitchChange: function (event, state) {
                         if (state == true) {
                             $('#dragUrls').bootstrapSwitch("state", false, true)
-                            chrome.storage.local.set({ "dragType": "dragTitle" });
+                            chrome.storage.local.set({"dragType": "dragTitle"});
                             refresh()
                         } else {
                             $('#dragUrls').bootstrapSwitch("state", true, true)
-                            chrome.storage.local.set({ "dragType": "dragUrls" });
+                            chrome.storage.local.set({"dragType": "dragUrls"});
                             refresh()
                         }
                     }
@@ -266,11 +266,11 @@ https://www.google.com | Google
                     onSwitchChange: function (event, state) {
                         if (state == true) {
                             $('#dragTitle').bootstrapSwitch("state", false, true)
-                            chrome.storage.local.set({ "dragType": "dragUrls" });
+                            chrome.storage.local.set({"dragType": "dragUrls"});
                             refresh()
                         } else {
                             $('#dragTitle').bootstrapSwitch("state", true, true)
-                            chrome.storage.local.set({ "dragType": "dragTitle" });
+                            chrome.storage.local.set({"dragType": "dragTitle"});
                             refresh()
                         }
                     }
@@ -284,11 +284,11 @@ https://www.google.com | Google
                     onSwitchChange: function (event, state) {
                         if (state == true) {
                             $('#dragUrls').bootstrapSwitch("state", false, true)
-                            chrome.storage.local.set({ "dragType": "dragTitle" });
+                            chrome.storage.local.set({"dragType": "dragTitle"});
                             refresh()
                         } else {
                             $('#dragUrls').bootstrapSwitch("state", true, true)
-                            chrome.storage.local.set({ "dragType": "dragUrls" });
+                            chrome.storage.local.set({"dragType": "dragUrls"});
                             refresh()
                         }
                     }
@@ -305,9 +305,9 @@ https://www.google.com | Google
                     offColor: "danger",
                     onSwitchChange: function (event, state) {
                         if (state == true) {
-                            chrome.storage.local.set({ "autoSync": true });
+                            chrome.storage.local.set({"autoSync": true});
                         } else {
-                            chrome.storage.local.set({ "autoSync": false });
+                            chrome.storage.local.set({"autoSync": false});
                         }
                     }
                 });
@@ -320,9 +320,9 @@ https://www.google.com | Google
                     offColor: "danger",
                     onSwitchChange: function (event, state) {
                         if (state == true) {
-                            chrome.storage.local.set({ "autoSync": true });
+                            chrome.storage.local.set({"autoSync": true});
                         } else {
-                            chrome.storage.local.set({ "autoSync": false });
+                            chrome.storage.local.set({"autoSync": false});
                         }
                     }
                 });
@@ -338,9 +338,9 @@ https://www.google.com | Google
                     offColor: "danger",
                     onSwitchChange: function (event, state) {
                         if (state == true) {
-                            chrome.storage.local.set({ "dragOpenTranslate": true });
+                            chrome.storage.local.set({"dragOpenTranslate": true});
                         } else {
-                            chrome.storage.local.set({ "dragOpenTranslate": false });
+                            chrome.storage.local.set({"dragOpenTranslate": false});
                         }
                     }
                 });
@@ -353,9 +353,9 @@ https://www.google.com | Google
                     offColor: "danger",
                     onSwitchChange: function (event, state) {
                         if (state == true) {
-                            chrome.storage.local.set({ "dragOpenTranslate": true });
+                            chrome.storage.local.set({"dragOpenTranslate": true});
                         } else {
-                            chrome.storage.local.set({ "dragOpenTranslate": false });
+                            chrome.storage.local.set({"dragOpenTranslate": false});
                         }
                     }
                 });
@@ -465,7 +465,7 @@ https://www.google.com | Google
                     if (title && typeof (title) != undefined) {
                         title = title.replace(emojiReg, "");
                     }
-                    let tab = { "title": title, "url": lineList[0] }
+                    let tab = {"title": title, "url": lineList[0]}
                     tabsArr.push(tab);
                 }
                 saveShardings(tabGroups, "object");
@@ -518,7 +518,7 @@ https://www.google.com | Google
                     if (title && typeof (title) != undefined) {
                         title = title.replace(emojiReg, "");
                     }
-                    let tab = { "title": title, "url": lineList[0] }
+                    let tab = {"title": title, "url": lineList[0]}
                     tabsArr.push(tab);
                 }
                 saveShardings(tabGroups, "object");
@@ -568,7 +568,7 @@ https://www.google.com | Google
                 chrome.storage.local.get(null, function (storage) {
                     if (!storage.githubGistToken) {
                         console.log("githubGistToken没有保存");
-                        showAlert(`${chrome.i18n.getMessage("showError")}`,`${chrome.i18n.getMessage("githubTokenNoSaved")}`+"\n"+`${chrome.i18n.getMessage("goToOptions")}`)
+                        showAlert(`${chrome.i18n.getMessage("showError")}`, `${chrome.i18n.getMessage("githubTokenNoSaved")}` + "\n" + `${chrome.i18n.getMessage("goToOptions")}`)
                         return
                     }
                     console.log(storage.handleGistStatus);
@@ -604,7 +604,7 @@ https://www.google.com | Google
                 chrome.storage.local.get(null, function (storage) {
                     if (!storage.giteeGistToken) {
                         console.log("giteeGistToken没有保存");
-                        showAlert(`${chrome.i18n.getMessage("showError")}`,`${chrome.i18n.getMessage("giteeTokenNoSaved")}`+"\n"+`${chrome.i18n.getMessage("goToOptions")}`)
+                        showAlert(`${chrome.i18n.getMessage("showError")}`, `${chrome.i18n.getMessage("giteeTokenNoSaved")}` + "\n" + `${chrome.i18n.getMessage("goToOptions")}`)
                         return
                     }
                     console.log(storage.handleGistStatus);
@@ -640,7 +640,7 @@ https://www.google.com | Google
                 chrome.storage.local.get(null, function (storage) {
                     if (!storage.githubGistToken) {
                         console.log("githubGistToken没有保存");
-                        showAlert(`${chrome.i18n.getMessage("showError")}`,`${chrome.i18n.getMessage("githubTokenNoSaved")}`+"\n"+`${chrome.i18n.getMessage("goToOptions")}`)
+                        showAlert(`${chrome.i18n.getMessage("showError")}`, `${chrome.i18n.getMessage("githubTokenNoSaved")}` + "\n" + `${chrome.i18n.getMessage("goToOptions")}`)
                         return
                     }
                     console.log(storage.handleGistStatus);
@@ -677,7 +677,7 @@ https://www.google.com | Google
                 chrome.storage.local.get(null, function (storage) {
                     if (!storage.giteeGistToken) {
                         console.log("giteeGistToken没有保存");
-                        showAlert(`${chrome.i18n.getMessage("showError")}`,`${chrome.i18n.getMessage("giteeTokenNoSaved")}`+"\n"+`${chrome.i18n.getMessage("goToOptions")}`)
+                        showAlert(`${chrome.i18n.getMessage("showError")}`, `${chrome.i18n.getMessage("giteeTokenNoSaved")}` + "\n" + `${chrome.i18n.getMessage("goToOptions")}`)
                         return
                     }
                     console.log(storage.handleGistStatus);
@@ -742,7 +742,7 @@ https://www.google.com | Google
                         iconUrl: 'images/128.png',
                         title: `${chrome.i18n.getMessage("endPullFromGithubGistTask")}`,
                         message: `${chrome.i18n.getMessage("usedTime")}${duration.hours()}${chrome.i18n.getMessage("hours")}${duration.minutes()}${chrome.i18n.getMessage("minutes")}${duration.seconds()}${chrome.i18n.getMessage("seconds")}`,
-                        buttons: [{ "title": `${chrome.i18n.getMessage("close")}` }],
+                        buttons: [{"title": `${chrome.i18n.getMessage("close")}`}],
                         requireInteraction: true
                     });
                     handleGistLog.push(`${usedSeconds}${chrome.i18n.getMessage("secondWait")}`)
@@ -785,7 +785,7 @@ https://www.google.com | Google
                         iconUrl: 'images/128.png',
                         title: `${chrome.i18n.getMessage("endPullFromGiteeGistTask")}`,
                         message: `${chrome.i18n.getMessage("usedTime")}${duration.hours()}${chrome.i18n.getMessage("hours")}${duration.minutes()}${chrome.i18n.getMessage("minutes")}${duration.seconds()}${chrome.i18n.getMessage("seconds")}`,
-                        buttons: [{ "title": `${chrome.i18n.getMessage("close")}` }],
+                        buttons: [{"title": `${chrome.i18n.getMessage("close")}`}],
                         requireInteraction: true
                     });
                     handleGistLog.push(`${usedSeconds}${chrome.i18n.getMessage("secondWait")}`)
@@ -829,7 +829,7 @@ https://www.google.com | Google
                         iconUrl: 'images/128.png',
                         title: `${chrome.i18n.getMessage("endPushToGithubGistTask")}`,
                         message: `${chrome.i18n.getMessage("usedTime")}${duration.hours()}${chrome.i18n.getMessage("hours")}${duration.minutes()}${chrome.i18n.getMessage("minutes")}${duration.seconds()}${chrome.i18n.getMessage("seconds")}`,
-                        buttons: [{ "title": `${chrome.i18n.getMessage("close")}` }],
+                        buttons: [{"title": `${chrome.i18n.getMessage("close")}`}],
                         requireInteraction: true
                     });
                     handleGistLog.push(`${usedSeconds}${chrome.i18n.getMessage("secondWait")}`)
@@ -873,7 +873,7 @@ https://www.google.com | Google
                         iconUrl: 'images/128.png',
                         title: `${chrome.i18n.getMessage("endPushToGiteeGistTask")}`,
                         message: `${chrome.i18n.getMessage("usedTime")}${duration.hours()}${chrome.i18n.getMessage("hours")}${duration.minutes()}${chrome.i18n.getMessage("minutes")}${duration.seconds()}${chrome.i18n.getMessage("seconds")}`,
-                        buttons: [{ "title": `${chrome.i18n.getMessage("close")}` }],
+                        buttons: [{"title": `${chrome.i18n.getMessage("close")}`}],
                         requireInteraction: true
                     });
                     handleGistLog.push(`${usedSeconds}${chrome.i18n.getMessage("secondWait")}`)
@@ -890,7 +890,7 @@ https://www.google.com | Google
 
     // 构造操作gist的日志结构
     function setHandleGistLog(type, isReload) {
-        var handleGistLogMap = { id: genObjectId(), handleGistType: type, handleGistLogs: handleGistLog };
+        var handleGistLogMap = {id: genObjectId(), handleGistType: type, handleGistLogs: handleGistLog};
         chrome.storage.local.get(null, function (storage) {
             if (storage.gistLog) {
                 console.log("gistLog有值");
@@ -898,21 +898,21 @@ https://www.google.com | Google
                     var newArr = storage.gistLog;
                     newArr.splice(-1, 1)
                     newArr.unshift(handleGistLogMap);
-                    chrome.storage.local.set({ gistLog: newArr });
+                    chrome.storage.local.set({gistLog: newArr});
                     if (isReload) {
                         refresh()
                     }
                 } else {
                     var newArr = storage.gistLog;
                     newArr.unshift(handleGistLogMap);
-                    chrome.storage.local.set({ gistLog: newArr });
+                    chrome.storage.local.set({gistLog: newArr});
                     if (isReload) {
                         refresh()
                     }
                 }
             } else {
                 console.log("gistLog没有值，第一次");
-                chrome.storage.local.set({ gistLog: [handleGistLogMap] });
+                chrome.storage.local.set({gistLog: [handleGistLogMap]});
                 if (isReload) {
                     refresh()
                 }
@@ -923,27 +923,23 @@ https://www.google.com | Google
     // 操作gist的全局状态
     function setHandleGistStatus(status) {
         var expireTime = moment().add(1, 'minutes').format('YYYY-MM-DD HH:mm:ss');
-        var gistStatusMap = { type: status, expireTime: expireTime };
-        chrome.storage.local.set({ handleGistStatus: gistStatusMap });
+        var gistStatusMap = {type: status, expireTime: expireTime};
+        chrome.storage.local.set({handleGistStatus: gistStatusMap});
     };
 
     // 检查跟github的通讯是否正常
     function checkGitHubStatus() {
         $.ajax({
-            type: "GET",
-            url: gitHubApiUrl,
-            success: function (data, status) {
+            type: "GET", url: gitHubApiUrl, success: function (data, status) {
                 if (status == "success") {
                     console.log("跟github通讯正常！");
                     document.getElementById('githubStatus').innerHTML = `${chrome.i18n.getMessage("githubApiStatusSuccess")}`;
                 } else {
                     document.getElementById('githubStatus').innerHTML = `${chrome.i18n.getMessage("githubApiStatusFailed")}`;
                 }
-            },
-            error: function (xhr, errorText, errorType) {
+            }, error: function (xhr, errorText, errorType) {
                 document.getElementById('githubStatus').innerHTML = `${chrome.i18n.getMessage("githubApiStatusError")}`;
-            },
-            complete: function () {
+            }, complete: function () {
                 //do something
             }
         })
@@ -952,20 +948,16 @@ https://www.google.com | Google
     // 检查跟gitee的通讯是否正常
     function checkGiteeStatus() {
         $.ajax({
-            type: "GET",
-            url: giteeApiUrl + "/emojis",
-            success: function (data, status) {
+            type: "GET", url: giteeApiUrl + "/emojis", success: function (data, status) {
                 if (status == "success") {
                     console.log("跟gitee通讯正常！");
                     document.getElementById('giteeStatus').innerHTML = `${chrome.i18n.getMessage("giteeApiStatusSuccess")}`;
                 } else {
                     document.getElementById('giteeStatus').innerHTML = `${chrome.i18n.getMessage("giteeApiStatusFailed")}`;
                 }
-            },
-            error: function (xhr, errorText, errorType) {
+            }, error: function (xhr, errorText, errorType) {
                 document.getElementById('giteeStatus').innerHTML = `${chrome.i18n.getMessage("giteeApiStatusError")}`;
-            },
-            complete: function () {
+            }, complete: function () {
                 //do something
             }
         })
@@ -973,8 +965,9 @@ https://www.google.com | Google
 
     // 关闭当前tab
     function closeCurrentTab() {
-        chrome.tabs.query({ active: true, currentWindow: true }, function (tabsArr) {
-            chrome.tabs.remove(tabsArr[0].id, function () { });
+        chrome.tabs.query({active: true, currentWindow: true}, function (tabsArr) {
+            chrome.tabs.remove(tabsArr[0].id, function () {
+            });
         });
     };
 
@@ -985,15 +978,13 @@ https://www.google.com | Google
         console.log("已经创建了gist，直接开始更新");
         var _content = JSON.stringify(content);
         var data = {
-            "description": "myCloudSkyMonster",
-            "public": false,
-            "files": {
-                "brower_Tabs.json": { "content": _content }
+            "description": "myCloudSkyMonster", "public": false, "files": {
+                "brower_Tabs.json": {"content": _content}
             }
         }
         $.ajax({
             type: "PATCH",
-            headers: { "Authorization": "token " + githubGistToken },
+            headers: {"Authorization": "token " + githubGistToken},
             url: gitHubApiUrl + "/gists/" + githubGistId,
             data: JSON.stringify(data),
             success: function (data, status) {
@@ -1027,22 +1018,19 @@ https://www.google.com | Google
         var _content = JSON.stringify(content);
         var js = generateJs(content)
         var data = {
-            "description": "myCloudSkyMonster",
-            "public": false,
-            "files": {
-                "brower_Tabs.json": { "content": _content },
-                "brower_tasks.js": { "content": js }
+            "description": "myCloudSkyMonster", "public": false, "files": {
+                "brower_Tabs.json": {"content": _content}, "brower_tasks.js": {"content": js}
             }
         }
         $.ajax({
             type: "PATCH",
-            headers: { "Authorization": "token " + giteeGistToken },
+            headers: {"Authorization": "token " + giteeGistToken},
             url: giteeApiUrl + "/gists/" + giteeGistId,
             data: data,
             success: function (data, status) {
                 if (status == "success") {
                     console.log("更新成功！");
-                    chrome.storage.local.set({ "taskJsUrl": data.files['brower_tasks.js'].raw_url })
+                    chrome.storage.local.set({"taskJsUrl": data.files['brower_tasks.js'].raw_url})
                     handleGistLog.push(`${chrome.i18n.getMessage("updateSuccess")}`)
                 } else {
                     console.log("更新失败！");
@@ -1140,7 +1128,7 @@ https://www.google.com | Google
         pullFromGithubGistStatus = `${chrome.i18n.getMessage("getGithubGistById")}`;
         $.ajax({
             type: "GET",
-            headers: { "Authorization": "token " + githubGistToken },
+            headers: {"Authorization": "token " + githubGistToken},
             url: gitHubApiUrl + "/gists/" + githubGistId,
             success: function (data, status) {
                 if (status == "success") {
@@ -1151,7 +1139,7 @@ https://www.google.com | Google
                     } else {
                         let content = data.files['brower_Tabs.json'].content
                         let _content = JSON.parse(content)
-                        chrome.storage.local.set({ "taskJsUrl": _content.taskJsUrl, "taskList": _content.taskList });
+                        chrome.storage.local.set({"taskJsUrl": _content.taskJsUrl, "taskList": _content.taskList});
                         delete _content.taskJsUrl
                         delete _content.taskList
                         saveShardings(_content.tabGroups, "object");
@@ -1182,12 +1170,12 @@ https://www.google.com | Google
         pullFromGithubGistStatus = `${chrome.i18n.getMessage("getGithubGistByRawUrl")}`;
         $.ajax({
             type: "GET",
-            headers: { "Authorization": "token " + githubGistToken },
+            headers: {"Authorization": "token " + githubGistToken},
             url: rawUrl,
             success: function (data, status) {
                 if (status == "success") {
                     let _content = JSON.parse(data)
-                    chrome.storage.local.set({ "taskJsUrl": _content.taskJsUrl, "taskList": _content.taskList });
+                    chrome.storage.local.set({"taskJsUrl": _content.taskJsUrl, "taskList": _content.taskList});
                     delete _content.taskJsUrl
                     delete _content.taskList
                     saveShardings(_content.tabGroups, "object");
@@ -1215,7 +1203,7 @@ https://www.google.com | Google
         pullFromGiteeGistStatus = `${chrome.i18n.getMessage("getGiteeGistById")}`;
         $.ajax({
             type: "GET",
-            headers: { "Authorization": "token " + giteeGistToken },
+            headers: {"Authorization": "token " + giteeGistToken},
             url: giteeApiUrl + "/gists/" + giteeGistId,
             success: function (data, status) {
                 if (status == "success") {
@@ -1227,17 +1215,20 @@ https://www.google.com | Google
                             console.log(wasCleared)
                             for (let i = 0; i < taskGroups.length; i++) {
                                 if (taskGroups[i].isOpen) {
-                                    chrome.alarms.create(taskGroups[i].functionName, { delayInMinutes: parseInt(taskGroups[i].rate), periodInMinutes: parseInt(taskGroups[i].rate) });
+                                    chrome.alarms.create(taskGroups[i].functionName, {
+                                        delayInMinutes: parseInt(taskGroups[i].rate),
+                                        periodInMinutes: parseInt(taskGroups[i].rate)
+                                    });
                                 }
                             }
                             // 创建定时同步gitee任务
-                            chrome.alarms.create("checkAutoSyncGitee", { delayInMinutes: 70, periodInMinutes: 70 });
+                            chrome.alarms.create("checkAutoSyncGitee", {delayInMinutes: 70, periodInMinutes: 70});
                             // 创建定时同步github任务
-                            chrome.alarms.create("checkAutoSyncGithub", { delayInMinutes: 90, periodInMinutes: 90 });
+                            chrome.alarms.create("checkAutoSyncGithub", {delayInMinutes: 90, periodInMinutes: 90});
 
                         });
                     }
-                    chrome.storage.local.set({ "taskJsUrl": _content.taskJsUrl, "taskList": _content.taskList });
+                    chrome.storage.local.set({"taskJsUrl": _content.taskJsUrl, "taskList": _content.taskList});
                     delete _content.taskJsUrl
                     delete _content.taskList
                     saveShardings(_content.tabGroups, "object");
@@ -1269,7 +1260,7 @@ https://www.google.com | Google
         }
         $.ajax({
             type: "GET",
-            headers: { "Authorization": "token " + giteeGistToken },
+            headers: {"Authorization": "token " + giteeGistToken},
             url: giteeApiUrl + "/gists",
             success: function (data, status) {
                 if (status == "success") {
@@ -1281,7 +1272,7 @@ https://www.google.com | Google
                             console.log("已经创建了gist");
                             handleGistLog.push(`${chrome.i18n.getMessage("gistCreated")}`)
                             giteeGistId = data[i].id;
-                            chrome.storage.local.set({ giteeGistId: data[i].id });
+                            chrome.storage.local.set({giteeGistId: data[i].id});
                             handleGistLog.push(`${chrome.i18n.getMessage("getGistIdAndSaved")}`)
                             console.log("获取gistId并保存完毕");
                             console.log(giteeGistId);
@@ -1348,7 +1339,7 @@ https://www.google.com | Google
         }
         $.ajax({
             type: "GET",
-            headers: { "Authorization": "token " + githubGistToken },
+            headers: {"Authorization": "token " + githubGistToken},
             url: gitHubApiUrl + "/gists",
             success: function (data, status) {
                 if (status == "success") {
@@ -1360,7 +1351,7 @@ https://www.google.com | Google
                             console.log("已经创建了gist");
                             handleGistLog.push(`${chrome.i18n.getMessage("gistCreated")}`)
                             githubGistId = data[i].id;
-                            chrome.storage.local.set({ githubGistId: data[i].id });
+                            chrome.storage.local.set({githubGistId: data[i].id});
                             handleGistLog.push(`${chrome.i18n.getMessage("getGistIdAndSaved")}`)
                             console.log("获取gistId并保存完毕");
                             console.log(githubGistId);
@@ -1436,7 +1427,7 @@ https://www.google.com | Google
                 console.log("githubtoken没有保存");
                 handleGistLog.push(`${chrome.i18n.getMessage("githubTokenNoSaved")}`);
                 var token = prompt(`${chrome.i18n.getMessage("saveTokenKey")}`, `${chrome.i18n.getMessage("saveTokenValue")}`);
-                chrome.storage.local.set({ githubGistToken: token.trim() });
+                chrome.storage.local.set({githubGistToken: token.trim()});
                 console.log("githubtoken保存完毕");
                 handleGistLog.push(`${chrome.i18n.getMessage("githubTokenSaveSuccess")}`)
                 isStoredGithubGistIdLocal(action);
@@ -1464,7 +1455,7 @@ https://www.google.com | Google
                 console.log("giteetoken没有保存");
                 handleGistLog.push(`${chrome.i18n.getMessage("giteeTokenNoSaved")}`);
                 var token = prompt(`${chrome.i18n.getMessage("saveTokenKey")}`, `${chrome.i18n.getMessage("saveTokenValue")}`);
-                chrome.storage.local.set({ giteeGistToken: token.trim() });
+                chrome.storage.local.set({giteeGistToken: token.trim()});
                 console.log("giteetoken保存完毕");
                 handleGistLog.push(`${chrome.i18n.getMessage("giteeTokenSaveSuccess")}`)
                 isStoredGiteeGistIdLocal(action);
@@ -1502,22 +1493,20 @@ https://www.google.com | Google
         pushToGithubGistStatus = `${chrome.i18n.getMessage("startCreateGithubGist")}`;
         var _content = JSON.stringify(content);
         var data = {
-            "description": "myCloudSkyMonster",
-            "public": false,
-            "files": {
-                "brower_Tabs.json": { "content": _content }
+            "description": "myCloudSkyMonster", "public": false, "files": {
+                "brower_Tabs.json": {"content": _content}
             }
         }
         $.ajax({
             type: "POST",
-            headers: { "Authorization": "token " + githubGistToken },
+            headers: {"Authorization": "token " + githubGistToken},
             url: gitHubApiUrl + "/gists",
             dataType: "json",
             data: JSON.stringify(data),
             success: function (data, status) {
                 if (status == "success") {
                     console.log("创建成功！");
-                    chrome.storage.local.set({ "githubGistId": data.id })
+                    chrome.storage.local.set({"githubGistId": data.id})
                     handleGistLog.push(`${chrome.i18n.getMessage("createSuccess")}`)
                 } else {
                     console.log("创建失败！");
@@ -1546,23 +1535,22 @@ https://www.google.com | Google
         var _content = JSON.stringify(content);
         var js = generateJs(content)
         var data = {
-            "description": "myCloudSkyMonster",
-            "public": false,
-            "files": {
-                "brower_Tabs.json": { "content": _content },
-                "brower_tasks.js": { "content": js }
+            "description": "myCloudSkyMonster", "public": false, "files": {
+                "brower_Tabs.json": {"content": _content}, "brower_tasks.js": {"content": js}
             }
         }
         $.ajax({
             type: "POST",
-            headers: { "Authorization": "token " + giteeGistToken },
+            headers: {"Authorization": "token " + giteeGistToken},
             url: giteeApiUrl + "/gists",
             dataType: "json",
             data: data,
             success: function (data, status) {
                 if (status == "success") {
                     console.log("创建成功！");
-                    chrome.storage.local.set({ "taskJsUrl": data.files['brower_tasks.js'].raw_url, "giteeGistId": data.id })
+                    chrome.storage.local.set({
+                        "taskJsUrl": data.files['brower_tasks.js'].raw_url, "giteeGistId": data.id
+                    })
                     handleGistLog.push(`${chrome.i18n.getMessage("createSuccess")}`)
                 } else {
                     console.log("创建失败！");
@@ -1599,8 +1587,10 @@ https://www.google.com | Google
             ret = new RegExp("(" + k + ")").exec(fmt);
             if (ret) {
                 fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")));
-            };
-        };
+            }
+            ;
+        }
+        ;
         return fmt;
     };
 
@@ -1618,10 +1608,9 @@ https://www.google.com | Google
         var date;
         date = dateFormat("YYYY-mm-dd HH:MM:SS", new Date());
         var tabGroup = {
-            date: date,
-            id: genObjectId() // clever way to quickly get a unique ID
+            date: date, id: genObjectId() // clever way to quickly get a unique ID
         };
-        let res = tabsArr.map(({ title, url }) => ({ title, url }));
+        let res = tabsArr.map(({title, url}) => ({title, url}));
         tabGroup.tabs = res;
         tabGroup.isLock = false;
         tabGroup.groupTitle = '';
@@ -1633,10 +1622,9 @@ https://www.google.com | Google
         var date;
         date = dateFormat("YYYY-mm-dd HH:MM:SS", new Date());
         var tabGroup = {
-            date: date,
-            id: genObjectId() // clever way to quickly get a unique ID
+            date: date, id: genObjectId() // clever way to quickly get a unique ID
         };
-        let res = tabsArr.map(({ title, url }) => ({ title, url }));
+        let res = tabsArr.map(({title, url}) => ({title, url}));
         tabGroup.tabs = res;
         tabGroup.isLock = isLock;
         tabGroup.groupTitle = groupTitle;
@@ -1726,6 +1714,7 @@ https://www.google.com | Google
                 opts = storage.options || {
                     deleteTabOnOpen: 'no'
                 };
+
             function saveTabGroups(json) {
                 saveShardings(json, "object");
                 var i;
@@ -1836,10 +1825,7 @@ https://www.google.com | Google
 
             tabs.view = function () {
                 if (tabs.vm.list.length === 0) {
-                    return m('div', [
-                        m('div.jumbotron',
-                            [m('div', { style: "text-align:center; margin-bottom:50px" }, `${chrome.i18n.getMessage("noTabs")}`)
-                            ])])
+                    return m('div', [m('div.jumbotron', [m('div', {style: "text-align:center; margin-bottom:50px"}, `${chrome.i18n.getMessage("noTabs")}`)])])
                 }
                 // foreach tab group
                 return tabs.vm.list.map(function (group, i) {
@@ -1863,130 +1849,103 @@ https://www.google.com | Google
 
                     return m('div.tabs' + titleClass + lockClass, {
                         id: i
-                    }, [
-                        m('div.group-title', [
-                            m('img' + lockImgClass, {
-                                src: "/images/lock.png"
-                            }),
-                            m('span' + deleteLinkClass, {
-                                onclick: function () {
-                                    tabs.vm.rmGroup(i);
-                                }
-                            }),
-                            ' ',
-                            m('span.group-amount', {
-                                onclick: function () {
-                                    $("#tabs_" + i).slideToggle();
-                                }
-                            }, group.tabs().length + `${chrome.i18n.getMessage("tabsNo")}`),
-                            ' ',
-                            m('span.group-name', {
-                                id: "groupTitle" + i,
-                                onclick: function () {
-                                    let val = $("#groupTitle" + i).html();
-                                    $("#groupTitle" + i).slideToggle(100);
-                                    $("#groupTitleInput" + i).slideToggle(1000);
-                                    setTimeout(function() {
-                                        $("#groupTitleInput" + i).focus();
-                                    }, 100);
-                                    $("#groupTitleInput" + i).val(val)
-                                }
-                            }, groupTitle),
-                            ' ',
-                            m('input.group-title-input', {
-                                id: "groupTitleInput" + i,
-                                style: "display:none",
-                                onchange: function () {
-                                    let val = $("#groupTitleInput" + i).val()
-                                    $("#groupTitle" + i).html(val)
-                                    $("#groupTitle" + i).slideToggle(1000);
-                                    $("#groupTitleInput" + i).slideToggle(100);
-                                    tabs.vm.updateGroup(i, { groupTitle: val })
-                                },
-                                onblur: function () {
-                                    let val = $("#groupTitleInput" + i).val()
-                                    $("#groupTitle" + i).html(val)
-                                    $("#groupTitle" + i).slideToggle(1000);
-                                    $("#groupTitleInput" + i).slideToggle(100);
-                                    tabs.vm.updateGroup(i, { groupTitle: val })
-                                }
-                            }),
-                            m('span.group-date', moment(group.date()).format('YYYY-MM-DD HH:mm:ss')),
-                            ' ',
-                            m('span.restore-all', {
-                                onclick: function () {
-                                    var j;
+                    }, [m('div.group-title', [m('img' + lockImgClass, {
+                        src: "/images/lock.png"
+                    }), m('span' + deleteLinkClass, {
+                        onclick: function () {
+                            tabs.vm.rmGroup(i);
+                        }
+                    }), ' ', m('span.group-amount', {
+                        onclick: function () {
+                            $("#tabs_" + i).slideToggle();
+                        }
+                    }, group.tabs().length + `${chrome.i18n.getMessage("tabsNo")}`), ' ', m('span.group-name', {
+                        id: "groupTitle" + i, onclick: function () {
+                            let val = $("#groupTitle" + i).html();
+                            $("#groupTitle" + i).slideToggle(100);
+                            $("#groupTitleInput" + i).slideToggle(1000);
+                            setTimeout(function () {
+                                $("#groupTitleInput" + i).focus();
+                            }, 100);
+                            $("#groupTitleInput" + i).val(val)
+                        }
+                    }, groupTitle), ' ', m('input.group-title-input', {
+                        id: "groupTitleInput" + i, style: "display:none", onchange: function () {
+                            let val = $("#groupTitleInput" + i).val()
+                            $("#groupTitle" + i).html(val)
+                            $("#groupTitle" + i).slideToggle(1000);
+                            $("#groupTitleInput" + i).slideToggle(100);
+                            tabs.vm.updateGroup(i, {groupTitle: val})
+                        }, onblur: function () {
+                            let val = $("#groupTitleInput" + i).val()
+                            $("#groupTitle" + i).html(val)
+                            $("#groupTitle" + i).slideToggle(1000);
+                            $("#groupTitleInput" + i).slideToggle(100);
+                            tabs.vm.updateGroup(i, {groupTitle: val})
+                        }
+                    }), m('span.group-date', moment(group.date()).format('YYYY-MM-DD HH:mm:ss')), ' ', m('span.restore-all', {
+                        onclick: function () {
+                            var j;
 
-                                    // reason this goes first and not after is because it doesn't work otherwise
-                                    // I imagine it's because you changed tab and stuff
-                                    if (opts.deleteTabOnOpen === 'yes') {
-                                        tabs.vm.rmGroup(i);
-                                    }
+                            // reason this goes first and not after is because it doesn't work otherwise
+                            // I imagine it's because you changed tab and stuff
+                            if (opts.deleteTabOnOpen === 'yes') {
+                                tabs.vm.rmGroup(i);
+                            }
 
-                                    for (j = 0; j < group.tabs().length; j += 1) {
-                                        chrome.tabs.create({
-                                            url: group.tabs()[j].url
-                                        });
-                                    }
-                                }
-                            }, `${chrome.i18n.getMessage("restoreGroup")}`),
-                            m('span.delete-all', {
-                                onclick: function () {
-                                    tabs.vm.rmGroup(i);
-                                }
-                            }, `${chrome.i18n.getMessage("deleteAll")}`),
-                            m('span.about-lock', {
-                                onclick: function () {
-                                    tabs.vm.updateGroup(i, { isLock: !isLock })
-                                }
-                            }, lockStatus),
-                            m('span.about-top', {
-                                onclick: function () {
-                                    tabs.vm.updateGroup(i, { toTop: true })
-                                }
-                            }, `${chrome.i18n.getMessage("toTop")}`),
-                            m('span.about-top', {
-                                onclick: function () {
-                                    let val = $("#groupTitle" + i).html();
-                                    $("#groupTitle" + i).slideToggle(100);
-                                    $("#groupTitleInput" + i).slideToggle(1000);
-                                    setTimeout(function() {
-                                        $("#groupTitleInput" + i).focus();
-                                    }, 100);
-                                    $("#groupTitleInput" + i).val(val)
-                                }
-                            }, `${chrome.i18n.getMessage("nameThis")}`),
-                        ]),
-                        // foreach tab
+                            for (j = 0; j < group.tabs().length; j += 1) {
+                                chrome.tabs.create({
+                                    url: group.tabs()[j].url
+                                });
+                            }
+                        }
+                    }, `${chrome.i18n.getMessage("restoreGroup")}`), m('span.delete-all', {
+                        onclick: function () {
+                            tabs.vm.rmGroup(i);
+                        }
+                    }, `${chrome.i18n.getMessage("deleteAll")}`), m('span.about-lock', {
+                        onclick: function () {
+                            tabs.vm.updateGroup(i, {isLock: !isLock})
+                        }
+                    }, lockStatus), m('span.about-top', {
+                        onclick: function () {
+                            tabs.vm.updateGroup(i, {toTop: true})
+                        }
+                    }, `${chrome.i18n.getMessage("toTop")}`), m('span.about-top', {
+                        onclick: function () {
+                            let val = $("#groupTitle" + i).html();
+                            $("#groupTitle" + i).slideToggle(100);
+                            $("#groupTitleInput" + i).slideToggle(1000);
+                            setTimeout(function () {
+                                $("#groupTitleInput" + i).focus();
+                            }, 100);
+                            $("#groupTitleInput" + i).val(val)
+                        }
+                    }, `${chrome.i18n.getMessage("nameThis")}`),]), // foreach tab
                         m('ul' + tabClass + lockClass, {
                             id: "tabs_" + i
                         }, group.tabs().map(function (tab, ii) {
-                            return m('li.li-hover.li-standard', [
-                                m('span' + deleteLinkClass, {
-                                    onclick: function () {
+                            return m('li.li-hover.li-standard', [m('span' + deleteLinkClass, {
+                                onclick: function () {
+                                    tabs.vm.rmTab(i, ii);
+                                }
+                            }), m('span.link', {
+                                title: tab.title + "\n" + tab.url, onclick: function () {
+                                    if (opts.deleteTabOnOpen === 'yes') {
                                         tabs.vm.rmTab(i, ii);
                                     }
-                                }),
-                                m('span.link', {
-                                    title: tab.title + "\n" + tab.url,
-                                    onclick: function () {
-                                        if (opts.deleteTabOnOpen === 'yes') {
-                                            tabs.vm.rmTab(i, ii);
-                                        }
-                                        chrome.tabs.create({
-                                            url: tab.url, active: false
-                                        });
-                                    }
-                                }, tab.title)
-                            ]);
-                        }))
-                    ]);
+                                    chrome.tabs.create({
+                                        url: tab.url, active: false
+                                    });
+                                }
+                            }, tab.title)]);
+                        }))]);
                 });
             };
 
 
             // init the app
-            m.module(document.getElementById('tabGroups'), { controller: tabs.controller, view: tabs.view });
+            m.module(document.getElementById('tabGroups'), {controller: tabs.controller, view: tabs.view});
 
             // 以下是超级拖曳的相关代码
             if (storage.dragType == "dragTitle") {
@@ -2001,16 +1960,9 @@ https://www.google.com | Google
                 } else {
                     sortableTitle = Sortable.create(document.getElementById("tabGroups"), {
                         group: {
-                            name: "tabGroups",
-                            pull: false,
-                            put: false
-                        },
-                        scroll: true,
-                        easing: "cubic-bezier(1, 0, 0, 1)",
-                        animation: 150, //动画参数
-                        ghostClass: 'ghost',
-                        filter: '.filtered',
-                        onEnd: function (evt) { //拖拽完毕之后发生该事件
+                            name: "tabGroups", pull: false, put: false
+                        }, scroll: true, easing: "cubic-bezier(1, 0, 0, 1)", animation: 150, //动画参数
+                        ghostClass: 'ghost', filter: '.filtered', onEnd: function (evt) { //拖拽完毕之后发生该事件
                             // console.log(evt)
                             // console.log(evt.item);
                             // console.log(evt.to);
@@ -2023,8 +1975,10 @@ https://www.google.com | Google
                             showAllTabs();
                         }
                     });
-                };
-            };
+                }
+                ;
+            }
+            ;
             if (storage.dragType == "dragUrls") {
                 var j;
                 if (typeof (sortableTitle) != "undefined") {
@@ -2034,16 +1988,9 @@ https://www.google.com | Google
                 for (j = 0; j < bridge.length; j += 1) {
                     var sortableTab = Sortable.create(document.getElementById("tabs_" + j), {
                         group: {
-                            name: "tabs",
-                            pull: true,
-                            put: true
-                        },
-                        easing: "cubic-bezier(1, 0, 0, 1)",
-                        scroll: true,
-                        swapThreshold: 0.65,
-                        animation: 150, //动画参数
-                        filter: '.filtered',
-                        onEnd: function (evt) {
+                            name: "tabs", pull: true, put: true
+                        }, easing: "cubic-bezier(1, 0, 0, 1)", scroll: true, swapThreshold: 0.65, animation: 150, //动画参数
+                        filter: '.filtered', onEnd: function (evt) {
                             // console.log(evt)
                             // console.log(evt.item);
                             // console.log(evt.to);
@@ -2058,8 +2005,10 @@ https://www.google.com | Google
                         }
                     })
                     sortableTabList.push(sortableTab);
-                };
-            };
+                }
+                ;
+            }
+            ;
         });
     };
 
@@ -2107,36 +2056,25 @@ https://www.google.com | Google
 
             logs.view = function () {
                 if (logs.vm.list.length === 0) {
-                    return m('div',
-                        m('div.jumbotron',
-                            [m('div', { style: "text-align:center; margin-bottom:50px" }, `${chrome.i18n.getMessage("noLog")}`)
-                            ]))
+                    return m('div', m('div.jumbotron', [m('div', {style: "text-align:center; margin-bottom:50px"}, `${chrome.i18n.getMessage("noLog")}`)]))
                 }
 
                 return logs.vm.list.map(function (group, i) {
                     return m('div.div-top', {
                         id: i
-                    }, [
-                        m('div', [
-                            m('span.group-title', {
-                                onclick: function () {
-                                    $("#logs_" + i).slideToggle();
-                                }
-                            }, group.type())
-                        ]),
-                        m('ul', {
-                            id: "logs_" + i
-                        }, group.logs().map(function (log, ii) {
-                            return m('li.li-hover li-standard', [
-                                m('span.line', {
-                                }, log)
-                            ]);
-                        }))
-                    ]);
+                    }, [m('div', [m('span.group-title', {
+                        onclick: function () {
+                            $("#logs_" + i).slideToggle();
+                        }
+                    }, group.type())]), m('ul', {
+                        id: "logs_" + i
+                    }, group.logs().map(function (log, ii) {
+                        return m('li.li-hover li-standard', [m('span.line', {}, log)]);
+                    }))]);
                 });
             };
             // init the app
-            m.module(document.getElementById('logs'), { controller: logs.controller, view: logs.view });
+            m.module(document.getElementById('logs'), {controller: logs.controller, view: logs.view});
         });
     };
 
@@ -2158,10 +2096,10 @@ https://www.google.com | Google
 
             // 如果已经有保存token就直接列出
             if (storage.githubGistToken) {
-                document.getElementById("githubToken").value= storage.githubGistToken
+                document.getElementById("githubToken").value = storage.githubGistToken
             }
             if (storage.giteeGistToken) {
-                document.getElementById("giteeToken").value= storage.giteeGistToken
+                document.getElementById("giteeToken").value = storage.giteeGistToken
             }
         });
         document.getElementById("options").innerHTML = `
@@ -2220,11 +2158,8 @@ https://www.google.com | Google
 
             chrome.storage.local.set({
                 options: {
-                    deleteTabOnOpen: deleteTabOnOpen,
-                    openBackgroundAfterSendTab: openBackgroundAfterSendTab
-                },
-                githubGistToken: githubGistToken,
-                giteeGistToken: giteeGistToken
+                    deleteTabOnOpen: deleteTabOnOpen, openBackgroundAfterSendTab: openBackgroundAfterSendTab
+                }, githubGistToken: githubGistToken, giteeGistToken: giteeGistToken
             }, function () { // show "settings saved" notice thing
                 document.getElementById('saved').style.display = 'block';
                 window.setTimeout(function () {
@@ -2315,7 +2250,7 @@ https://www.google.com | Google
 
     // 刷新当前页
     function refresh() {
-        chrome.tabs.query({ active: true, currentWindow: true }, function (tabsArr) {
+        chrome.tabs.query({active: true, currentWindow: true}, function (tabsArr) {
             chrome.tabs.reload(tabsArr[0].id, {}, function (tab) {
             });
         });
@@ -2345,13 +2280,15 @@ https://www.google.com | Google
                     let taskList = items.taskList
                     for (let i = 0; i < taskList.length; i++) {
                         if (taskList[i].isOpen) {
-                            chrome.alarms.create(taskList[i].functionName, { delayInMinutes: parseInt(taskList[i].rate), periodInMinutes: parseInt(taskList[i].rate) });
+                            chrome.alarms.create(taskList[i].functionName, {
+                                delayInMinutes: parseInt(taskList[i].rate), periodInMinutes: parseInt(taskList[i].rate)
+                            });
                         }
                     }
                     // 创建定时同步gitee任务
-                    chrome.alarms.create("checkAutoSyncGitee", { delayInMinutes: 70, periodInMinutes: 70 });
+                    chrome.alarms.create("checkAutoSyncGitee", {delayInMinutes: 70, periodInMinutes: 70});
                     // 创建定时同步github任务
-                    chrome.alarms.create("checkAutoSyncGithub", { delayInMinutes: 90, periodInMinutes: 90 });
+                    chrome.alarms.create("checkAutoSyncGithub", {delayInMinutes: 90, periodInMinutes: 90});
 
                 })
                 isLock = false;
