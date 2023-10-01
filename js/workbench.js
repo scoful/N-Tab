@@ -72,7 +72,7 @@
                                 <li id="pullFromGiteeGist"><a
                                         href="#">${chrome.i18n.getMessage("pullFromGiteeGist")}</a></li>
                                 <li role="separator" class="divider"></li>
-                                <li><a href="#">${chrome.i18n.getMessage("autoSync")}<input id="autoSync"
+                                <li><a href="#">${chrome.i18n.getMessage("autoSync")} <input id="autoSync"
                                             data-size="mini" type="checkbox"></a></li>
                             </ul>
                         </li>
@@ -87,10 +87,10 @@
                                 <li id="openImportDefault"><a href="#">${chrome.i18n.getMessage("hideShowImportDefaultFunction")}</a></li>
                                 <li id="openExport"><a href="#">${chrome.i18n.getMessage("hideShowExportFunction")}</a></li>
                                 <li role="separator" class="divider"></li>
-                                <li><a href="#">${chrome.i18n.getMessage("dragTitle")}<input id="dragTitle" data-size="mini" type="checkbox"></a></li>
-                                <li><a href="#">${chrome.i18n.getMessage("dragTabs")}<input id="dragUrls" data-size="mini" type="checkbox"></a></li>
+                                <li><a href="#">${chrome.i18n.getMessage("dragTitle")} <input id="dragTitle" data-size="mini" type="checkbox"></a></li>
+                                <li><a href="#">${chrome.i18n.getMessage("dragTabs")} <input id="dragUrls" data-size="mini" type="checkbox"></a></li>
                                 <li role="separator" class="divider"></li>
-                                <li><a href="#">${chrome.i18n.getMessage("dragOpenTranslate")}<input id="dragOpenTranslate" data-size="mini" type="checkbox"></a></li>
+                                <li><a href="#">${chrome.i18n.getMessage("dragOpenTranslate")} <input id="dragOpenTranslate" data-size="mini" type="checkbox"></a></li>
                             </ul>
                         </li>
                         <li class="home">
