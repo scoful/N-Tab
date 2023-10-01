@@ -153,9 +153,9 @@ https://www.google.com | Google
                 <div id="logs"></div>
                 <div id="options" class="div-top"></div>
             </div>
+            <a href="#navbar" class="btn btn-primary fixed-bottom-right">${chrome.i18n.getMessage("backToTop")}</a>
             <hr>
             <div class="blog-footer">
-            <p class="pull-right"><a href="#">${chrome.i18n.getMessage("backToTop")}</a></p>
             <p>${chrome.i18n.getMessage("sourceCode")}<a
                     href="https://github.com/scoful/cloudSkyMonster">GitHub</a>.</p>
             <p>有问题可直接联系微信：scoful 请注明来处和来意哦~</p>
