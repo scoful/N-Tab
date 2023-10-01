@@ -1,12 +1,12 @@
 console.log("content_script is done!!");
-var pageX;
-var pageY;
-var scrollTop;
-var scrollLeft;
+let pageX;
+let pageY;
+let scrollTop;
+let scrollLeft;
 
 document.addEventListener('DOMContentLoaded', function () {
     $(document).mouseup(function (e) {
-        var txt;
+        let txt;
         txt = window.getSelection();
         if (txt.toString().length > 0) {
             chrome.storage.local.get('dragOpenTranslate', function (storage) {
@@ -61,14 +61,14 @@ chrome.runtime.onMessage.addListener(function (req, sender, sendRes) {
 
 // 删除生成的div
 function deleteDiv() {
-    var my = document.getElementById("descDiv");
+    let my = document.getElementById("descDiv");
     if (my != null) my.parentNode.removeChild(my);
 }
 
 // 简单的消息通知
 function tip(info) {
     info = info || '';
-    var ele = document.createElement('div');
+    let ele = document.createElement('div');
     ele.id = 'descDiv';
     ele.className = 'chrome-plugin-simple-tip';
     ele.style.top = parseInt(pageY - scrollTop) + 20 + 'px';

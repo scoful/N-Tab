@@ -2,12 +2,12 @@
     'use strict';
     console.log("popup_js is done!");
     // 定义一个n次循环定时器
-    var intervalId;
+    let intervalId;
 
     document.addEventListener('DOMContentLoaded', function () {
         console.log("load完popup了");
         // 点击插件图标直接跳到后台管理页
-        var bg = chrome.extension.getBackgroundPage();
+        let bg = chrome.extension.getBackgroundPage();
         bg.openBackgroundPage(); // 访问bg的函数
         // 适配QQ浏览器
         if (navigator.userAgent.toLowerCase().match(/qqbrowser/) != null) {
@@ -120,7 +120,7 @@
 
             // 自定义分钟数的定时提醒
             document.getElementById('custom-minute').addEventListener('click', function () {
-                var minute = prompt(`${chrome.i18n.getMessage("pleaseInputCustomMinute")}`, 120);
+                let minute = prompt(`${chrome.i18n.getMessage("pleaseInputCustomMinute")}`, 120);
                 if (!isInt(parseInt(minute.trim()))) {
                     alert(`${chrome.i18n.getMessage("inputNumber")}`)
                 } else {
@@ -133,7 +133,6 @@
             });
 
             // 通过定时器获取倒计时的样子
-            var bg = chrome.extension.getBackgroundPage();
             if (typeof (bg.surplusTime) != "undefined") {
                 intervalId = setInterval(function () {
                     if (typeof (bg.surplusTime) != "undefined") {
@@ -147,7 +146,7 @@
                 clearInterval(intervalId);
                 document.getElementById('surplusTime').innerHTML = `${chrome.i18n.getMessage("remindStatus")}`;
             }
-            ;
+
         }
 
         document.getElementById("deadLine").innerHTML = `
@@ -165,12 +164,12 @@
 
     // 列出当前窗口打开的tab，方便浏览
     chrome.tabs.query({currentWindow: true}, function (allTabs) {
-        var tabs = {};
+        let tabs = {};
 
         tabs.TabsList = Array;
 
         tabs.vm = new function () {
-            var vm = {};
+            let vm = {};
             vm.init = function () {
                 vm.list = new tabs.TabsList();
             };
@@ -183,24 +182,24 @@
         };
 
         tabs.controller = function () {
-            var i;
+            let i;
             tabs.vm.init();
             for (i = 0; i < allTabs.length; i += 1) {
-                var tab = {"title": allTabs[i].title, "id": allTabs[i].id, "favIconUrl": allTabs[i].favIconUrl};
+                let tab = {"title": allTabs[i].title, "id": allTabs[i].id, "favIconUrl": allTabs[i].favIconUrl};
                 tabs.vm.list.push(tab);
             }
         };
 
         tabs.view = function () {
             return tabs.vm.list.map(function (tab, i) {
-                var favIconUrl = tab.favIconUrl
-                if (favIconUrl && typeof (favIconUrl) != undefined && favIconUrl.indexOf("chrome") != -1) {
+                let favIconUrl = tab.favIconUrl
+                if (favIconUrl && typeof (favIconUrl) !== undefined && favIconUrl.indexOf("chrome") !== -1) {
                     favIconUrl = "./images/48.png"
                 }
                 if (!favIconUrl) {
                     favIconUrl = "./images/48.png"
                 }
-                if (typeof (favIconUrl) == undefined) {
+                if (typeof (favIconUrl) === undefined) {
                     favIconUrl = "./images/48.png"
                 }
                 return m('div.row', {

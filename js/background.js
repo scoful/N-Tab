@@ -1,31 +1,27 @@
 console.log("background is done!");
 
 // 定义倒计时文字容器
-var surplusTime;
+let surplusTime;
 // 定义一个 一次执行定时器
-var timeoutId;
+let timeoutId;
 // 定义一个桌面通知框id
-var notificationId;
-var emojiReg = /[\uD83C|\uD83D|\uD83E][\uDC00-\uDFFF][\u200D|\uFE0F]|[\uD83C|\uD83D|\uD83E][\uDC00-\uDFFF]|[0-9|*|#]\uFE0F\u20E3|[0-9|#]\u20E3|[\u203C-\u3299]\uFE0F\u200D|[\u203C-\u3299]\uFE0F|[\u2122-\u2B55]|\u303D|[\A9|\AE]\u3030|\uA9|\uAE|\u3030/gi;
-var handleGithubGistLog = new Array();
-var handleGiteeGistLog = new Array();
-var gitHubApiUrl = "https://api.github.com";
-var giteeApiUrl = "https://gitee.com/api/v5";
-var usedSeconds;
-var pushToGithubGistStatus;
-var pushToGiteeGistStatus;
-var githubGistToken;
-var giteeGistToken;
-var githubGistId;
-var giteeGistId;
+let notificationId;
+let emojiReg = /[\uD83C|\uD83D|\uD83E][\uDC00-\uDFFF][\u200D|\uFE0F]|[\uD83C|\uD83D|\uD83E][\uDC00-\uDFFF]|[0-9|*|#]\uFE0F\u20E3|[0-9|#]\u20E3|[\u203C-\u3299]\uFE0F\u200D|[\u203C-\u3299]\uFE0F|[\u2122-\u2B55]|\u303D|[\A9|\AE]\u3030|\uA9|\uAE|\u3030/gi;
+let handleGithubGistLog = [];
+let handleGiteeGistLog = [];
+let gitHubApiUrl = "https://api.github.com";
+let giteeApiUrl = "https://gitee.com/api/v5";
+let usedSeconds;
+let pushToGithubGistStatus;
+let pushToGiteeGistStatus;
+let githubGistToken;
+let giteeGistToken;
+let githubGistId;
+let giteeGistId;
 // 定义一个n次循环定时器
-var githubIntervalId;
-var giteeIntervalId;
-var isLock = false;
-var failedDirsList = new Array();
-var getDirsFlag = false;
-var startTime;
-var endTime;
+let githubIntervalId;
+let giteeIntervalId;
+let isLock = false;
 
 window.onload = function () {
     console.log("load完window了");
@@ -34,13 +30,13 @@ window.onload = function () {
 // 一load完就加载jq，并获取tab数量显示在pop的badge上
 document.addEventListener('DOMContentLoaded', function () {
     console.log("load完background了");
-    var script = document.createElement('script');
+    let script = document.createElement('script');
     script.src = "js/jquery-3.0.0.min.js";
     document.head.appendChild(script);
-    var script2 = document.createElement('script');
+    let script2 = document.createElement('script');
     script2.src = "js/moment.min.js";
     document.head.appendChild(script2);
-    var script3 = document.createElement('script');
+    let script3 = document.createElement('script');
     script3.src = "js/axios.min.js";
     document.head.appendChild(script3);
 
@@ -63,8 +59,8 @@ document.addEventListener('DOMContentLoaded', function () {
 function checkAutoSyncGithub() {
     console.log("检查github是否同步")
     chrome.storage.local.get(null, function (items) {
-        var autoSync = items.autoSync
-        if (autoSync == true) {
+        let autoSync = items.autoSync
+        if (autoSync === true) {
             console.log("autoSync open")
             startPushToGithubGist();
         }
@@ -75,8 +71,8 @@ function checkAutoSyncGithub() {
 function checkAutoSyncGitee() {
     console.log("检查gitee是否同步")
     chrome.storage.local.get(null, function (items) {
-        var autoSync = items.autoSync
-        if (autoSync == true) {
+        let autoSync = items.autoSync
+        if (autoSync === true) {
             console.log("autoSync open")
             startPushToGiteeGist();
         }
@@ -93,11 +89,11 @@ function startPushToGithubGist() {
         console.log(storage.handleGistStatus);
         if (storage.handleGistStatus) {
             console.log("handleGistStatus有值");
-            if (storage.handleGistStatus.type == "IDLE") {
+            if (storage.handleGistStatus.type === "IDLE") {
                 pushToGithubGist();
             } else {
-                var time = moment().format('YYYY-MM-DD HH:mm:ss');
-                var expireTime = storage.handleGistStatus.expireTime;
+                let time = moment().format('YYYY-MM-DD HH:mm:ss');
+                let expireTime = storage.handleGistStatus.expireTime;
                 console.log(expireTime)
                 if (time > expireTime) {
                     pushToGithubGist();
@@ -125,11 +121,11 @@ function startPushToGiteeGist() {
         console.log(storage.handleGistStatus);
         if (storage.handleGistStatus) {
             console.log("handleGistStatus有值");
-            if (storage.handleGistStatus.type == "IDLE") {
+            if (storage.handleGistStatus.type === "IDLE") {
                 pushToGiteeGist();
             } else {
-                var time = moment().format('YYYY-MM-DD HH:mm:ss');
-                var expireTime = storage.handleGistStatus.expireTime;
+                let time = moment().format('YYYY-MM-DD HH:mm:ss');
+                let expireTime = storage.handleGistStatus.expireTime;
                 console.log(expireTime)
                 if (time > expireTime) {
                     pushToGiteeGist();
@@ -171,7 +167,7 @@ function pushToGithubGist() {
         console.log(githubIntervalId)
         isStoredGithubTokenLocal("push_github");
     }
-};
+}
 
 // 推送到gitee的gist
 function pushToGiteeGist() {
@@ -196,7 +192,7 @@ function pushToGiteeGist() {
         console.log(giteeIntervalId)
         isStoredGiteeTokenLocal("push_gitee");
     }
-};
+}
 
 // 判断是否已经保存github的Token
 function isStoredGithubTokenLocal(action) {
@@ -243,9 +239,9 @@ function isStoredGithubGistIdLocal(action) {
             console.log("已经保存了github的gistId")
             handleGithubGistLog.push(`${chrome.i18n.getMessage("gistIdSaved")}`)
             githubGistId = storage.githubGistId;
-            if (action == "push_github") {
+            if (action === "push_github") {
                 getShardings(function (callback) {
-                    if (!callback || typeof callback == 'undefined' || callback == undefined) {
+                    if (!callback || typeof callback == 'undefined') {
                         updateGithubGist([]);
                     } else {
                         updateGithubGist(callback);
@@ -269,9 +265,9 @@ function isStoredGiteeGistIdLocal(action) {
             console.log("已经保存了gitee的gistId")
             handleGiteeGistLog.push(`${chrome.i18n.getMessage("gistIdSaved")}`)
             giteeGistId = storage.giteeGistId;
-            if (action == "push_gitee") {
+            if (action === "push_gitee") {
                 getShardings(function (callback) {
-                    if (!callback || typeof callback == 'undefined' || callback == undefined) {
+                    if (!callback || typeof callback == 'undefined') {
                         updateGiteeGist([]);
                     } else {
                         updateGiteeGist(callback);
@@ -290,9 +286,9 @@ function isStoredGiteeGistIdLocal(action) {
 function updateGithubGist(content) {
     console.log("更新github的gist")
     handleGithubGistLog.push(`${chrome.i18n.getMessage("directUpdate")}`)
-    var _content = JSON.stringify(content);
-    var js = generateJs(content)
-    var data = {
+    let _content = JSON.stringify(content);
+    let js = generateJs(content)
+    let data = {
         "description": "myCloudSkyMonster", "public": false, "files": {
             "brower_Tabs.json": {"content": _content}, "brower_tasks.js": {"content": js}
         }
@@ -303,7 +299,7 @@ function updateGithubGist(content) {
         url: gitHubApiUrl + "/gists/" + githubGistId,
         data: JSON.stringify(data),
         success: function (data, status) {
-            if (status == "success") {
+            if (status === "success") {
                 console.log("更新成功")
                 chrome.storage.local.set({"taskJsUrl": data.files['brower_tasks.js'].raw_url})
                 handleGithubGistLog.push(`${chrome.i18n.getMessage("updateSuccess")}`)
@@ -320,15 +316,15 @@ function updateGithubGist(content) {
             pushToGithubGistStatus = undefined;
         }
     })
-};
+}
 
 // 生成js
 function generateJs(content) {
-    var result = ""
-    var myRun = "console.log('load完任务了'); function myRun(functionName) {"
-    var functionJs = ""
-    var alarmJs = "chrome.alarms.onAlarm.addListener(function (alarm) {"
-    var taskList = content.taskList
+    let result = ""
+    let myRun = "console.log('load完任务了'); function myRun(functionName) {"
+    let functionJs = ""
+    let alarmJs = "chrome.alarms.onAlarm.addListener(function (alarm) {"
+    let taskList = content.taskList
     if (taskList) {
         for (let i = 0; i < taskList.length; i++) {
             let script = taskList[i].script + ";"
@@ -349,9 +345,9 @@ function generateJs(content) {
 function updateGiteeGist(content) {
     console.log("更新gitee的gist")
     handleGiteeGistLog.push(`${chrome.i18n.getMessage("directUpdate")}`)
-    var _content = JSON.stringify(content);
-    var js = generateJs(content)
-    var data = {
+    let _content = JSON.stringify(content);
+    let js = generateJs(content)
+    let data = {
         "description": "myCloudSkyMonster", "public": false, "files": {
             "brower_Tabs.json": {"content": _content}, "brower_tasks.js": {"content": js}
         }
@@ -362,7 +358,7 @@ function updateGiteeGist(content) {
         url: giteeApiUrl + "/gists/" + giteeGistId,
         data: data,
         success: function (data, status) {
-            if (status == "success") {
+            if (status === "success") {
                 console.log("更新成功")
                 chrome.storage.local.set({"taskJsUrl": data.files['brower_tasks.js'].raw_url})
                 handleGiteeGistLog.push(`${chrome.i18n.getMessage("updateSuccess")}`)
@@ -379,22 +375,22 @@ function updateGiteeGist(content) {
             pushToGiteeGistStatus = undefined;
         }
     })
-};
+}
 
 
 // 构造操作gist的日志结构
 function setHandleGistLog(type, handleGistLog) {
-    var handleGistLogMap = {id: genObjectId(), handleGistType: type, handleGistLogs: handleGistLog};
+    let handleGistLogMap = {id: genObjectId(), handleGistType: type, handleGistLogs: handleGistLog};
     chrome.storage.local.get(null, function (storage) {
         if (storage.gistLog) {
             console.log("gistLog有值");
             if (storage.gistLog.length >= 100) {
-                var newArr = storage.gistLog;
+                let newArr = storage.gistLog;
                 newArr.splice(-1, 1)
                 newArr.unshift(handleGistLogMap);
                 chrome.storage.local.set({gistLog: newArr});
             } else {
-                var newArr = storage.gistLog;
+                let newArr = storage.gistLog;
                 newArr.unshift(handleGistLogMap);
                 chrome.storage.local.set({gistLog: newArr});
             }
@@ -403,23 +399,23 @@ function setHandleGistLog(type, handleGistLog) {
             chrome.storage.local.set({gistLog: [handleGistLogMap]});
         }
     });
-};
+}
 
 
 // 操作gist的全局状态，1分钟自动解锁，防止死锁
 function setHandleGistStatus(status) {
-    var expireTime = moment().add(1, 'minutes').format('YYYY-MM-DD HH:mm:ss');
-    var gistStatusMap = {type: status, expireTime: expireTime};
+    let expireTime = moment().add(1, 'minutes').format('YYYY-MM-DD HH:mm:ss');
+    let gistStatusMap = {type: status, expireTime: expireTime};
     chrome.storage.local.set({handleGistStatus: gistStatusMap});
-};
+}
 
 // 调用有道翻译api
 function translateFunc(txt) {
     console.log("开始翻译！");
-    var url = "https://fanyi.youdao.com/openapi.do?keyfrom=lulua-net&key=620584095&type=data&doctype=json&version=1.1&q=" + txt;
+    let url = "https://fanyi.youdao.com/openapi.do?keyfrom=lulua-net&key=620584095&type=data&doctype=json&version=1.1&q=" + txt;
     $.ajax({
         type: "GET", url: url, success: function (data, status) {
-            if (status == "success") {
+            if (status === "success") {
                 if (data.translation) {
                     console.log(data.translation[0]);
                     sendMessageToContentScript("translateResult", data.translation[0]);
@@ -433,7 +429,7 @@ function translateFunc(txt) {
             //do something
         }
     })
-};
+}
 
 // 持续监听发送给background的消息
 chrome.runtime.onMessage.addListener(function (req, sender, sendRes) {
@@ -557,8 +553,8 @@ chrome.tabs.onCreated.addListener(function callback() {
 
 // 生成唯一标识
 // refer: https://gist.github.com/solenoid/1372386
-var genObjectId = function () {
-    var timestamp = (new Date().getTime() / 1000 | 0).toString(16);
+let genObjectId = function () {
+    let timestamp = (new Date().getTime() / 1000 | 0).toString(16);
     return timestamp + 'xxxxxxxxxxxxxxxx'.replace(/[x]/g, function () {
         return (Math.random() * 16 | 0).toString(16);
     }).toLowerCase();
@@ -566,16 +562,16 @@ var genObjectId = function () {
 
 // makes a tab group, filters it and saves it to localStorage
 function saveTabs(tabsArr) {
-    var tabGroup = makeTabGroup(tabsArr), cleanTabGroup = filterTabGroup(tabGroup);
+    let tabGroup = makeTabGroup(tabsArr), cleanTabGroup = filterTabGroup(tabGroup);
 
     saveTabGroup(cleanTabGroup);
 }
 
 // from the array of Tab objects it makes an object with date and the array
 function makeTabGroup(tabsArr) {
-    var date;
+    let date;
     date = dateFormat("YYYY-mm-dd HH:MM:SS", new Date());
-    var tabGroup = {
+    let tabGroup = {
         date: date, id: genObjectId() // clever way to quickly get a unique ID
     };
     let res = tabsArr.map(({title, url}) => ({title, url}));
@@ -588,8 +584,8 @@ function makeTabGroup(tabsArr) {
 // filters tabGroup
 function filterTabGroup(tabGroup) {
     for (let i = 0; i < tabGroup.tabs.length; i++) {
-        var title = tabGroup.tabs[i].title
-        if (title && typeof (title) != undefined) {
+        let title = tabGroup.tabs[i].title
+        if (title && typeof (title) !== undefined) {
             tabGroup.tabs[i].title = title.replace(emojiReg, "");
         }
     }
@@ -599,11 +595,11 @@ function filterTabGroup(tabGroup) {
 // saves array (of Tab objects) to localStorage
 function saveTabGroup(tabGroup) {
     getShardings(function (callback) {
-        if (callback || typeof callback != 'undefined' || callback != undefined) {
-            if (!callback.tabGroups || typeof callback.tabGroups == 'undefined' || callback.tabGroups == undefined) {
+        if (callback || typeof callback != 'undefined' || callback !== undefined) {
+            if (!callback.tabGroups || typeof callback.tabGroups == 'undefined') {
                 saveShardings([tabGroup], "object");
             } else {
-                var newArr = callback.tabGroups;
+                let newArr = callback.tabGroups;
                 newArr.unshift(tabGroup);
                 saveShardings(newArr, "object");
             }
@@ -631,7 +627,7 @@ function openBackgroundPage() {
 
 // close all the tabs in the provided array of Tab objects
 function closeTabs(tabsArr) {
-    var tabsToClose = [], i;
+    let tabsToClose = [], i;
 
     for (i = 0; i < tabsArr.length; i += 1) {
         tabsToClose.push(tabsArr[i].id);
@@ -692,8 +688,8 @@ function remind(minute) {
             chrome.contextMenus.update("1", {title: `${chrome.i18n.getMessage("remindStatus")}`}, function callback() {
             })
         }, minute * 60 * 1000);
-        var endDateStr = new Date();
-        var min = endDateStr.getMinutes();
+        let endDateStr = new Date();
+        let min = endDateStr.getMinutes();
         endDateStr.setMinutes(min + minute);
         endDateStr.toLocaleString();
         timeDown(endDateStr);
@@ -705,22 +701,22 @@ function remind(minute) {
 // 倒计时
 function timeDown(endDateStr) {
     //结束时间
-    var endDate = new Date(endDateStr);
+    let endDate = new Date(endDateStr);
     //当前时间
-    var nowDate = new Date();
+    let nowDate = new Date();
     //相差的总秒数
-    var totalSeconds = parseInt((endDate - nowDate) / 1000);
+    let totalSeconds = parseInt((endDate - nowDate) / 1000);
     //天数
-    var days = Math.floor(totalSeconds / (60 * 60 * 24));
+    let days = Math.floor(totalSeconds / (60 * 60 * 24));
     //取模（余数）
-    var modulo = totalSeconds % (60 * 60 * 24);
+    let modulo = totalSeconds % (60 * 60 * 24);
     //小时数
-    var hours = Math.floor(modulo / (60 * 60));
+    let hours = Math.floor(modulo / (60 * 60));
     modulo = modulo % (60 * 60);
     //分钟
-    var minutes = Math.floor(modulo / 60);
+    let minutes = Math.floor(modulo / 60);
     //秒
-    var seconds = modulo % 60;
+    let seconds = modulo % 60;
     surplusTime = `${chrome.i18n.getMessage("surplusTime")}${days}${chrome.i18n.getMessage("days")}${hours}${chrome.i18n.getMessage("hours")}${minutes}${chrome.i18n.getMessage("minutes")}${seconds}${chrome.i18n.getMessage("seconds")}`;
     //延迟一秒执行自己
     timeoutId = setTimeout(function () {
@@ -750,11 +746,11 @@ function dateFormat(fmt, date) {
     for (let k in opt) {
         ret = new RegExp("(" + k + ")").exec(fmt);
         if (ret) {
-            fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")));
+            fmt = fmt.replace(ret[1], (ret[1].length === 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")));
         }
-        ;
+
     }
-    ;
+
     return fmt;
 }
 
@@ -778,16 +774,16 @@ function restartLastClosedTab() {
 
 // 用分片的思想去存storage，因为sync的总量太小了，只有102400byte=8k，所以改成local，有5m。
 function saveShardings(tabGroup, type) {
-    var tabGroupStr;
-    if (type == "object") {
+    let tabGroupStr;
+    if (type === "object") {
         tabGroupStr = JSON.stringify(tabGroup);
-    } else if (type == "string") {
+    } else if (type === "string") {
         tabGroupStr = tabGroup;
     }
-    var length = tabGroupStr.length;
-    var sliceLength = 102400;
-    var tabGroupSlices = {}; // 保存分片数据
-    var i = 0; // 分片序号
+    let length = tabGroupStr.length;
+    let sliceLength = 102400;
+    let tabGroupSlices = {}; // 保存分片数据
+    let i = 0; // 分片序号
 
     // 分片保存数据
     while (length > 0) {
@@ -807,10 +803,10 @@ function saveShardings(tabGroup, type) {
 // 获取storage里的数据
 function getShardings(cb) {
     chrome.storage.local.get(null, function (items) {
-        var tabGroupsStr = "";
+        let tabGroupsStr = "";
         if (items.tabGroups_num >= 1) {
             // 把分片数据组成字符串
-            for (var i = 0; i < items.tabGroups_num; i++) {
+            for (let i = 0; i < items.tabGroups_num; i++) {
                 tabGroupsStr += items["tabGroups_" + i];
                 delete items["tabGroups_" + i]
             }
@@ -838,14 +834,14 @@ chrome.notifications.onButtonClicked.addListener(function callback(notificationI
 // 持续监听，假如锁屏或者睡眠就清空定时任务，激活再重新定时任务
 chrome.idle.onStateChanged.addListener(function (newState) {
     console.log(newState)
-    if (newState == "active") {
+    if (newState === "active") {
         if (isLock) {
             chrome.alarms.create("checkAutoSyncGitee", {delayInMinutes: 70, periodInMinutes: 70});
             chrome.alarms.create("checkAutoSyncGithub", {delayInMinutes: 90, periodInMinutes: 90});
             isLock = false;
         }
     }
-    if (newState == "locked") {
+    if (newState === "locked") {
         isLock = true;
         chrome.alarms.clearAll(function (wasCleared) {
             console.log(wasCleared)
@@ -858,11 +854,11 @@ chrome.idle.onStateChanged.addListener(function (newState) {
 
 // 持续监听响应定时任务
 chrome.alarms.onAlarm.addListener(function (alarm) {
-    if (alarm.name == "checkAutoSyncGitee") {
+    if (alarm.name === "checkAutoSyncGitee") {
         console.log("自动同步gitee")
         checkAutoSyncGitee();
     }
-    if (alarm.name == "checkAutoSyncGithub") {
+    if (alarm.name === "checkAutoSyncGithub") {
         console.log("自动同步github")
         checkAutoSyncGithub();
     }
@@ -906,24 +902,24 @@ chrome.commands.onCommand.addListener(function (command) {
 
 // 持续监听storage是否修改
 chrome.storage.onChanged.addListener(function (changes, areaName) {
-    var flag = false;
+    let flag = false;
     console.log(changes)
-    for (var key in changes) {
-        if (key.indexOf("tabGroups") != -1) {
+    for (let key in changes) {
+        if (key.indexOf("tabGroups") !== -1) {
             console.log(key)
-            if (key.indexOf("tabGroups_num") == -1) {
+            if (key.indexOf("tabGroups_num") === -1) {
                 flag = true;
             }
         }
-        if (key.indexOf("taskList") != -1) {
+        if (key.indexOf("taskList") !== -1) {
             flag = true;
         }
     }
     if (areaName === "local" && flag) {
         console.log("要同步")
         chrome.storage.local.get(null, function (items) {
-            var autoSync = items.autoSync
-            if (autoSync == true) {
+            let autoSync = items.autoSync
+            if (autoSync === true) {
                 console.log("autoSync open")
                 startPushToGiteeGist();
             }
@@ -1048,7 +1044,7 @@ chrome.contextMenus.create({
     title: `${chrome.i18n.getMessage("customMinuteRemind")}`,
     contexts: ["browser_action"],
     onclick: function () {
-        var minute = prompt(`${chrome.i18n.getMessage("pleaseInputCustomMinute")}`, 120);
+        let minute = prompt(`${chrome.i18n.getMessage("pleaseInputCustomMinute")}`, 120);
         if (!isInt(parseInt(minute.trim()))) {
             alert(`${chrome.i18n.getMessage("inputNumber")}`)
         } else {

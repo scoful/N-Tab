@@ -1,36 +1,35 @@
 ;(function (m) {
     'use strict';
-    var githubGistToken;
-    var giteeGistToken;
-    var githubGistId;
-    var giteeGistId;
-    var gitHubApiUrl = "https://api.github.com";
-    var giteeApiUrl = "https://gitee.com/api/v5";
-    var pushToGithubGistStatus;
-    var pullFromGithubGistStatus;
-    var pushToGiteeGistStatus;
-    var pullFromGiteeGistStatus;
-    var handleGistLog = new Array();
-    var sortableTitle;
-    var sortableTask;
-    var sortableTabList = new Array();
+    let githubGistToken;
+    let giteeGistToken;
+    let githubGistId;
+    let giteeGistId;
+    let gitHubApiUrl = "https://api.github.com";
+    let giteeApiUrl = "https://gitee.com/api/v5";
+    let pushToGithubGistStatus;
+    let pullFromGithubGistStatus;
+    let pushToGiteeGistStatus;
+    let pullFromGiteeGistStatus;
+    let handleGistLog = [];
+    let sortableTitle;
+    let sortableTabList = [];
     // 定义一个n次循环定时器
-    var intervalId;
-    var usedSeconds;
-    var emojiReg = /[\uD83C|\uD83D|\uD83E][\uDC00-\uDFFF][\u200D|\uFE0F]|[\uD83C|\uD83D|\uD83E][\uDC00-\uDFFF]|[0-9|*|#]\uFE0F\u20E3|[0-9|#]\u20E3|[\u203C-\u3299]\uFE0F\u200D|[\u203C-\u3299]\uFE0F|[\u2122-\u2B55]|\u303D|[\A9|\AE]\u3030|\uA9|\uAE|\u3030/gi;
-    var startTime;
-    var endTime;
+    let intervalId;
+    let usedSeconds;
+    let emojiReg = /[\uD83C|\uD83D|\uD83E][\uDC00-\uDFFF][\u200D|\uFE0F]|[\uD83C|\uD83D|\uD83E][\uDC00-\uDFFF]|[0-9|*|#]\uFE0F\u20E3|[0-9|#]\u20E3|[\u203C-\u3299]\uFE0F\u200D|[\u203C-\u3299]\uFE0F|[\u2122-\u2B55]|\u303D|[\A9|\AE]\u3030|\uA9|\uAE|\u3030/gi;
+    let startTime;
+    let endTime;
     // 定义一个桌面通知框id
-    var notificationId;
+    let notificationId;
     // 是否锁屏或睡眠了
-    var isLock = false;
+    let isLock = false;
 
     document.addEventListener('DOMContentLoaded', function () {
         console.log("load完workbench了");
 
         chrome.storage.local.get(null, function (items) {
             console.log(items)
-            var script1 = document.createElement('script');
+            let script1 = document.createElement('script');
             script1.src = "js/axios.min.js";
             document.head.appendChild(script1);
         })
@@ -144,7 +143,7 @@ https://www.google.com | Google
                 </div>
                 <div id="exportDefault" class="hide">
                     <sapn>${chrome.i18n.getMessage("hideShowExportFunction")}</sapn>
-                    <textarea id="exportTextarea" style="width: 100%; height: 200px;" margin-top:5px></textarea>
+                    <textarea id="exportTextarea" style="width: 100%; height: 200px; margin-top:5px"></textarea>
                     <div style="margin-bottom:5px">
                         <button id="export" type="button" class="btn btn-default">${chrome.i18n.getMessage("exportToLocal")}</button>
                         <span>${chrome.i18n.getMessage("exportWarn")}</span>
@@ -181,8 +180,8 @@ https://www.google.com | Google
             });
 
             // 处理是否拖曳标签组和标签
-            var dragType = items.dragType;
-            if (dragType == "dragUrls") {
+            let dragType = items.dragType;
+            if (dragType === "dragUrls") {
                 $('#dragUrls').bootstrapSwitch({
                     state: true,
                     onText: `${chrome.i18n.getMessage("yes")}`,
@@ -190,7 +189,7 @@ https://www.google.com | Google
                     onColor: "success",
                     offColor: "danger",
                     onSwitchChange: function (event, state) {
-                        if (state == true) {
+                        if (state === true) {
                             $('#dragTitle').bootstrapSwitch("state", false, true)
                             chrome.storage.local.set({"dragType": "dragUrls"});
                             refresh()
@@ -208,7 +207,7 @@ https://www.google.com | Google
                     onColor: "success",
                     offColor: "danger",
                     onSwitchChange: function (event, state) {
-                        if (state == true) {
+                        if (state === true) {
                             $('#dragUrls').bootstrapSwitch("state", false, true)
                             chrome.storage.local.set({"dragType": "dragTitle"});
                             refresh()
@@ -219,7 +218,7 @@ https://www.google.com | Google
                         }
                     }
                 });
-            } else if (dragType == "dragTitle") {
+            } else if (dragType === "dragTitle") {
                 $('#dragUrls').bootstrapSwitch({
                     state: false,
                     onText: `${chrome.i18n.getMessage("yes")}`,
@@ -227,7 +226,7 @@ https://www.google.com | Google
                     onColor: "success",
                     offColor: "danger",
                     onSwitchChange: function (event, state) {
-                        if (state == true) {
+                        if (state === true) {
                             $('#dragTitle').bootstrapSwitch("state", false, true)
                             chrome.storage.local.set({"dragType": "dragUrls"});
                             refresh()
@@ -245,7 +244,7 @@ https://www.google.com | Google
                     onColor: "success",
                     offColor: "danger",
                     onSwitchChange: function (event, state) {
-                        if (state == true) {
+                        if (state === true) {
                             $('#dragUrls').bootstrapSwitch("state", false, true)
                             chrome.storage.local.set({"dragType": "dragTitle"});
                             refresh()
@@ -264,7 +263,7 @@ https://www.google.com | Google
                     onColor: "success",
                     offColor: "danger",
                     onSwitchChange: function (event, state) {
-                        if (state == true) {
+                        if (state === true) {
                             $('#dragTitle').bootstrapSwitch("state", false, true)
                             chrome.storage.local.set({"dragType": "dragUrls"});
                             refresh()
@@ -282,7 +281,7 @@ https://www.google.com | Google
                     onColor: "success",
                     offColor: "danger",
                     onSwitchChange: function (event, state) {
-                        if (state == true) {
+                        if (state === true) {
                             $('#dragUrls').bootstrapSwitch("state", false, true)
                             chrome.storage.local.set({"dragType": "dragTitle"});
                             refresh()
@@ -295,8 +294,8 @@ https://www.google.com | Google
                 });
             }
             // 处理是否自动同步
-            var autoSync = items.autoSync
-            if (autoSync == true) {
+            let autoSync = items.autoSync
+            if (autoSync === true) {
                 $('#autoSync').bootstrapSwitch({
                     state: true,
                     onText: `${chrome.i18n.getMessage("yes")}`,
@@ -304,7 +303,7 @@ https://www.google.com | Google
                     onColor: "success",
                     offColor: "danger",
                     onSwitchChange: function (event, state) {
-                        if (state == true) {
+                        if (state === true) {
                             chrome.storage.local.set({"autoSync": true});
                         } else {
                             chrome.storage.local.set({"autoSync": false});
@@ -319,7 +318,7 @@ https://www.google.com | Google
                     onColor: "success",
                     offColor: "danger",
                     onSwitchChange: function (event, state) {
-                        if (state == true) {
+                        if (state === true) {
                             chrome.storage.local.set({"autoSync": true});
                         } else {
                             chrome.storage.local.set({"autoSync": false});
@@ -328,7 +327,7 @@ https://www.google.com | Google
                 });
             }
             // 处理是否划词翻译
-            var dragOpenTranslate = items.dragOpenTranslate
+            let dragOpenTranslate = items.dragOpenTranslate
             if (dragOpenTranslate) {
                 $('#dragOpenTranslate').bootstrapSwitch({
                     state: true,
@@ -337,7 +336,7 @@ https://www.google.com | Google
                     onColor: "success",
                     offColor: "danger",
                     onSwitchChange: function (event, state) {
-                        if (state == true) {
+                        if (state === true) {
                             chrome.storage.local.set({"dragOpenTranslate": true});
                         } else {
                             chrome.storage.local.set({"dragOpenTranslate": false});
@@ -352,7 +351,7 @@ https://www.google.com | Google
                     onColor: "success",
                     offColor: "danger",
                     onSwitchChange: function (event, state) {
-                        if (state == true) {
+                        if (state === true) {
                             chrome.storage.local.set({"dragOpenTranslate": true});
                         } else {
                             chrome.storage.local.set({"dragOpenTranslate": false});
@@ -408,7 +407,7 @@ https://www.google.com | Google
         });
 
         // 打开 首页
-        var allHomeClass = document.getElementsByClassName('home')
+        let allHomeClass = document.getElementsByClassName('home')
         for (let i = 0; i < allHomeClass.length; i++) {
             allHomeClass[i].addEventListener('click', function () {
                 $("#logs").addClass("hide");
@@ -437,32 +436,32 @@ https://www.google.com | Google
         // 把从onetab导出的数据导入
         document.getElementById('importOnetabMode').addEventListener('click', function () {
             chrome.storage.local.get(null, function (items) {
-                var tabGroupsStr = "";
-                var tabGroups = new Array();
+                let tabGroupsStr = "";
+                let tabGroups = [];
                 if (items.tabGroups_num >= 1) {
                     // 把分片数据组成字符串
-                    for (var i = 0; i < items.tabGroups_num; i++) {
+                    for (let i = 0; i < items.tabGroups_num; i++) {
                         tabGroupsStr += items["tabGroups_" + i];
                     }
                     tabGroups = JSON.parse(tabGroupsStr);
                 }
-                var importOnetabTextarea = $('#importOnetabTextarea').val();
+                let importOnetabTextarea = $('#importOnetabTextarea').val();
                 console.log(importOnetabTextarea)
                 if (!importOnetabTextarea) {
                     alert(`${chrome.i18n.getMessage("importTextareaTip")}`)
                     return;
                 }
-                var content = importOnetabTextarea.split("\n");
-                let tabsArr = new Array();
+                let content = importOnetabTextarea.split("\n");
+                let tabsArr = [];
                 for (let i = 0; i < content.length; i++) {
-                    if (content[i] == "") {
+                    if (content[i] === "") {
                         tabGroups.push(makeTabGroup(tabsArr));
                         tabsArr.length = 0;
                         continue;
                     }
                     let lineList = content[i].split(" | ");
                     let title = lineList[1];
-                    if (title && typeof (title) != undefined) {
+                    if (title && typeof (title) !== undefined) {
                         title = title.replace(emojiReg, "");
                     }
                     let tab = {"title": title, "url": lineList[0]}
@@ -476,29 +475,29 @@ https://www.google.com | Google
         // 把从本插件导出的数据导入
         document.getElementById('importDefaultMode').addEventListener('click', function () {
             chrome.storage.local.get(null, function (items) {
-                var tabGroupsStr = "";
-                var tabGroups = new Array();
+                let tabGroupsStr = "";
+                let tabGroups = [];
                 if (items.tabGroups_num >= 1) {
                     // 把分片数据组成字符串
-                    for (var i = 0; i < items.tabGroups_num; i++) {
+                    for (let i = 0; i < items.tabGroups_num; i++) {
                         tabGroupsStr += items["tabGroups_" + i];
                     }
                     tabGroups = JSON.parse(tabGroupsStr);
                 }
-                var importDefaultTextarea = $('#importDefaultTextarea').val();
+                let importDefaultTextarea = $('#importDefaultTextarea').val();
                 console.log(importDefaultTextarea)
                 if (!importDefaultTextarea) {
                     alert(`${chrome.i18n.getMessage("importTextareaTip")}`)
                     return;
                 }
-                var content = importDefaultTextarea.split("\n");
-                let tabsArr = new Array();
+                let content = importDefaultTextarea.split("\n");
+                let tabsArr = [];
                 for (let i = 0; i < content.length; i++) {
-                    if (content[i] == "") {
+                    if (content[i] === "") {
                         console.log(tabsArr[0])
                         let isLock = false
                         let groupTitle = ""
-                        if (tabsArr[0] != undefined) {
+                        if (tabsArr[0] !== undefined) {
                             let _isLock = tabsArr[0].title
                             if (_isLock === '锁定') {
                                 isLock = true
@@ -515,7 +514,7 @@ https://www.google.com | Google
                     }
                     let lineList = content[i].split(" | ");
                     let title = lineList[1];
-                    if (title && typeof (title) != undefined) {
+                    if (title && typeof (title) !== undefined) {
                         title = title.replace(emojiReg, "");
                     }
                     let tab = {"title": title, "url": lineList[0]}
@@ -529,18 +528,18 @@ https://www.google.com | Google
         // 导出本插件内容功能
         document.getElementById('export').addEventListener('click', function () {
             chrome.storage.local.get(null, function (items) {
-                var tabGroupsStr = "";
-                var tabGroups = new Array();
+                let tabGroupsStr = "";
+                let tabGroups = [];
                 if (items.tabGroups_num >= 1) {
                     // 把分片数据组成字符串
-                    for (var i = 0; i < items.tabGroups_num; i++) {
+                    for (let i = 0; i < items.tabGroups_num; i++) {
                         tabGroupsStr += items["tabGroups_" + i];
                     }
                     tabGroups = JSON.parse(tabGroupsStr);
                 }
                 $('#exportTextarea').val();
-                var exportTextarea = "";
-                for (var i = 0; i < tabGroups.length; i++) {
+                let exportTextarea = "";
+                for (let i = 0; i < tabGroups.length; i++) {
                     let isLock = tabGroups[i].isLock ? "锁定" : "解锁"
                     let groupTitle = tabGroups[i].groupTitle
                     console.log(typeof (groupTitle))
@@ -550,7 +549,7 @@ https://www.google.com | Google
                     }
                     let groupInfo = groupTitle + " | " + isLock + "\n"
                     exportTextarea += groupInfo
-                    for (var j = 0; j < tabGroups[i].tabs.length; j++) {
+                    for (let j = 0; j < tabGroups[i].tabs.length; j++) {
                         let line = tabGroups[i].tabs[j].url + " | " + tabGroups[i].tabs[j].title + "\n"
                         exportTextarea += line;
                     }
@@ -562,7 +561,7 @@ https://www.google.com | Google
 
         // 响应推送到github的gist的动作
         document.getElementById('pushToGithubGist').addEventListener('click', function () {
-            var confirm = prompt(`${chrome.i18n.getMessage("confirmKey")}`, `${chrome.i18n.getMessage("confirmValue")}`);
+            let confirm = prompt(`${chrome.i18n.getMessage("confirmKey")}`, `${chrome.i18n.getMessage("confirmValue")}`);
             if (confirm.trim() === "确定" || confirm.trim() === "confirm") {
                 console.log("yes");
                 chrome.storage.local.get(null, function (storage) {
@@ -577,8 +576,8 @@ https://www.google.com | Google
                         if (storage.handleGistStatus.type === "IDLE") {
                             pushToGithubGist();
                         } else {
-                            var time = moment().format('YYYY-MM-DD HH:mm:ss');
-                            var expireTime = storage.handleGistStatus.expireTime;
+                            let time = moment().format('YYYY-MM-DD HH:mm:ss');
+                            let expireTime = storage.handleGistStatus.expireTime;
                             console.log(expireTime)
                             if (time > expireTime) {
                                 pushToGithubGist();
@@ -598,7 +597,7 @@ https://www.google.com | Google
 
         // 响应推送到gitee的gist的动作
         document.getElementById('pushToGiteeGist').addEventListener('click', function () {
-            var confirm = prompt(`${chrome.i18n.getMessage("confirmKey")}`, `${chrome.i18n.getMessage("confirmValue")}`);
+            let confirm = prompt(`${chrome.i18n.getMessage("confirmKey")}`, `${chrome.i18n.getMessage("confirmValue")}`);
             if (confirm.trim() === "确定" || confirm.trim() === "confirm") {
                 console.log("yes");
                 chrome.storage.local.get(null, function (storage) {
@@ -613,8 +612,8 @@ https://www.google.com | Google
                         if (storage.handleGistStatus.type === "IDLE") {
                             pushToGiteeGist();
                         } else {
-                            var time = moment().format('YYYY-MM-DD HH:mm:ss');
-                            var expireTime = storage.handleGistStatus.expireTime;
+                            let time = moment().format('YYYY-MM-DD HH:mm:ss');
+                            let expireTime = storage.handleGistStatus.expireTime;
                             console.log(expireTime)
                             if (time > expireTime) {
                                 pushToGiteeGist();
@@ -634,7 +633,7 @@ https://www.google.com | Google
 
         // 响应从github的gist拉取的动作
         document.getElementById('pullFromGithubGist').addEventListener('click', function () {
-            var confirm = prompt(`${chrome.i18n.getMessage("confirmKey")}`, `${chrome.i18n.getMessage("confirmValue")}`);
+            let confirm = prompt(`${chrome.i18n.getMessage("confirmKey")}`, `${chrome.i18n.getMessage("confirmValue")}`);
             if (confirm.trim() === "确定" || confirm.trim() === "confirm") {
                 console.log("yes");
                 chrome.storage.local.get(null, function (storage) {
@@ -649,8 +648,8 @@ https://www.google.com | Google
                         if (storage.handleGistStatus.type === "IDLE") {
                             pullFromGithubGist();
                         } else {
-                            var time = moment().format('YYYY-MM-DD HH:mm:ss');
-                            var expireTime = storage.handleGistStatus.expireTime;
+                            let time = moment().format('YYYY-MM-DD HH:mm:ss');
+                            let expireTime = storage.handleGistStatus.expireTime;
                             console.log(expireTime)
                             if (time > expireTime) {
                                 pullFromGithubGist();
@@ -671,7 +670,7 @@ https://www.google.com | Google
 
         // 响应从gitee的gist拉取的动作
         document.getElementById('pullFromGiteeGist').addEventListener('click', function () {
-            var confirm = prompt(`${chrome.i18n.getMessage("confirmKey")}`, `${chrome.i18n.getMessage("confirmValue")}`);
+            let confirm = prompt(`${chrome.i18n.getMessage("confirmKey")}`, `${chrome.i18n.getMessage("confirmValue")}`);
             if (confirm.trim() === "确定" || confirm.trim() === "confirm") {
                 console.log("yes");
                 chrome.storage.local.get(null, function (storage) {
@@ -686,8 +685,8 @@ https://www.google.com | Google
                         if (storage.handleGistStatus.type === "IDLE") {
                             pullFromGiteeGist();
                         } else {
-                            var time = moment().format('YYYY-MM-DD HH:mm:ss');
-                            var expireTime = storage.handleGistStatus.expireTime;
+                            let time = moment().format('YYYY-MM-DD HH:mm:ss');
+                            let expireTime = storage.handleGistStatus.expireTime;
                             console.log(expireTime)
                             if (time > expireTime) {
                                 pullFromGiteeGist();
@@ -755,7 +754,7 @@ https://www.google.com | Google
             }, 1000);
             isStoredGithubTokenLocal("pull_github");
         }
-    };
+    }
 
     // 从gitee的gist拉取
     function pullFromGiteeGist() {
@@ -798,7 +797,7 @@ https://www.google.com | Google
             }, 1000);
             isStoredGiteeTokenLocal("pull_gitee");
         }
-    };
+    }
 
     // 推送到github的gist
     function pushToGithubGist() {
@@ -842,7 +841,7 @@ https://www.google.com | Google
             }, 1000);
             isStoredGithubTokenLocal("push_github");
         }
-    };
+    }
 
     // 推送到gitee的gist
     function pushToGiteeGist() {
@@ -886,16 +885,16 @@ https://www.google.com | Google
             }, 1000);
             isStoredGiteeTokenLocal("push_gitee");
         }
-    };
+    }
 
     // 构造操作gist的日志结构
     function setHandleGistLog(type, isReload) {
-        var handleGistLogMap = {id: genObjectId(), handleGistType: type, handleGistLogs: handleGistLog};
+        let handleGistLogMap = {id: genObjectId(), handleGistType: type, handleGistLogs: handleGistLog};
         chrome.storage.local.get(null, function (storage) {
             if (storage.gistLog) {
                 console.log("gistLog有值");
                 if (storage.gistLog.length >= 100) {
-                    var newArr = storage.gistLog;
+                    let newArr = storage.gistLog;
                     newArr.splice(-1, 1)
                     newArr.unshift(handleGistLogMap);
                     chrome.storage.local.set({gistLog: newArr});
@@ -903,7 +902,7 @@ https://www.google.com | Google
                         refresh()
                     }
                 } else {
-                    var newArr = storage.gistLog;
+                    let newArr = storage.gistLog;
                     newArr.unshift(handleGistLogMap);
                     chrome.storage.local.set({gistLog: newArr});
                     if (isReload) {
@@ -918,20 +917,20 @@ https://www.google.com | Google
                 }
             }
         });
-    };
+    }
 
     // 操作gist的全局状态
     function setHandleGistStatus(status) {
-        var expireTime = moment().add(1, 'minutes').format('YYYY-MM-DD HH:mm:ss');
-        var gistStatusMap = {type: status, expireTime: expireTime};
+        let expireTime = moment().add(1, 'minutes').format('YYYY-MM-DD HH:mm:ss');
+        let gistStatusMap = {type: status, expireTime: expireTime};
         chrome.storage.local.set({handleGistStatus: gistStatusMap});
-    };
+    }
 
     // 检查跟github的通讯是否正常
     function checkGitHubStatus() {
         $.ajax({
             type: "GET", url: gitHubApiUrl, success: function (data, status) {
-                if (status == "success") {
+                if (status === "success") {
                     console.log("跟github通讯正常！");
                     document.getElementById('githubStatus').innerHTML = `${chrome.i18n.getMessage("githubApiStatusSuccess")}`;
                 } else {
@@ -943,13 +942,13 @@ https://www.google.com | Google
                 //do something
             }
         })
-    };
+    }
 
     // 检查跟gitee的通讯是否正常
     function checkGiteeStatus() {
         $.ajax({
-            type: "GET", url: giteeApiUrl + "/emojis", success: function (data, status) {
-                if (status == "success") {
+            type: "GET", url: "https://gitee.com/feature_notifications", success: function (data, status) {
+                if (status === "success") {
                     console.log("跟gitee通讯正常！");
                     document.getElementById('giteeStatus').innerHTML = `${chrome.i18n.getMessage("giteeApiStatusSuccess")}`;
                 } else {
@@ -961,7 +960,7 @@ https://www.google.com | Google
                 //do something
             }
         })
-    };
+    }
 
     // 关闭当前tab
     function closeCurrentTab() {
@@ -969,15 +968,15 @@ https://www.google.com | Google
             chrome.tabs.remove(tabsArr[0].id, function () {
             });
         });
-    };
+    }
 
     // 更新github的gist
     function updateGithubGist(content) {
         pushToGithubGistStatus = `${chrome.i18n.getMessage("directUpdate")}`;
         handleGistLog.push(`${chrome.i18n.getMessage("directUpdate")}`)
         console.log("已经创建了gist，直接开始更新");
-        var _content = JSON.stringify(content);
-        var data = {
+        let _content = JSON.stringify(content);
+        let data = {
             "description": "myCloudSkyMonster", "public": false, "files": {
                 "brower_Tabs.json": {"content": _content}
             }
@@ -988,7 +987,7 @@ https://www.google.com | Google
             url: gitHubApiUrl + "/gists/" + githubGistId,
             data: JSON.stringify(data),
             success: function (data, status) {
-                if (status == "success") {
+                if (status === "success") {
                     console.log("更新成功！");
                     handleGistLog.push(`${chrome.i18n.getMessage("updateSuccess")}`)
                 } else {
@@ -1008,16 +1007,16 @@ https://www.google.com | Google
                 pushToGithubGistStatus = undefined;
             }
         })
-    };
+    }
 
     // 更新gitee的gist
     function updateGiteeGist(content) {
         pushToGiteeGistStatus = `${chrome.i18n.getMessage("directUpdate")}`;
         handleGistLog.push(`${chrome.i18n.getMessage("directUpdate")}`)
         console.log("已经创建了gist，直接开始更新");
-        var _content = JSON.stringify(content);
-        var js = generateJs(content)
-        var data = {
+        let _content = JSON.stringify(content);
+        let js = generateJs(content)
+        let data = {
             "description": "myCloudSkyMonster", "public": false, "files": {
                 "brower_Tabs.json": {"content": _content}, "brower_tasks.js": {"content": js}
             }
@@ -1028,7 +1027,7 @@ https://www.google.com | Google
             url: giteeApiUrl + "/gists/" + giteeGistId,
             data: data,
             success: function (data, status) {
-                if (status == "success") {
+                if (status === "success") {
                     console.log("更新成功！");
                     chrome.storage.local.set({"taskJsUrl": data.files['brower_tasks.js'].raw_url})
                     handleGistLog.push(`${chrome.i18n.getMessage("updateSuccess")}`)
@@ -1049,15 +1048,15 @@ https://www.google.com | Google
                 pushToGiteeGistStatus = undefined;
             }
         })
-    };
+    }
 
     // 判断是否已经保存了github的gistId
     function isStoredGithubGistIdLocal(action) {
         console.log("开始检查gistId有没有保存");
         handleGistLog.push(`${chrome.i18n.getMessage("startCheckGistIdSaved")}`)
-        if (action == "push_github") {
+        if (action === "push_github") {
             pushToGithubGistStatus = `${chrome.i18n.getMessage("startCheckGistIdSaved")}`;
-        } else if (action == "pull_github") {
+        } else if (action === "pull_github") {
             pullFromGithubGistStatus = `${chrome.i18n.getMessage("startCheckGistIdSaved")}`;
         }
         chrome.storage.local.get("githubGistId", function (storage) {
@@ -1066,16 +1065,16 @@ https://www.google.com | Google
                 console.log("gistId有保存");
                 handleGistLog.push(`${chrome.i18n.getMessage("gistIdSaved")}`)
                 githubGistId = storage.githubGistId;
-                if (action == "push_github") {
+                if (action === "push_github") {
                     getShardings(function (callback) {
-                        if (!callback || typeof callback == 'undefined' || callback == undefined) {
+                        if (!callback || typeof callback == 'undefined') {
                             console.log("本地storage里没有内容");
                             updateGithubGist([]);
                         } else {
                             updateGithubGist(callback);
                         }
                     })
-                } else if (action == "pull_github") {
+                } else if (action === "pull_github") {
                     getGithubGistById();
                 }
             } else {
@@ -1090,9 +1089,9 @@ https://www.google.com | Google
     function isStoredGiteeGistIdLocal(action) {
         console.log("开始检查gistId有没有保存");
         handleGistLog.push(`${chrome.i18n.getMessage("startCheckGistIdSaved")}`)
-        if (action == "push_gitee") {
+        if (action === "push_gitee") {
             pushToGiteeGistStatus = `${chrome.i18n.getMessage("startCheckGistIdSaved")}`;
-        } else if (action == "pull_gitee") {
+        } else if (action === "pull_gitee") {
             pullFromGiteeGistStatus = `${chrome.i18n.getMessage("startCheckGistIdSaved")}`;
         }
         chrome.storage.local.get("giteeGistId", function (storage) {
@@ -1101,16 +1100,16 @@ https://www.google.com | Google
                 console.log("gistId有保存");
                 handleGistLog.push(`${chrome.i18n.getMessage("gistIdSaved")}`)
                 giteeGistId = storage.giteeGistId;
-                if (action == "push_gitee") {
+                if (action === "push_gitee") {
                     getShardings(function (callback) {
-                        if (!callback || typeof callback == 'undefined' || callback == undefined) {
+                        if (!callback || typeof callback == 'undefined') {
                             console.log("本地storage里没有内容");
                             updateGiteeGist([]);
                         } else {
                             updateGiteeGist(callback);
                         }
                     })
-                } else if (action == "pull_gitee") {
+                } else if (action === "pull_gitee") {
                     getGiteeGistById();
                 }
             } else {
@@ -1131,9 +1130,9 @@ https://www.google.com | Google
             headers: {"Authorization": "token " + githubGistToken},
             url: gitHubApiUrl + "/gists/" + githubGistId,
             success: function (data, status) {
-                if (status == "success") {
+                if (status === "success") {
                     if (data.files['brower_Tabs.json'].truncated) {
-                        var rawUrl = data.files['brower_Tabs.json'].raw_url;
+                        let rawUrl = data.files['brower_Tabs.json'].raw_url;
                         console.log(rawUrl)
                         getGithubGistByRawUrl(rawUrl);
                     } else {
@@ -1173,7 +1172,7 @@ https://www.google.com | Google
             headers: {"Authorization": "token " + githubGistToken},
             url: rawUrl,
             success: function (data, status) {
-                if (status == "success") {
+                if (status === "success") {
                     let _content = JSON.parse(data)
                     chrome.storage.local.set({"taskJsUrl": _content.taskJsUrl, "taskList": _content.taskList});
                     delete _content.taskJsUrl
@@ -1206,7 +1205,7 @@ https://www.google.com | Google
             headers: {"Authorization": "token " + giteeGistToken},
             url: giteeApiUrl + "/gists/" + giteeGistId,
             success: function (data, status) {
-                if (status == "success") {
+                if (status === "success") {
                     let content = data.files['brower_Tabs.json'].content
                     let _content = JSON.parse(content)
                     let taskGroups = _content.taskList
@@ -1253,9 +1252,9 @@ https://www.google.com | Google
     function isHadCreateGiteeGist(action) {
         console.log("检查是否已经创建了gist");
         handleGistLog.push(`${chrome.i18n.getMessage("startCheckGistCreated")}`)
-        if (action == "push_gitee") {
+        if (action === "push_gitee") {
             pushToGiteeGistStatus = `${chrome.i18n.getMessage("startCheckGistCreated")}`;
-        } else if (action == "pull_gitee") {
+        } else if (action === "pull_gitee") {
             pullFromGiteeGistStatus = `${chrome.i18n.getMessage("startCheckGistCreated")}`;
         }
         $.ajax({
@@ -1263,12 +1262,12 @@ https://www.google.com | Google
             headers: {"Authorization": "token " + giteeGistToken},
             url: giteeApiUrl + "/gists",
             success: function (data, status) {
-                if (status == "success") {
+                if (status === "success") {
                     console.log("查到所有gists！");
-                    var i;
-                    var flag;
+                    let i;
+                    let flag;
                     for (i = 0; i < data.length; i += 1) {
-                        if (data[i].description == "myCloudSkyMonster") {
+                        if (data[i].description === "myCloudSkyMonster") {
                             console.log("已经创建了gist");
                             handleGistLog.push(`${chrome.i18n.getMessage("gistCreated")}`)
                             giteeGistId = data[i].id;
@@ -1285,31 +1284,31 @@ https://www.google.com | Google
                     }
                     if (!flag) {
                         handleGistLog.push(`${chrome.i18n.getMessage("gistNoCreated")}`)
-                        if (action == "push_gitee") {
+                        if (action === "push_gitee") {
                             getShardings(function (callback) {
-                                if (!callback || typeof callback == 'undefined' || callback == undefined) {
+                                if (!callback || typeof callback == 'undefined') {
                                     console.log("本地storage里没有内容");
                                     createGiteeGist([]);
                                 } else {
                                     createGiteeGist(callback);
                                 }
                             })
-                        } else if (action == "pull_gitee") {
+                        } else if (action === "pull_gitee") {
                             console.log("还没有创建gist,没有内容可以拉,结束任务");
                             handleGistLog.push(`${chrome.i18n.getMessage("noGistCreatedAndOver")}`)
                             pullFromGiteeGistStatus = undefined;
                         }
                     } else {
-                        if (action == "push_gitee") {
+                        if (action === "push_gitee") {
                             getShardings(function (callback) {
-                                if (!callback || typeof callback == 'undefined' || callback == undefined) {
+                                if (!callback || typeof callback == 'undefined') {
                                     console.log("本地storage里没有内容");
                                     updateGiteeGist([]);
                                 } else {
                                     updateGiteeGist(callback);
                                 }
                             })
-                        } else if (action == "pull_gitee") {
+                        } else if (action === "pull_gitee") {
                             getGiteeGistById();
                         }
                     }
@@ -1332,9 +1331,9 @@ https://www.google.com | Google
     function isHadCreateGithubGist(action) {
         console.log("检查是否已经创建了gist");
         handleGistLog.push(`${chrome.i18n.getMessage("startCheckGistCreated")}`)
-        if (action == "push_github") {
+        if (action === "push_github") {
             pushToGithubGistStatus = `${chrome.i18n.getMessage("startCheckGistCreated")}`;
-        } else if (action == "pull_github") {
+        } else if (action === "pull_github") {
             pullFromGithubGistStatus = `${chrome.i18n.getMessage("startCheckGistCreated")}`;
         }
         $.ajax({
@@ -1342,12 +1341,12 @@ https://www.google.com | Google
             headers: {"Authorization": "token " + githubGistToken},
             url: gitHubApiUrl + "/gists",
             success: function (data, status) {
-                if (status == "success") {
+                if (status === "success") {
                     console.log("查到所有gists！");
-                    var i;
-                    var flag;
+                    let i;
+                    let flag;
                     for (i = 0; i < data.length; i += 1) {
-                        if (data[i].description == "myCloudSkyMonster") {
+                        if (data[i].description === "myCloudSkyMonster") {
                             console.log("已经创建了gist");
                             handleGistLog.push(`${chrome.i18n.getMessage("gistCreated")}`)
                             githubGistId = data[i].id;
@@ -1364,31 +1363,31 @@ https://www.google.com | Google
                     }
                     if (!flag) {
                         handleGistLog.push(`${chrome.i18n.getMessage("gistNoCreated")}`)
-                        if (action == "push_github") {
+                        if (action === "push_github") {
                             getShardings(function (callback) {
-                                if (!callback || typeof callback == 'undefined' || callback == undefined) {
+                                if (!callback || typeof callback == 'undefined') {
                                     console.log("本地storage里没有内容");
                                     createGithubGist([]);
                                 } else {
                                     createGithubGist(callback);
                                 }
                             })
-                        } else if (action == "pull_github") {
+                        } else if (action === "pull_github") {
                             console.log("还没有创建gist,没有内容可以拉,结束任务");
                             handleGistLog.push(`${chrome.i18n.getMessage("noGistCreatedAndOver")}`)
                             pullFromGithubGistStatus = undefined;
                         }
                     } else {
-                        if (action == "push_github") {
+                        if (action === "push_github") {
                             getShardings(function (callback) {
-                                if (!callback || typeof callback == 'undefined' || callback == undefined) {
+                                if (!callback || typeof callback == 'undefined') {
                                     console.log("本地storage里没有内容");
                                     updateGithubGist([]);
                                 } else {
                                     updateGithubGist(callback);
                                 }
                             })
-                        } else if (action == "pull_github") {
+                        } else if (action === "pull_github") {
                             getGithubGistById();
                         }
                     }
@@ -1411,9 +1410,9 @@ https://www.google.com | Google
     function isStoredGithubTokenLocal(action) {
         console.log("开始检查githubtoken有没有保存");
         handleGistLog.push(`${chrome.i18n.getMessage("startCheckGithubTokenSaved")}`);
-        if (action == "push_github") {
+        if (action === "push_github") {
             pushToGithubGistStatus = `${chrome.i18n.getMessage("startCheckGithubTokenSaved")}`;
-        } else if (action == "pull_github") {
+        } else if (action === "pull_github") {
             pullFromGithubGistStatus = `${chrome.i18n.getMessage("startCheckGithubTokenSaved")}`;
         }
         chrome.storage.local.get("githubGistToken", function (storage) {
@@ -1426,7 +1425,7 @@ https://www.google.com | Google
             } else {
                 console.log("githubtoken没有保存");
                 handleGistLog.push(`${chrome.i18n.getMessage("githubTokenNoSaved")}`);
-                var token = prompt(`${chrome.i18n.getMessage("saveTokenKey")}`, `${chrome.i18n.getMessage("saveTokenValue")}`);
+                let token = prompt(`${chrome.i18n.getMessage("saveTokenKey")}`, `${chrome.i18n.getMessage("saveTokenValue")}`);
                 chrome.storage.local.set({githubGistToken: token.trim()});
                 console.log("githubtoken保存完毕");
                 handleGistLog.push(`${chrome.i18n.getMessage("githubTokenSaveSuccess")}`)
@@ -1439,9 +1438,9 @@ https://www.google.com | Google
     function isStoredGiteeTokenLocal(action) {
         console.log("开始检查giteetoken有没有保存");
         handleGistLog.push(`${chrome.i18n.getMessage("startCheckGiteeTokenSaved")}`);
-        if (action == "push_gitee") {
+        if (action === "push_gitee") {
             pushToGiteeGistStatus = `${chrome.i18n.getMessage("startCheckGiteeTokenSaved")}`;
-        } else if (action == "pull_gitee") {
+        } else if (action === "pull_gitee") {
             pullFromGiteeGistStatus = `${chrome.i18n.getMessage("startCheckGiteeTokenSaved")}`;
         }
         chrome.storage.local.get("giteeGistToken", function (storage) {
@@ -1454,7 +1453,7 @@ https://www.google.com | Google
             } else {
                 console.log("giteetoken没有保存");
                 handleGistLog.push(`${chrome.i18n.getMessage("giteeTokenNoSaved")}`);
-                var token = prompt(`${chrome.i18n.getMessage("saveTokenKey")}`, `${chrome.i18n.getMessage("saveTokenValue")}`);
+                let token = prompt(`${chrome.i18n.getMessage("saveTokenKey")}`, `${chrome.i18n.getMessage("saveTokenValue")}`);
                 chrome.storage.local.set({giteeGistToken: token.trim()});
                 console.log("giteetoken保存完毕");
                 handleGistLog.push(`${chrome.i18n.getMessage("giteeTokenSaveSuccess")}`)
@@ -1465,11 +1464,11 @@ https://www.google.com | Google
 
     // 生成js
     function generateJs(content) {
-        var result = ""
-        var myRun = "console.log('load完任务了'); function myRun(functionName) {"
-        var functionJs = ""
-        var alarmJs = "chrome.alarms.onAlarm.addListener(function (alarm) {"
-        var taskList = content.taskList
+        let result = ""
+        let myRun = "console.log('load完任务了'); function myRun(functionName) {"
+        let functionJs = ""
+        let alarmJs = "chrome.alarms.onAlarm.addListener(function (alarm) {"
+        let taskList = content.taskList
         if (taskList) {
             for (let i = 0; i < taskList.length; i++) {
                 let script = taskList[i].script + ";"
@@ -1491,8 +1490,8 @@ https://www.google.com | Google
         console.log("还没有创建gist,开始创建");
         handleGistLog.push(`${chrome.i18n.getMessage("startCreateGithubGist")}`)
         pushToGithubGistStatus = `${chrome.i18n.getMessage("startCreateGithubGist")}`;
-        var _content = JSON.stringify(content);
-        var data = {
+        let _content = JSON.stringify(content);
+        let data = {
             "description": "myCloudSkyMonster", "public": false, "files": {
                 "brower_Tabs.json": {"content": _content}
             }
@@ -1504,7 +1503,7 @@ https://www.google.com | Google
             dataType: "json",
             data: JSON.stringify(data),
             success: function (data, status) {
-                if (status == "success") {
+                if (status === "success") {
                     console.log("创建成功！");
                     chrome.storage.local.set({"githubGistId": data.id})
                     handleGistLog.push(`${chrome.i18n.getMessage("createSuccess")}`)
@@ -1525,16 +1524,16 @@ https://www.google.com | Google
                 pushToGithubGistStatus = undefined;
             }
         })
-    };
+    }
 
     // 创建gitee的gist
     function createGiteeGist(content) {
         console.log("还没有创建gist,开始创建");
         handleGistLog.push(`${chrome.i18n.getMessage("startCreateGiteeGist")}`)
         pushToGiteeGistStatus = `${chrome.i18n.getMessage("startCreateGiteeGist")}`;
-        var _content = JSON.stringify(content);
-        var js = generateJs(content)
-        var data = {
+        let _content = JSON.stringify(content);
+        let js = generateJs(content)
+        let data = {
             "description": "myCloudSkyMonster", "public": false, "files": {
                 "brower_Tabs.json": {"content": _content}, "brower_tasks.js": {"content": js}
             }
@@ -1546,7 +1545,7 @@ https://www.google.com | Google
             dataType: "json",
             data: data,
             success: function (data, status) {
-                if (status == "success") {
+                if (status === "success") {
                     console.log("创建成功！");
                     chrome.storage.local.set({
                         "taskJsUrl": data.files['brower_tasks.js'].raw_url, "giteeGistId": data.id
@@ -1569,7 +1568,7 @@ https://www.google.com | Google
                 pushToGiteeGistStatus = undefined;
             }
         })
-    };
+    }
 
     // 日期格式化
     function dateFormat(fmt, date) {
@@ -1586,18 +1585,18 @@ https://www.google.com | Google
         for (let k in opt) {
             ret = new RegExp("(" + k + ")").exec(fmt);
             if (ret) {
-                fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")));
+                fmt = fmt.replace(ret[1], (ret[1].length === 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")));
             }
-            ;
+
         }
-        ;
+
         return fmt;
-    };
+    }
 
     // 生成唯一标识
     // refer: https://gist.github.com/solenoid/1372386
-    var genObjectId = function () {
-        var timestamp = (new Date().getTime() / 1000 | 0).toString(16);
+    let genObjectId = function () {
+        let timestamp = (new Date().getTime() / 1000 | 0).toString(16);
         return timestamp + 'xxxxxxxxxxxxxxxx'.replace(/[x]/g, function () {
             return (Math.random() * 16 | 0).toString(16);
         }).toLowerCase();
@@ -1605,9 +1604,9 @@ https://www.google.com | Google
 
     // from the array of Tab objects it makes an object with date and the array
     function makeTabGroup(tabsArr) {
-        var date;
+        let date;
         date = dateFormat("YYYY-mm-dd HH:MM:SS", new Date());
-        var tabGroup = {
+        let tabGroup = {
             date: date, id: genObjectId() // clever way to quickly get a unique ID
         };
         let res = tabsArr.map(({title, url}) => ({title, url}));
@@ -1615,13 +1614,13 @@ https://www.google.com | Google
         tabGroup.isLock = false;
         tabGroup.groupTitle = '';
         return tabGroup;
-    };
+    }
 
     // from the array of Tab objects it makes an object with date and the array
     function makeTabGroup(tabsArr, isLock, groupTitle) {
-        var date;
+        let date;
         date = dateFormat("YYYY-mm-dd HH:MM:SS", new Date());
-        var tabGroup = {
+        let tabGroup = {
             date: date, id: genObjectId() // clever way to quickly get a unique ID
         };
         let res = tabsArr.map(({title, url}) => ({title, url}));
@@ -1629,15 +1628,15 @@ https://www.google.com | Google
         tabGroup.isLock = isLock;
         tabGroup.groupTitle = groupTitle;
         return tabGroup;
-    };
+    }
 
     // 获取local storage
     function getShardings(cb) {
         chrome.storage.local.get(null, function (items) {
-            var tabGroupsStr = "";
+            let tabGroupsStr = "";
             if (items.tabGroups_num >= 1) {
                 // 把分片数据组成字符串
-                for (var i = 0; i < items.tabGroups_num; i++) {
+                for (let i = 0; i < items.tabGroups_num; i++) {
                     tabGroupsStr += items["tabGroups_" + i];
                     delete items["tabGroups_" + i]
                 }
@@ -1658,16 +1657,16 @@ https://www.google.com | Google
 
     // 保存local storage
     function saveShardings(tabGroup, type) {
-        var tabGroupStr;
-        if (type == "object") {
+        let tabGroupStr;
+        if (type === "object") {
             tabGroupStr = JSON.stringify(tabGroup);
-        } else if (type == "string") {
+        } else if (type === "string") {
             tabGroupStr = tabGroup;
         }
-        var length = tabGroupStr.length;
-        var sliceLength = 102400;
-        var tabGroupSlices = {}; // 保存分片数据
-        var i = 0; // 分片序号
+        let length = tabGroupStr.length;
+        let sliceLength = 102400;
+        let tabGroupSlices = {}; // 保存分片数据
+        let i = 0; // 分片序号
 
         // 分片保存数据
         while (length > 0) {
@@ -1686,30 +1685,30 @@ https://www.google.com | Google
     // 展示保存的所有url
     function showAllTabs() {
         chrome.storage.local.get(function (storage) {
-            var bridge = [];
+            let bridge = [];
             if (storage.tabGroups_num) {
-                var tabGroupsStr = "";
+                let tabGroupsStr = "";
                 // 把分片数据组成字符串
-                for (var i = 0; i < storage.tabGroups_num; i++) {
+                for (let i = 0; i < storage.tabGroups_num; i++) {
                     tabGroupsStr += storage["tabGroups_" + i];
                 }
                 bridge = JSON.parse(tabGroupsStr);
             }
-            var i;
-            var total = 0;
+            let i;
+            let total = 0;
             for (i = 0; i < bridge.length; i += 1) {
                 total += bridge[i].tabs.length;
             }
             document.getElementById('totals').innerHTML = total;
-            var titleClass, tabClass;
-            if (storage.dragType == "dragTitle") {
+            let titleClass, tabClass;
+            if (storage.dragType === "dragTitle") {
                 titleClass = ".my-handle"
                 tabClass = ""
             } else {
                 titleClass = ""
                 tabClass = ".my-handle"
             }
-            var tabs = {}, // to-be module
+            let tabs = {}, // to-be module
                 tabGroups = bridge || [], // tab groups
                 opts = storage.options || {
                     deleteTabOnOpen: 'no'
@@ -1717,8 +1716,8 @@ https://www.google.com | Google
 
             function saveTabGroups(json) {
                 saveShardings(json, "object");
-                var i;
-                var total = 0;
+                let i;
+                let total = 0;
                 for (i = 0; i < json.length; i += 1) {
                     total += json[i].tabs.length;
                 }
@@ -1740,7 +1739,7 @@ https://www.google.com | Google
 
             // view-model
             tabs.vm = new function () {
-                var vm = {};
+                let vm = {};
                 vm.init = function () {
                     // list of tab groups
                     vm.list = new tabs.TabGroupsList();
@@ -1769,18 +1768,18 @@ https://www.google.com | Google
                         let isLock = groupInfo.isLock
                         let toTop = groupInfo.toTop
                         let groupTitle = groupInfo.groupTitle
-                        if (isLock != undefined) {
+                        if (isLock !== undefined) {
                             tabGroups[index].isLock = isLock
                             saveTabGroups(tabGroups);
                             showAllTabs();
                         }
-                        if (toTop != undefined) {
+                        if (toTop !== undefined) {
                             if (toTop) {
                                 tabs.vm.moveGroup(index, 0)
                                 showAllTabs();
                             }
                         }
-                        if (groupTitle != undefined) {
+                        if (groupTitle !== undefined) {
                             tabGroups[index].groupTitle = groupTitle
                             saveTabGroups(tabGroups);
                             showAllTabs();
@@ -1795,7 +1794,7 @@ https://www.google.com | Google
                     };
 
                     vm.moveTab = function (groupIndex, index, tgroupIndex, tindex) {
-                        if (groupIndex == tgroupIndex) {
+                        if (groupIndex === tgroupIndex) {
                             if (index > tindex) {
                                 tabGroups[groupIndex].tabs.splice(tindex, 0, tabGroups[groupIndex].tabs[index]);
                                 tabGroups[groupIndex].tabs.splice(index + 1, 1);
@@ -1816,7 +1815,7 @@ https://www.google.com | Google
             };
 
             tabs.controller = function () {
-                var i;
+                let i;
                 tabs.vm.init();
                 for (i = 0; i < tabGroups.length; i += 1) {
                     tabs.vm.list.push(new tabs.TabGroup(tabGroups[i]));
@@ -1833,8 +1832,8 @@ https://www.google.com | Google
                     // console.log(group.tabs());
                     // console.log(i);
                     // group
-                    var isLock = group.isLock()
-                    var deleteLinkClass, lockStatus, lockImgClass, lockClass = ""
+                    let isLock = group.isLock()
+                    let deleteLinkClass, lockStatus, lockImgClass, lockClass = ""
                     if (isLock) {
                         deleteLinkClass = ".no-delete-link"
                         lockStatus = `${chrome.i18n.getMessage("unLock")}`
@@ -1845,7 +1844,7 @@ https://www.google.com | Google
                         lockStatus = `${chrome.i18n.getMessage("lock")}`
                         lockImgClass = ".no-lock-img"
                     }
-                    var groupTitle = group.groupTitle()
+                    let groupTitle = group.groupTitle()
 
                     return m('div.tabs' + titleClass + lockClass, {
                         id: i
@@ -1885,7 +1884,7 @@ https://www.google.com | Google
                         }
                     }), m('span.group-date', moment(group.date()).format('YYYY-MM-DD HH:mm:ss')), ' ', m('span.restore-all', {
                         onclick: function () {
-                            var j;
+                            let j;
 
                             // reason this goes first and not after is because it doesn't work otherwise
                             // I imagine it's because you changed tab and stuff
@@ -1948,9 +1947,9 @@ https://www.google.com | Google
             m.module(document.getElementById('tabGroups'), {controller: tabs.controller, view: tabs.view});
 
             // 以下是超级拖曳的相关代码
-            if (storage.dragType == "dragTitle") {
+            if (storage.dragType === "dragTitle") {
                 if (sortableTabList.length > 0) {
-                    var j;
+                    let j;
                     for (j = 0; j < sortableTabList.length; j += 1) {
                         sortableTabList[j].option("disabled", true);
                     }
@@ -1976,17 +1975,17 @@ https://www.google.com | Google
                         }
                     });
                 }
-                ;
+
             }
-            ;
-            if (storage.dragType == "dragUrls") {
-                var j;
+
+            if (storage.dragType === "dragUrls") {
+                let j;
                 if (typeof (sortableTitle) != "undefined") {
                     sortableTitle.option("disabled", true);
                 }
                 sortableTabList.length = 0;
                 for (j = 0; j < bridge.length; j += 1) {
-                    var sortableTab = Sortable.create(document.getElementById("tabs_" + j), {
+                    let sortableTab = Sortable.create(document.getElementById("tabs_" + j), {
                         group: {
                             name: "tabs", pull: true, put: true
                         }, easing: "cubic-bezier(1, 0, 0, 1)", scroll: true, swapThreshold: 0.65, animation: 150, //动画参数
@@ -2006,17 +2005,17 @@ https://www.google.com | Google
                     })
                     sortableTabList.push(sortableTab);
                 }
-                ;
+
             }
-            ;
+
         });
-    };
+    }
 
     // 展示Log
     function showAllLogs() {
         chrome.storage.local.get(function (storage) {
             console.log(storage)
-            var bridge = [];
+            let bridge = [];
             if (storage.gistLog) {
                 bridge = storage.gistLog;
                 console.log(bridge)
@@ -2024,7 +2023,7 @@ https://www.google.com | Google
             } else {
                 document.getElementById('totals').innerHTML = 0;
             }
-            var logs = {}, // to-be module
+            let logs = {}, // to-be module
                 logGroups = bridge || [];
 
             // model entity
@@ -2039,7 +2038,7 @@ https://www.google.com | Google
 
             // view-model
             logs.vm = new function () {
-                var vm = {};
+                let vm = {};
                 vm.init = function () {
                     vm.list = new logs.LogGroupsList();
                 };
@@ -2047,7 +2046,7 @@ https://www.google.com | Google
             };
 
             logs.controller = function () {
-                var i;
+                let i;
                 logs.vm.init();
                 for (i = 0; i < logGroups.length; i += 1) {
                     logs.vm.list.push(new logs.LogGroup(logGroups[i]));
@@ -2076,12 +2075,12 @@ https://www.google.com | Google
             // init the app
             m.module(document.getElementById('logs'), {controller: logs.controller, view: logs.view});
         });
-    };
+    }
 
     // 展示配置
     function showOptions() {
         chrome.storage.local.get(null, function (storage) {
-            var opts = storage.options || {};
+            let opts = storage.options || {};
 
             if (opts.deleteTabOnOpen === undefined) {
                 $('input[name="deleteTabOnOpen"][value="no"]').prop('checked', 'checked');
@@ -2151,8 +2150,8 @@ https://www.google.com | Google
         `
         // 保存配置
         document.getElementById('save').addEventListener('click', function () {
-            var deleteTabOnOpen = document.querySelector('input[name="deleteTabOnOpen"]:checked').value;
-            var openBackgroundAfterSendTab = document.querySelector('input[name="openBackgroundAfterSendTab"]:checked').value;
+            let deleteTabOnOpen = document.querySelector('input[name="deleteTabOnOpen"]:checked').value;
+            let openBackgroundAfterSendTab = document.querySelector('input[name="openBackgroundAfterSendTab"]:checked').value;
             let githubGistToken = document.getElementById("githubToken").value
             let giteeGistToken = document.getElementById("giteeToken").value
 
@@ -2168,8 +2167,8 @@ https://www.google.com | Google
             });
         });
         document.getElementById('changeEye').addEventListener('click', function () {
-            var passwordInput = document.getElementById("githubToken");
-            var visibilityIcon = document.getElementById("changeEye");
+            let passwordInput = document.getElementById("githubToken");
+            let visibilityIcon = document.getElementById("changeEye");
 
             if (passwordInput.type === "password") {
                 passwordInput.type = "text";
@@ -2180,8 +2179,8 @@ https://www.google.com | Google
             }
         });
         document.getElementById('changeEye2').addEventListener('click', function () {
-            var passwordInput = document.getElementById("giteeToken");
-            var visibilityIcon = document.getElementById("changeEye2");
+            let passwordInput = document.getElementById("giteeToken");
+            let visibilityIcon = document.getElementById("changeEye2");
 
             if (passwordInput.type === "password") {
                 passwordInput.type = "text";
@@ -2191,13 +2190,13 @@ https://www.google.com | Google
                 visibilityIcon.className = "glyphicon glyphicon-eye-open";
             }
         });
-    };
+    }
 
 
     // 简单的消息通知
     function tip(info) {
         info = info || '';
-        var ele = document.createElement('div');
+        let ele = document.createElement('div');
         ele.id = 'descDiv';
         ele.className = 'chrome-plugin-simple-tip';
         ele.style.top = '20px';
@@ -2215,7 +2214,7 @@ https://www.google.com | Google
 
     // 统一的弹窗提示
     function showAlert(title, message) {
-        var modalHtml = `
+        let modalHtml = `
         <div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel" aria-hidden="true">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -2236,7 +2235,7 @@ https://www.google.com | Google
         </div>
       `;
 
-        var modalContainer = document.createElement('div');
+        let modalContainer = document.createElement('div');
         modalContainer.innerHTML = modalHtml;
         document.body.appendChild(modalContainer);
 
@@ -2259,10 +2258,9 @@ https://www.google.com | Google
     // 重新加载自定义的任务js
     function reloadAbleJSFn(id, newJS) {
         setTimeout(function () {
-            var oldjs = null;
-            var oldjs = document.getElementById(id);
+            let oldjs = document.getElementById(id);
             if (oldjs) oldjs.parentNode.removeChild(oldjs);
-            var scriptObj = document.createElement("script");
+            let scriptObj = document.createElement("script");
             scriptObj.src = newJS;
             scriptObj.type = "text/javascript";
             scriptObj.id = id;
@@ -2274,7 +2272,7 @@ https://www.google.com | Google
     // 持续监听，假如锁屏或者睡眠就清空定时任务，激活再重新定时任务
     chrome.idle.onStateChanged.addListener(function (newState) {
         console.log(newState)
-        if (newState == "active") {
+        if (newState === "active") {
             if (isLock) {
                 chrome.storage.local.get(null, function (items) {
                     let taskList = items.taskList
@@ -2294,7 +2292,7 @@ https://www.google.com | Google
                 isLock = false;
             }
         }
-        if (newState == "locked") {
+        if (newState === "locked") {
             isLock = true;
             chrome.alarms.clearAll(function (wasCleared) {
                 console.log(wasCleared)
