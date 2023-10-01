@@ -1,207 +1,207 @@
 .group-amount {
-	font-size: 120%;
+    font-size: 120%;
 }
 
 .group-name {
-	font-size: 130%;
-	font-weight: bold;
+    font-size: 130%;
+    font-weight: bold;
 }
 
 .group-date {
-	opacity: 0.7;
+    opacity: 0.7;
 }
 
 .group-title {
-	margin-bottom: 10px;
+    margin-bottom: 10px;
 }
 
 .restore-all {
-	margin-left: 5px;
-	cursor: pointer;
-	color: #234da7;
+    margin-left: 5px;
+    cursor: pointer;
+    color: #234da7;
 }
 
 .restore-all:hover {
-	color: #234da7;
-	text-decoration: underline;
+    color: #234da7;
+    text-decoration: underline;
 }
 
 .delete-all {
-	margin-left: 5px;
-	cursor: pointer;
-	color: #234da7;
+    margin-left: 5px;
+    cursor: pointer;
+    color: #234da7;
 }
 
 .delete-all:hover {
-	color: #234da7;
-	text-decoration: underline;
+    color: #234da7;
+    text-decoration: underline;
 }
 
 .about-lock {
-	margin-left: 5px;
-	cursor: pointer;
-	color: #234da7;
+    margin-left: 5px;
+    cursor: pointer;
+    color: #234da7;
 }
 
 .about-lock:hover {
-	color: #234da7;
-	text-decoration: underline;
+    color: #234da7;
+    text-decoration: underline;
 }
 
 .about-top {
-	margin-left: 5px;
-	cursor: pointer;
-	color: #234da7;
+    margin-left: 5px;
+    cursor: pointer;
+    color: #234da7;
 }
 
 .about-top:hover {
-	color: #234da7;
-	text-decoration: underline;
+    color: #234da7;
+    text-decoration: underline;
 }
 
 ul {
-	margin-left: 2em;
+    margin-left: 2em;
 }
 
 .li-hover:hover {
-	cursor: pointer;
-	background: #f0f0f0;
-	padding-bottom: 3px;
+    cursor: pointer;
+    background: #f0f0f0;
+    padding-bottom: 3px;
 }
 
 .li-standard {
-	padding-bottom: 3px;
+    padding-bottom: 3px;
 }
 
 .delete-link {
-	font-size: 70%;
-	font-weight: bold;
-	background: #eee;
-	color: white;
-	display: inline-block;
-	border-radius: 1em;
-	padding: 0 .3em;
-	margin-right: 10px;
+    font-size: 70%;
+    font-weight: bold;
+    background: #eee;
+    color: white;
+    display: inline-block;
+    border-radius: 1em;
+    padding: 0 .3em;
+    margin-right: 10px;
 }
 
 .no-delete-link {
-	margin-right: 5px;
+    margin-right: 5px;
 }
 
 .delete-link:before {
-	content: "X";
+    content: "X";
 }
 
 *:hover > .delete-link {
-	background: #aaa;
+    background: #aaa;
 }
 
 .delete-link:hover {
-	background: red;
-	cursor: pointer;
+    background: red;
+    cursor: pointer;
 }
 
 .link, .link:visited {
-	color: #234da7;
-	text-decoration: none;
-	padding: .2em;
-	font-size: 85%;
+    color: #234da7;
+    text-decoration: none;
+    padding: .2em;
+    font-size: 85%;
 }
 
 .link:hover {
-	cursor: pointer;
-	text-decoration: underline;
+    cursor: pointer;
+    text-decoration: underline;
 }
 
 .my-handle {
-	cursor: move;
+    cursor: move;
 }
 
 .ghost {
-	opacity: .5;
-	background: #C8EBFB;
+    opacity: .5;
+    background: #C8EBFB;
 }
 
 .tabs {
-	padding-top: 10px;
-	padding-bottom: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 .lock-img {
-	height: 18px;
-	margin-right: 6px;
-	padding-top: 3px;
+    height: 18px;
+    margin-right: 6px;
+    padding-top: 3px;
 }
 
 .no-lock-img {
-	height: 18px;
-	display: none;
+    height: 18px;
+    display: none;
 }
 
-.group-title-input{
-	width: 75px;
-	overflow: hidden;
-	border: none;
-	margin-right: 5px;
+.group-title-input {
+    width: 75px;
+    overflow: hidden;
+    border: none;
+    margin-right: 5px;
 }
 
-.line{
-	text-decoration: none;
-	padding: .2em;
+.line {
+    text-decoration: none;
+    padding: .2em;
 }
 
-.div-top{
-	margin-top: 15px;
+.div-top {
+    margin-top: 15px;
 }
 
 .option {
-	margin: 15px 0;
+    margin: 15px 0;
 }
 
 .option:first-of-type {
-	margin-top: 0;
+    margin-top: 0;
 }
 
 .desc {
-	font-size: 1.1em;
-	margin-bottom: 5px;
+    font-size: 1.1em;
+    margin-bottom: 5px;
 }
 
 .choices {
-	font-size: .9em;
+    font-size: .9em;
 }
 
 #saved {
-	display: none;
-	background: green;
-	color: white;
-	width: 300px;
-	margin-top: 15px;
+    display: none;
+    background: green;
+    color: white;
+    width: 300px;
+    margin-top: 15px;
 }
 
 .taskButtonGroup {
-	float: right;
-	margin-right: 20px;
+    float: right;
+    margin-right: 20px;
 }
 
 .addTaskTextClass {
-	margin: 10px;
+    margin: 10px;
 }
 
 .chrome-plugin-simple-tip {
     position: fixed;
-	z-index: 999999;/* 这里是该元素与显示屏的距离，据说越大越好，但是我也没有看到效果，因为没有它也是可以的 */
+    z-index: 999999; /* 这里是该元素与显示屏的距离，据说越大越好，但是我也没有看到效果，因为没有它也是可以的 */
     /* left: 20px; */
     padding: 16px 10px;
     /* top: 100px; */
     color: white;
     min-width: 150px;
-	max-width: 700px;
+    max-width: 700px;
     border-radius: 3px;
     text-align: center;
     font-size: 20px;
     background: #dff0d8;
     background-image: linear-gradient(to bottom, #dff0d8, #70a800);
     box-shadow: 0 0 3px rgba(0, 0, 0, .2);
-	transition: top .4s;
+    transition: top .4s;
 }

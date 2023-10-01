@@ -1,56 +1,56 @@
 .menu-entry {
     font-size: 100%;
-	background: #fefefe;
-	padding: 10px;
+    background: #fefefe;
+    padding: 10px;
 }
 
 .menu-entry:hover {
-	cursor: pointer;
-	background: #f0f0f0;
+    cursor: pointer;
+    background: #f0f0f0;
 }
 
 .grid-container {
-	width: 100%;
+    width: 100%;
 }
 
 .grid-container * {
-	box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 /* clearfix hack */
 .row:before,
 .row:after {
-	content: "";
-	display: table ;
+    content: "";
+    display: table;
     clear: both;
 }
 
-.row{
+.row {
     border-top: 1px solid #eee;
     font-size: 100%;
 }
 
 .delete-link {
-	font-size: .9em;
-	font-weight: bold;
-	background: #eee;
-	color: white;
+    font-size: .9em;
+    font-weight: bold;
+    background: #eee;
+    color: white;
 
-	display: inline-block;
-	border-radius: 1em;
-	padding: 0 .3em;
-	margin-right: 10px;
+    display: inline-block;
+    border-radius: 1em;
+    padding: 0 .3em;
+    margin-right: 10px;
 }
 
 .delete-link:before {
-	content: "X";
+    content: "X";
 }
 
 *:hover > .delete-link {
-	background: #aaa;
+    background: #aaa;
 }
 
 .delete-link:hover {
-	background: red;
-	cursor: pointer;
+    background: red;
+    cursor: pointer;
 }
