@@ -97,12 +97,6 @@
                         <li class="home">
                             <a href="#"><span id="usage"></span></a>
                         </li>
-                        <li class="home">
-                            <a href="#"><span id="githubStatus"></span></a>
-                        </li>
-                        <li class="home">
-                            <a href="#"><span id="giteeStatus"></span></a>
-                        </li>
                     </ul>
                 </div>
                 <!--/.nav-collapse -->
@@ -172,10 +166,7 @@ https://www.google.com | Google
         $("#navbar ul li").click(function () {
             $(this).addClass("active").siblings().removeClass("active");
         })
-        // 检查跟github的通讯是否正常
-        checkGitHubStatus();
-        // 检查跟gitee的通讯是否正常
-        checkGiteeStatus();
+
         chrome.storage.local.get(null, function (items) {
             // 一load完就算一下storage占用了多少空间
             chrome.storage.local.getBytesInUse(null, function (bytes) {

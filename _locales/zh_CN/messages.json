@@ -99,16 +99,16 @@
 		"message": "是否划词翻译"
 	},
 	"pushToGithubGist": {
-		"message": "推送到github的gist"
+		"message": "推送到GitHub的gist"
 	},
 	"pullFromGithubGist": {
-		"message": "从github的gist拉取"
+		"message": "从GitHub的gist拉取"
 	},
 	"pushToGiteeGist": {
-		"message": "推送到gitee的gist"
+		"message": "推送到Gitee的gist"
 	},
 	"pullFromGiteeGist": {
-		"message": "从gitee的gist拉取"
+		"message": "从Gitee的gist拉取"
 	},
 	"confirmKey": {
 		"message": "请输入\"确定\"表示确认："
@@ -132,25 +132,25 @@
 		"message": "收起"
 	},
 	"gistFunction": {
-		"message": "gist功能"
+		"message": "同步功能"
 	},
 	"otherFunction": {
 		"message": "其他功能"
 	},
 	"githubApiStatusSuccess": {
-		"message": "Github API 状态 : 正常"
+		"message": "GitHub API 状态 : 正常"
 	},
 	"giteeApiStatusSuccess": {
 		"message": "Gitee API 状态 : 正常"
 	},
 	"githubApiStatusFailed": {
-		"message": "Github API 状态 : 异常"
+		"message": "GitHub API 状态 : 异常"
 	},
 	"giteeApiStatusFailed": {
 		"message": "Gitee API 状态 : 异常"
 	},
 	"githubApiStatusError": {
-		"message": "Github API 状态 : 报错"
+		"message": "GitHub API 状态 : 报错"
 	},
 	"giteeApiStatusError": {
 		"message": "Gitee API 状态 : 报错"
@@ -162,76 +162,76 @@
 		"message": "否"
 	},
 	"pushToGithubGistIng": {
-		"message": "正在推送到github的gist，请稍等！"
+		"message": "正在推送到GitHub的gist，请稍等！"
 	},
 	"pullFromGithubGistIng": {
-		"message": "正在从github的gist拉取，请稍等！"
+		"message": "正在从GitHub的gist拉取，请稍等！"
 	},
 	"pushToGiteeGistIng": {
-		"message": "正在推送到gitee的gist，请稍等！"
+		"message": "正在推送到Gitee的gist，请稍等！"
 	},
 	"pullFromGiteeGistIng": {
-		"message": "正在从gitee的gist拉取，请稍等！"
+		"message": "正在从Gitee的gist拉取，请稍等！"
 	},
 	"startPushToGithubGistTask": {
-		"message": "开始推送到github的gist的任务"
+		"message": "开始推送到GitHub的gist的任务"
 	},
 	"startPullFromGithubGistTask": {
-		"message": "开始从github的gist拉取的任务"
+		"message": "开始从GitHub的gist拉取的任务"
 	},
 	"startPushToGiteeGistTask": {
-		"message": "开始推送到gitee的gist的任务"
+		"message": "开始推送到Gitee的gist的任务"
 	},
 	"startPullFromGiteeGistTask": {
-		"message": "开始从gitee的gist拉取的任务"
+		"message": "开始从Gitee的gist拉取的任务"
 	},
 	"endPushToGithubGistTask": {
-		"message": "推送到github的gist的任务结束"
+		"message": "推送到GitHub的gist的任务结束"
 	},
 	"endPullFromGithubGistTask": {
-		"message": "从github的gist拉取的任务完成"
+		"message": "从GitHub的gist拉取的任务完成"
 	},
 	"endPushToGiteeGistTask": {
-		"message": "推送到gitee的gist的任务结束"
+		"message": "推送到Gitee的gist的任务结束"
 	},
 	"endPullFromGiteeGistTask": {
-		"message": "从gitee的gist拉取的任务完成"
+		"message": "从Gitee的gist拉取的任务完成"
 	},
 	"clickPushToGithubGist": {
-		"message": "手动点击推送到github的gist"
+		"message": "手动点击推送到GitHub的gist"
 	},
 	"autoPushToGithubGist": {
-		"message": "自动推送到github的gist"
+		"message": "自动推送到GitHub的gist"
 	},
 	"clickPullFromGithubGist": {
-		"message": "手动点击从github的gist拉取"
+		"message": "手动点击从GitHub的gist拉取"
 	},
 	"clickPushToGiteeGist": {
-		"message": "手动点击推送到gitee的gist"
+		"message": "手动点击推送到Gitee的gist"
 	},
 	"autoPushToGiteeGist": {
-		"message": "自动推送到gitee的gist"
+		"message": "自动推送到Gitee的gist"
 	},
 	"clickPullFromGiteeGist": {
-		"message": "手动点击从gitee的gist拉取"
+		"message": "手动点击从Gitee的gist拉取"
 	},
 	"startCheckGithubTokenSaved": {
-		"message": "开始检查github token有没有保存"
+		"message": "开始检查GitHub token有没有保存"
 	},
 	"startCheckGiteeTokenSaved": {
-		"message": "开始检查gitee token有没有保存"
+		"message": "开始检查Gitee token有没有保存"
 	},
 	"githubTokenSaved": {
-		"message": "github token有保存"
+		"message": "GitHub token有保存"
 	},
 	"giteeTokenSaved": {
-		"message": "gitee token有保存"
+		"message": "Gitee token有保存"
 	},
 	"githubTokenNoSaved": {
-		"message": "github token没有保存"
+		"message": "GitHub token没有保存"
 	},
 	"giteeTokenNoSaved": {
-		"message": "gitee token没有保存"
+		"message": "Gitee token没有保存"
 	},
 	"saveTokenKey": {
 		"message": "请输入token："
@@ -240,10 +240,10 @@
 		"message": "请确保token是正确的！！！"
 	},
 	"githubTokenSaveSuccess": {
-		"message": "github token 保存完毕"
+		"message": "GitHub token 保存完毕"
 	},
 	"giteeTokenSaveSuccess": {
-		"message": "gitee token 保存完毕"
+		"message": "Gitee token 保存完毕"
 	},
 	"startCheckGistIdSaved": {
 		"message": "开始检查gistId有没有保存"
@@ -279,10 +279,10 @@
 		"message": "还没有创建gist,没有内容可以拉,结束任务"
 	},
 	"startCreateGithubGist": {
-		"message": "还没有创建github的gist,开始创建"
+		"message": "还没有创建GitHub的gist,开始创建"
 	},
 	"startCreateGiteeGist": {
-		"message": "还没有创建gitee的gist,开始创建"
+		"message": "还没有创建Gitee的gist,开始创建"
 	},
 	"createSuccess": {
 		"message": "创建成功"
@@ -291,13 +291,13 @@
 		"message": "创建失败"
 	},
 	"getGithubGistById": {
-		"message": "根据github的gistId拉取gist"
+		"message": "根据GitHub的gistId拉取gist"
 	},
 	"getGithubGistByRawUrl": {
 		"message": "被截断了，根据raw_url拉取gist"
 	},
 	"getGiteeGistById": {
-		"message": "根据gitee的gistId拉取gist"
+		"message": "根据Gitee的gistId拉取gist"
 	},
 	"pullSuccess": {
 		"message": "拉取gist成功"
@@ -312,22 +312,22 @@
 		"message": "结束："
 	},
 	"clickPushGithub": {
-		"message": "手动推送到github"
+		"message": "手动推送到GitHub"
 	},
 	"autoPushGithub": {
-		"message": "自动推送到github"
+		"message": "自动推送到GitHub"
 	},
 	"clickPullGithub": {
-		"message": "手动从github拉取"
+		"message": "手动从GitHub拉取"
 	},
 	"clickPushGitee": {
-		"message": "手动推送到gitee"
+		"message": "手动推送到Gitee"
 	},
 	"autoPushGitee": {
-		"message": "自动推送到gitee"
+		"message": "自动推送到Gitee"
 	},
 	"clickPullGitee": {
-		"message": "手动从gitee拉取"
+		"message": "手动从Gitee拉取"
 	},
 	"waitForMinutes": {
 		"message": " 秒等待"

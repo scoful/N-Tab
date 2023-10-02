@@ -75,40 +75,40 @@
 		"message": " TABS"
 	},
 	"totals": {
-		"message": " records"
+		"message": " Records"
 	},
 	"home": {
 		"message": "Home"
 	},
 	"hideShowImportOnetabFunction": {
-		"message": "import OneTab mode"
+		"message": "Import OneTab Mode"
 	},
 	"hideShowImportDefaultFunction": {
-		"message": "import default mode"
+		"message": "Import Default Mode"
 	},
 	"hideShowExportFunction": {
-		"message": "export"
+		"message": "Export"
 	},
 	"dragTitle": {
-		"message": "super drag title"
+		"message": "Super Drag Title"
 	},
 	"dragTabs": {
-		"message": "super drag tabs"
+		"message": "Super Drag Tabs"
 	},
 	"dragOpenTranslate": {
-		"message": "cross word translation"
+		"message": "Cross Word Translation"
 	},
 	"pushToGithubGist": {
-		"message": "push to github's gist"
+		"message": "Push To GitHub's gist"
 	},
 	"pullFromGithubGist": {
-		"message": "pull from github's gist"
+		"message": "Pull From GitHub's gist"
 	},
 	"pushToGiteeGist": {
-		"message": "push to gitee's gist"
+		"message": "Push To Gitee's gist"
 	},
 	"pullFromGiteeGist": {
-		"message": "pull from gitee's gist"
+		"message": "Pull From Gitee's gist"
 	},
 	"confirmKey": {
 		"message": "Please input \"confirm\" to ensure: "
@@ -132,25 +132,25 @@
 		"message": "pack up"
 	},
 	"gistFunction": {
-		"message": "gist function"
+		"message": "Sync"
 	},
 	"otherFunction": {
-		"message": "other function"
+		"message": "Other"
 	},
 	"githubApiStatusSuccess": {
-		"message": "Github API status : SUCCESS"
+		"message": "GitHub API status : SUCCESS"
 	},
 	"giteeApiStatusSuccess": {
 		"message": "Gitee API status : SUCCESS"
 	},
 	"githubApiStatusFailed": {
-		"message": "Github API status : FAILED"
+		"message": "GitHub API status : FAILED"
 	},
 	"giteeApiStatusFailed": {
 		"message": "Gitee API status : FAILED"
 	},
 	"githubApiStatusError": {
-		"message": "Github API status : ERROR"
+		"message": "GitHub API status : ERROR"
 	},
 	"giteeApiStatusError": {
 		"message": "Gitee API status : ERROR"
@@ -162,10 +162,10 @@
 		"message": "no"
 	},
 	"pushToGithubGistIng": {
-		"message": "push to Github's Gist ing, please wait!"
+		"message": "push to GitHub's Gist ing, please wait!"
 	},
 	"pullFromGithubGistIng": {
-		"message": "pull from Github's Gist ing, please wait!"
+		"message": "pull from GitHub's Gist ing, please wait!"
 	},
 	"pushToGiteeGistIng": {
 		"message": "push to Gitee's Gist ing, please wait!"
@@ -174,64 +174,64 @@
 		"message": "pull from Gitee's Gist ing, please wait!"
 	},
 	"startPushToGithubGistTask": {
-		"message": "start push to github's gist task"
+		"message": "start push to GitHub's gist task"
 	},
 	"startPullFromGithubGistTask": {
-		"message": "start pull from github's gist task"
+		"message": "start pull from GitHub's gist task"
 	},
 	"startPushToGiteeGistTask": {
-		"message": "start push to gitee's gist task"
+		"message": "start push to Gitee's gist task"
 	},
 	"startPullFromGiteeGistTask": {
-		"message": "start pull from gitee's gist task"
+		"message": "start pull from Gitee's gist task"
 	},
 	"endPushToGithubGistTask": {
-		"message": "push to github's gist task end"
+		"message": "push to GitHub's gist task end"
 	},
 	"endPullFromGithubGistTask": {
-		"message": "pull from github's gist task end"
+		"message": "pull from GitHub's gist task end"
 	},
 	"endPushToGiteeGistTask": {
-		"message": "push to gitee's gist task end"
+		"message": "push to Gitee's gist task end"
 	},
 	"endPullFromGiteeGistTask": {
-		"message": "pull from gitee's gist task end"
+		"message": "pull from Gitee's gist task end"
 	},
 	"clickPushToGithubGist": {
-		"message": "click push to github's gist"
+		"message": "click push to GitHub's gist"
 	},
 	"autoPushToGithubGist": {
-		"message": "auto push to github's gist"
+		"message": "auto push to GitHub's gist"
 	},
 	"clickPullFromGithubGist": {
-		"message": "click pull from github's gist"
+		"message": "click pull from GitHub's gist"
 	},
 	"clickPushToGiteeGist": {
-		"message": "click push to gitee's gist"
+		"message": "click push to Gitee's gist"
 	},
 	"autoPushToGiteeGist": {
-		"message": "auto push to gitee's gist"
+		"message": "auto push to Gitee's gist"
 	},
 	"clickPullFromGiteeGist": {
-		"message": "click pull from gitee's gist"
+		"message": "click pull from Gitee's gist"
 	},
 	"startCheckGithubTokenSaved": {
-		"message": "start check github token is saved ?"
+		"message": "start check GitHub token is saved ?"
 	},
 	"startCheckGiteeTokenSaved": {
-		"message": "start check gitee token is saved ?"
+		"message": "start check Gitee token is saved ?"
 	},
 	"githubTokenSaved": {
-		"message": "github token had saved"
+		"message": "GitHub token had saved"
 	},
 	"giteeTokenSaved": {
-		"message": "gitee token had saved"
+		"message": "Gitee token had saved"
 	},
 	"githubTokenNoSaved": {
-		"message": "github token had not saved"
+		"message": "GitHub token had not saved"
 	},
 	"giteeTokenNoSaved": {
-		"message": "gitee token had not saved"
+		"message": "Gitee token had not saved"
 	},
 	"saveTokenKey": {
 		"message": "please input token:"
@@ -240,10 +240,10 @@
 		"message": "Warn!!! please ensure your token is right!!!"
 	},
 	"githubTokenSaveSuccess": {
-		"message": "github token save success!"
+		"message": "GitHub token save success!"
 	},
 	"giteeTokenSaveSuccess": {
-		"message": "gitee token save success!"
+		"message": "Gitee token save success!"
 	},
 	"startCheckGistIdSaved": {
 		"message": "start check gistId is saved ?"
@@ -279,10 +279,10 @@
 		"message": "had not created gist, nothing can pull, it's over!"
 	},
 	"startCreateGithubGist": {
-		"message": "had not created gist, start create github gist now!"
+		"message": "had not created gist, start create GitHub gist now!"
 	},
 	"startCreateGiteeGist": {
-		"message": "had not created gist, start create gitee gist now!"
+		"message": "had not created gist, start create Gitee gist now!"
 	},
 	"createSuccess": {
 		"message": " create success"
@@ -291,13 +291,13 @@
 		"message": "create failed"
 	},
 	"getGithubGistById": {
-		"message": "get github's gist by gistId"
+		"message": "get GitHub's gist by gistId"
 	},
 	"getGithubGistByRawUrl": {
-		"message": "be truncated, get github's gist by raw_url"
+		"message": "be truncated, get GitHub's gist by raw_url"
 	},
 	"getGiteeGistById": {
-		"message": "get gitee's gist by gistId"
+		"message": "get Gitee's gist by gistId"
 	},
 	"pullSuccess": {
 		"message": "pull gist success"
@@ -312,22 +312,22 @@
 		"message": "end: "
 	},
 	"clickPushGithub": {
-		"message": "CLICK TO PUSH TO GITHUB'S GIST"
+		"message": "CLICK TO PUSH TO GitHub'S GIST"
 	},
 	"autoPushGithub": {
-		"message": "AUTO PUSH TO GITHUB'S GIST"
+		"message": "AUTO PUSH TO GitHub'S GIST"
 	},
 	"clickPullGithub": {
-		"message": "CLICK TO PULL FROM GITHUB'S GIST"
+		"message": "CLICK TO PULL FROM GitHub'S GIST"
 	},
 	"clickPushGitee": {
-		"message": "CLICK TO PUSH TO GITEE'S GIST"
+		"message": "CLICK TO PUSH TO Gitee'S GIST"
 	},
 	"autoPushGitee": {
-		"message": "AUTO PUSH TO GITEE'S GIST"
+		"message": "AUTO PUSH TO Gitee'S GIST"
 	},
 	"clickPullGitee": {
-		"message": "CLICK TO PULL FROM GITEE'S GIST"
+		"message": "CLICK TO PULL FROM Gitee'S GIST"
 	},
 	"waitForMinutes": {
 		"message": "minute wait for"
@@ -360,10 +360,10 @@
 		"message": "The source code for CloudSkyMonster is available at "
 	},
 	"usedSpace": {
-		"message": "usedSpace : "
+		"message": "UsedSpace : "
 	},
 	"autoSync": {
-		"message": "open sync"
+		"message": "Open Sync"
 	},
 	"noLog": {
 		"message": "No log have been saved yet"
@@ -372,7 +372,7 @@
 		"message": "No tab groups have been saved yet, or you deleted them all..."
 	},
 	"showLog": {
-		"message": "show log"
+		"message": "Logs"
 	},
 	"secondWait": {
 		"message": " second wait"
