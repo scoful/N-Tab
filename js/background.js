@@ -409,23 +409,52 @@ function setHandleGistStatus(status) {
     chrome.storage.local.set({handleGistStatus: gistStatusMap});
 }
 
-// 调用有道翻译api
+// 调用腾讯交互翻译api
 function translateFunc(txt) {
     console.log("开始翻译！");
-    let url = "https://fanyi.youdao.com/openapi.do?keyfrom=lulua-net&key=620584095&type=data&doctype=json&version=1.1&q=" + txt;
+    let url = "https://transmart.qq.com/api/imt"
+    let data = JSON.stringify({
+        "header": {
+            "fn": "auto_translation",
+            "session": "",
+            "client_key": "browser-chrome-117.0.0-Windows 10-4daf3e2e-b66e-43a1-944a-a8f6b42c9199-1696226243060",
+            "user": ""
+        },
+        "type": "plain",
+        "model_category": "normal",
+        "text_domain": "general",
+        "source": {
+            "lang": "en",
+            "text_list": [
+                txt
+            ]
+        },
+        "target": {
+            "lang": "zh"
+        }
+    })
     $.ajax({
-        type: "GET", url: url, success: function (data, status) {
+        type: "POST",
+        url: url,
+        data: data,
+        headers: {
+            "Content-Type": "application/json"
+        },
+        success: function (data, status) {
+            console.log(data)
             if (status === "success") {
-                if (data.translation) {
-                    console.log(data.translation[0]);
-                    sendMessageToContentScript("translateResult", data.translation[0]);
+                if (data.header.ret_code) {
+                    console.log(data.auto_translation[0]);
+                    sendMessageToContentScript("translateResult", data.auto_translation[0]);
                 }
             } else {
                 sendMessageToContentScript("translateResult", "--FAILED--!");
             }
-        }, error: function (xhr, errorText, errorType) {
+        },
+        error: function (xhr, errorText, errorType) {
             sendMessageToContentScript("translateResult", "--ERROR,may be lost network--!");
-        }, complete: function () {
+        },
+        complete: function () {
             //do something
         }
     })
