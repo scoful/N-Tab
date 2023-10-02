@@ -215,7 +215,7 @@
 
 - 已测试过，后台管理页存放1w+标签都支持，只是渲染的时候开始卡了，应该很少人有1w+保存的标签吧，虽然在chrome插件商店看过有人的OneTab有1w+标签，:joy: ,如果需要，后面再加分页。
 
-
+- 百度统计不支持chrome-extension协议和file协议，找到一个开源的轮子，[辅助生成百度统计插件](https://github.com/krapnikkk/baidutongji-generator)
 
 
 
@@ -272,6 +272,8 @@
 [Bootstrap中文网](https://www.bootcss.com/)
 
 [腾讯交互翻译](https://transmart.qq.com/zh-CN/index)
+
+[辅助生成百度统计插件](https://github.com/krapnikkk/baidutongji-generator)
 
 ## Star历史
 

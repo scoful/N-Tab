@@ -26,7 +26,7 @@
         "webRequest",
         "webRequestBlocking"
     ],
-    "content_security_policy": "script-src 'self' https://api.github.com https://gitee.com; object-src 'self'",
+    "content_security_policy": "script-src 'self' https://api.github.com https://gitee.com https://hm.baidu.com 'unsafe-eval' https://hmcdn.baidu.com; object-src 'self'",
     "browser_action": {
         "default_icon": "images/96.png",
         "default_title": "cloudSkyMonster",
