@@ -409,9 +409,31 @@ function setHandleGistStatus(status) {
     chrome.storage.local.set({handleGistStatus: gistStatusMap});
 }
 
+// 判断是否中文
+function isChinese(str) {
+    var reg = /[\u4e00-\u9fa5]/; // 使用Unicode范围匹配中文字符
+    return reg.test(str);
+}
+
+// 判断是否英文
+function isEnglish(str) {
+    var reg = /^[a-zA-Z]+$/; // 匹配纯英文字符
+    return reg.test(str);
+}
+
 // 调用腾讯交互翻译api
 function translateFunc(txt) {
     console.log("开始翻译！");
+    let source = "en"
+    let target = "zh"
+    if (isChinese(txt)) {
+        source = "zh"
+        target = "en"
+    }
+    if (isEnglish(txt)) {
+        source = "en"
+        target = "zh"
+    }
     let url = "https://transmart.qq.com/api/imt"
     let data = JSON.stringify({
         "header": {
@@ -419,28 +441,16 @@ function translateFunc(txt) {
             "session": "",
             "client_key": "browser-chrome-117.0.0-Windows 10-4daf3e2e-b66e-43a1-944a-a8f6b42c9199-1696226243060",
             "user": ""
-        },
-        "type": "plain",
-        "model_category": "normal",
-        "text_domain": "general",
-        "source": {
-            "lang": "en",
-            "text_list": [
-                txt
-            ]
-        },
-        "target": {
-            "lang": "zh"
+        }, "type": "plain", "model_category": "normal", "text_domain": "general", "source": {
+            "lang": source, "text_list": [txt]
+        }, "target": {
+            "lang": target
         }
     })
     $.ajax({
-        type: "POST",
-        url: url,
-        data: data,
-        headers: {
+        type: "POST", url: url, data: data, headers: {
             "Content-Type": "application/json"
-        },
-        success: function (data, status) {
+        }, success: function (data, status) {
             console.log(data)
             if (status === "success") {
                 if (data.header.ret_code) {
@@ -450,11 +460,9 @@ function translateFunc(txt) {
             } else {
                 sendMessageToContentScript("translateResult", "--FAILED--!");
             }
-        },
-        error: function (xhr, errorText, errorType) {
+        }, error: function (xhr, errorText, errorType) {
             sendMessageToContentScript("translateResult", "--ERROR,may be lost network--!");
-        },
-        complete: function () {
+        }, complete: function () {
             //do something
         }
     })

@@ -32,7 +32,7 @@
 ## 实现功能
 
 1. 划词翻译
-   - 支持配置是否启用
+   - 支持配置是否启用，自动检测中文还是英文，互译
 
 2. 插件图标显示当前一共打开了多少个tab，多个窗口也能统计
 
@@ -209,7 +209,7 @@
 
 - GitHub的api，如果返回的数据太大，会进行截断，需要注意，而Gitee的就不会，可能没考虑过这个问题
 
-- 翻译用的是有道api，这是好早以前申请的，请求频率限制为每小时1000次，[文档](http://fanyi.youdao.com/openapi?path=data-mode)
+- 翻译用的是腾讯交互翻译api，[腾讯交互翻译](https://transmart.qq.com/zh-CN/index)，自己扒的api
 
 - GitHub的根据gistId获取gist，居然不用token也能获取私有的，理论上存在被人撞到私有gist的可能，Gitee则需要
 
@@ -270,6 +270,8 @@
 [GiteeAPI文档](https://gitee.com/api/v5/swagger)
 
 [Bootstrap中文网](https://www.bootcss.com/)
+
+[腾讯交互翻译](https://transmart.qq.com/zh-CN/index)
 
 ## Star历史
 
