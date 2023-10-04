@@ -3,7 +3,7 @@
 		"message": "浏览器标签管理工具，对标OneTab"
 	},
 	"showAllTabs": {
-		"message": "展示收集的标签"
+		"message": "打开后台管理页"
 	},
 	"sendAllTabs": {
 		"message": "发送所有标签"
@@ -20,29 +20,11 @@
 	"sendOtherTabs": {
 		"message": "发送其他标签"
 	},
-	"fiveMinuteRemind": {
-		"message": "5分钟提醒"
-	},
-	"tenMinuteRemind": {
-		"message": "10分钟提醒"
-	},
-	"fortyMinuteRemind": {
-		"message": "40分钟提醒"
-	},
-	"customMinuteRemind": {
-		"message": "自定义分钟提醒"
-	},
 	"cuttingLine": {
 		"message": "我是分割线"
 	},
 	"deadLine": {
 		"message": "我是有底线的"
-	},
-	"pleaseInputCustomMinute": {
-		"message": "请输入自定义分钟数："
-	},
-	"remindStatus": {
-		"message": "暂无定时任务"
 	},
 	"optionsValue": {
 		"message": "查看配置"
@@ -332,17 +314,8 @@
 	"waitForMinutes": {
 		"message": " 秒等待"
 	},
-	"timeUpMessage": {
-		"message": " 分钟时间到了！"
-	},
 	"close": {
 		"message": "关闭"
-	},
-	"timeTaskLived": {
-		"message": "正在倒计时！再等等！"
-	},
-	"surplusTime": {
-		"message": "还剩："
 	},
 	"days": {
 		"message": "天"
@@ -369,7 +342,7 @@
 		"message": "还没有产生日志！"
 	},
 	"noTabs": {
-		"message": "还没有收藏网页！"
+		"message": "还没有收藏！"
 	},
 	"showLog": {
 		"message": "查看日志"
@@ -404,9 +377,6 @@
 	"nameThis": {
 		"message": "命名该组"
 	},
-	"addTask": {
-		"message": "新增任务"
-	},
 	"add": {
 		"message": "新增"
 	},
@@ -415,9 +385,6 @@
 	},
 	"cancle": {
 		"message": "取消"
-	},
-	"inputNumber": {
-		"message": "请输入数字！"
 	},
 	"refresh": {
 		"message": "刷新"

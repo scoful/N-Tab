@@ -1,11 +1,9 @@
 console.log("background is done!");
 
-// 定义倒计时文字容器
-let surplusTime;
-// 定义一个 一次执行定时器
-let timeoutId;
-// 定义一个桌面通知框id
-let notificationId;
+// 引入需要的库
+importScripts("moment.min.js");
+importScripts("axios.min.js");
+
 let emojiReg = /[\uD83C|\uD83D|\uD83E][\uDC00-\uDFFF][\u200D|\uFE0F]|[\uD83C|\uD83D|\uD83E][\uDC00-\uDFFF]|[0-9|*|#]\uFE0F\u20E3|[0-9|#]\u20E3|[\u203C-\u3299]\uFE0F\u200D|[\u203C-\u3299]\uFE0F|[\u2122-\u2B55]|\u303D|[\A9|\AE]\u3030|\uA9|\uAE|\u3030/gi;
 let handleGithubGistLog = [];
 let handleGiteeGistLog = [];
@@ -23,37 +21,54 @@ let githubIntervalId;
 let giteeIntervalId;
 let isLock = false;
 
-window.onload = function () {
-    console.log("load完window了");
-}
 
-// 一load完就加载jq，并获取tab数量显示在pop的badge上
-document.addEventListener('DOMContentLoaded', function () {
-    console.log("load完background了");
-    let script = document.createElement('script');
-    script.src = "js/jquery-3.0.0.min.js";
-    document.head.appendChild(script);
-    let script2 = document.createElement('script');
-    script2.src = "js/moment.min.js";
-    document.head.appendChild(script2);
-    let script3 = document.createElement('script');
-    script3.src = "js/axios.min.js";
-    document.head.appendChild(script3);
-
-    // 获取tab数量并在pop上显示
-    chrome.tabs.query({currentWindow: true}, function (tab) {
-        chrome.browserAction.setBadgeText({text: tab.length + ""});
-        chrome.browserAction.setBadgeBackgroundColor({color: "#0038a8"});
-    });
-    chrome.storage.local.get(function (storage) {
-        console.log(storage);
-    });
-    // 创建定时同步gitee任务
-    chrome.alarms.create("checkAutoSyncGitee", {delayInMinutes: 70, periodInMinutes: 70});
-    // 创建定时同步github任务
-    chrome.alarms.create("checkAutoSyncGithub", {delayInMinutes: 90, periodInMinutes: 90});
-
+// 获取tab数量并在popup上显示
+chrome.tabs.query({currentWindow: true}, function (tab) {
+    chrome.action.setBadgeText({text: tab.length + ""});
+    chrome.action.setBadgeBackgroundColor({color: "#0038a8"});
 });
+
+// 持续监听，当tab被激活的时候刷新一下pop上badge的tab的数量
+chrome.tabs.onActivated.addListener(function callback() {
+    chrome.tabs.query({}, function (tab) {
+        chrome.action.setBadgeText({text: tab.length + ""});
+        chrome.action.setBadgeBackgroundColor({color: "#0038a8"});
+    });
+});
+
+// 持续监听，当tab被关闭的时候刷新一下pop上badge的tab的数量
+chrome.tabs.onRemoved.addListener(function callback() {
+    chrome.tabs.query({}, function (tab) {
+        chrome.action.setBadgeText({text: tab.length + ""});
+        chrome.action.setBadgeBackgroundColor({color: "#0038a8"});
+    });
+});
+
+// 持续监听，当tab被创建的时候刷新一下pop上badge的tab的数量
+chrome.tabs.onCreated.addListener(function callback() {
+    chrome.tabs.query({}, function (tab) {
+        chrome.action.setBadgeText({text: tab.length + ""});
+        chrome.action.setBadgeBackgroundColor({color: "#0038a8"});
+    });
+});
+
+
+// 获取本机storage
+chrome.storage.local.get(function (storage) {
+    console.log(storage);
+});
+
+// 获取可同步storage
+chrome.storage.sync.get(function (storage) {
+    console.log(storage);
+});
+
+// 创建定时同步gitee任务，至于是否真的同步，要看设置
+chrome.alarms.create("checkAutoSyncGitee", {delayInMinutes: 70, periodInMinutes: 70});
+
+// 创建定时同步github任务，至于是否真的同步，要看设置
+chrome.alarms.create("checkAutoSyncGithub", {delayInMinutes: 90, periodInMinutes: 90});
+
 
 // 检查是否同步github的gist
 function checkAutoSyncGithub() {
@@ -287,94 +302,79 @@ function updateGithubGist(content) {
     console.log("更新github的gist")
     handleGithubGistLog.push(`${chrome.i18n.getMessage("directUpdate")}`)
     let _content = JSON.stringify(content);
-    let js = generateJs(content)
     let data = {
         "description": "myCloudSkyMonster", "public": false, "files": {
-            "brower_Tabs.json": {"content": _content}, "brower_tasks.js": {"content": js}
+            "brower_Tabs.json": {"content": _content}
         }
     }
-    $.ajax({
-        type: "PATCH",
-        headers: {"Authorization": "token " + githubGistToken},
-        url: gitHubApiUrl + "/gists/" + githubGistId,
-        data: JSON.stringify(data),
-        success: function (data, status) {
-            if (status === "success") {
+    let myHeaders = new Headers();
+    myHeaders.append("Authorization", "token " + githubGistToken)
+    myHeaders.append("accept", "application/vnd.github+json")
+    myHeaders.append("Content-Type", "application/json");
+    let requestOptions = {
+        method: 'PATCH', headers: myHeaders, body: JSON.stringify(data),
+    };
+
+    fetch(gitHubApiUrl + "/gists/" + githubGistId, requestOptions)
+        .then(response => {
+            if (response.status === 200) {
                 console.log("更新成功")
-                chrome.storage.local.set({"taskJsUrl": data.files['brower_tasks.js'].raw_url})
                 handleGithubGistLog.push(`${chrome.i18n.getMessage("updateSuccess")}`)
             } else {
                 console.log("更新失败")
                 handleGithubGistLog.push(`${chrome.i18n.getMessage("updateFailed")}`)
             }
-        },
-        error: function (xhr, errorText, errorType) {
-            handleGithubGistLog.push(`${chrome.i18n.getMessage("updateFailed")}-->${xhr.responseText}`)
-        },
-        complete: function () {
-            //do something
+        })
+        .catch(error => {
+            console.log('error', error)
+            handleGithubGistLog.push(`${chrome.i18n.getMessage("updateFailed")}-->${error.toString()}`)
+        })
+        .finally(() => {
+            // 请求完成时触发，无论成功还是失败
+            console.log('Request completed');
             pushToGithubGistStatus = undefined;
-        }
-    })
+        });
 }
 
-// 生成js
-function generateJs(content) {
-    let result = ""
-    let myRun = "console.log('load完任务了'); function myRun(functionName) {"
-    let functionJs = ""
-    let alarmJs = "chrome.alarms.onAlarm.addListener(function (alarm) {"
-    let taskList = content.taskList
-    if (taskList) {
-        for (let i = 0; i < taskList.length; i++) {
-            let script = taskList[i].script + ";"
-            let functionName = taskList[i].functionName
-            let jsContent = " if(functionName === '" + functionName + "'){" + functionName + "();}"
-            let jsContent2 = " if(alarm.name === '" + functionName + "'){" + functionName + "();}"
-            myRun += jsContent
-            functionJs += script
-            alarmJs += jsContent2
-        }
-    }
-    result = myRun + "}" + functionJs + alarmJs + "});"
-    console.log(result)
-    return result;
-}
 
 // 更新gitee的gist
 function updateGiteeGist(content) {
     console.log("更新gitee的gist")
     handleGiteeGistLog.push(`${chrome.i18n.getMessage("directUpdate")}`)
     let _content = JSON.stringify(content);
-    let js = generateJs(content)
     let data = {
         "description": "myCloudSkyMonster", "public": false, "files": {
-            "brower_Tabs.json": {"content": _content}, "brower_tasks.js": {"content": js}
+            "brower_Tabs.json": {"content": _content}
         }
     }
-    $.ajax({
-        type: "PATCH",
-        headers: {"Authorization": "token " + giteeGistToken},
-        url: giteeApiUrl + "/gists/" + giteeGistId,
-        data: data,
-        success: function (data, status) {
-            if (status === "success") {
+    let myHeaders = new Headers();
+    myHeaders.append("Authorization", "token " + giteeGistToken)
+    myHeaders.append("Content-Type", "application/json");
+    let requestOptions = {
+        method: 'PATCH', headers: myHeaders, body: JSON.stringify(data),
+    };
+
+    fetch(giteeApiUrl + "/gists/" + giteeGistId, requestOptions)
+        .then(response => {
+            console.log(response)
+            if (response.status === 200) {
                 console.log("更新成功")
-                chrome.storage.local.set({"taskJsUrl": data.files['brower_tasks.js'].raw_url})
+                console.log(response.json())
                 handleGiteeGistLog.push(`${chrome.i18n.getMessage("updateSuccess")}`)
             } else {
                 console.log("更新失败")
                 handleGiteeGistLog.push(`${chrome.i18n.getMessage("updateFailed")}`)
             }
-        },
-        error: function (xhr, errorText, errorType) {
-            handleGiteeGistLog.push(`${chrome.i18n.getMessage("updateFailed")}-->${xhr.responseText}`)
-        },
-        complete: function () {
-            //do something
+        })
+        .catch(error => {
+            console.log('error', error)
+            handleGiteeGistLog.push(`${chrome.i18n.getMessage("updateFailed")}-->${error.toString()}`)
+        })
+        .finally(() => {
+            // 请求完成时触发，无论成功还是失败
+            console.log('Request completed');
             pushToGiteeGistStatus = undefined;
-        }
-    })
+        });
 }
 
 
@@ -447,25 +447,27 @@ function translateFunc(txt) {
             "lang": target
         }
     })
-    $.ajax({
-        type: "POST", url: url, data: data, headers: {
-            "Content-Type": "application/json"
-        }, success: function (data, status) {
-            console.log(data)
-            if (status === "success") {
-                if (data.header.ret_code) {
-                    console.log(data.auto_translation[0]);
-                    sendMessageToContentScript("translateResult", data.auto_translation[0]);
-                }
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    let requestOptions = {
+        method: 'POST', headers: myHeaders, body: data,
+    };
+
+    fetch(url, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            console.log(result.header.ret_code)
+            if (result.header.ret_code) {
+                console.log(result.auto_translation[0]);
+                sendMessageToContentScript("translateResult", result.auto_translation[0]);
             } else {
                 sendMessageToContentScript("translateResult", "--FAILED--!");
             }
-        }, error: function (xhr, errorText, errorType) {
+        })
+        .catch(error => {
+            console.log('error', error)
             sendMessageToContentScript("translateResult", "--ERROR,may be lost network--!");
-        }, complete: function () {
-            //do something
-        }
-    })
+        });
 }
 
 // 持续监听发送给background的消息
@@ -520,34 +522,6 @@ chrome.runtime.onMessage.addListener(function (req, sender, sendRes) {
             }
             sendRes('ok'); // acknowledge
             break;
-        case 'five-minute': // 5分钟后提醒
-            remind(5);
-            sendRes('ok'); // acknowledge
-            break;
-        case 'ten-minute': // 10分钟后提醒
-            remind(10);
-            sendRes('ok'); // acknowledge
-            break;
-        case 'forty-minute': // 40分钟后提醒
-            remind(40);
-            sendRes('ok'); // acknowledge
-            break;
-        case 'custom-minute': // 自定义分钟后提醒
-            remind(Number(req.message));
-            sendRes('ok'); // acknowledge
-            break;
-        case 'command-x': // todo，没有触发入口
-            closeCurrentTab();
-            sendRes('ok'); // acknowledge
-            break;
-        case 'command-X': // todo，没有触发入口
-            restartLastClosedTab();
-            sendRes('ok'); // acknowledge
-            break;
-        case 'test': // test
-            console.log("test axios")
-            sendRes('ok'); // acknowledge
-            break;
         default:
             sendRes('nope'); // acknowledge
             break;
@@ -565,28 +539,6 @@ function sendMessageToContentScript(action, message) {
         });
     });
 }
-
-// 持续监听，当tab被激活的时候刷新一下pop上badge的tab的数量
-chrome.tabs.onActivated.addListener(function callback() {
-    chrome.tabs.query({}, function (tab) {
-        chrome.browserAction.setBadgeText({text: tab.length + ""});
-        chrome.browserAction.setBadgeBackgroundColor({color: "#0038a8"});
-    });
-});
-// 持续监听，当tab被关闭的时候刷新一下pop上badge的tab的数量
-chrome.tabs.onRemoved.addListener(function callback() {
-    chrome.tabs.query({}, function (tab) {
-        chrome.browserAction.setBadgeText({text: tab.length + ""});
-        chrome.browserAction.setBadgeBackgroundColor({color: "#0038a8"});
-    });
-});
-// 持续监听，当tab被创建的时候刷新一下pop上badge的tab的数量
-chrome.tabs.onCreated.addListener(function callback() {
-    chrome.tabs.query({}, function (tab) {
-        chrome.browserAction.setBadgeText({text: tab.length + ""});
-        chrome.browserAction.setBadgeBackgroundColor({color: "#0038a8"});
-    });
-});
 
 // 生成唯一标识
 // refer: https://gist.github.com/solenoid/1372386
@@ -657,7 +609,7 @@ function openBackgroundPage() {
             chrome.tabs.reload(tab[0].id, {}, function (tab) {
             });
         } else {
-            chrome.tabs.create({index: 0, url: chrome.extension.getURL('workbench.html')});
+            chrome.tabs.create({index: 0, url: chrome.runtime.getURL('workbench.html')});
         }
     });
 }
@@ -675,97 +627,6 @@ function closeTabs(tabsArr) {
             console.error(chrome.runtime.lastError);
         }
     });
-}
-
-// 创建右键菜单，发送当前tab
-chrome.contextMenus.create({
-    title: `${chrome.i18n.getMessage("sendCurrentTab")}`, onclick: function () {
-        chrome.storage.local.get(function (storage) {
-            chrome.tabs.query({
-                url: ["https://*/*", "http://*/*"], highlighted: true, currentWindow: true
-            }, function (tabsArr) {
-                let opts = storage.options
-                let openBackgroundAfterSendTab = "yes"
-                if (opts) {
-                    openBackgroundAfterSendTab = opts.openBackgroundAfterSendTab || "yes"
-                }
-                if (tabsArr.length > 0) {
-                    saveTabs(tabsArr);
-                    if (openBackgroundAfterSendTab === "yes") {
-                        openBackgroundPage();
-                    }
-                    closeTabs(tabsArr);
-                } else {
-                    if (openBackgroundAfterSendTab === "yes") {
-                        openBackgroundPage();
-                    }
-                }
-
-            });
-        })
-    }
-});
-
-// 定时提醒
-function remind(minute) {
-    if (typeof (surplusTime) === "undefined") {
-        notificationId = genObjectId();
-        setTimeout(() => {
-            chrome.notifications.create(notificationId, {
-                type: 'basic',
-                iconUrl: 'images/128.png',
-                title: 'TIME UP',
-                message: minute + `${chrome.i18n.getMessage("timeUpMessage")}`,
-                buttons: [{"title": `${chrome.i18n.getMessage("close")}`}],
-                requireInteraction: true
-            });
-            // 时间到，清除定时器
-            clearTimeout(timeoutId);
-            surplusTime = undefined;
-            chrome.contextMenus.update("1", {title: `${chrome.i18n.getMessage("remindStatus")}`}, function callback() {
-            })
-        }, minute * 60 * 1000);
-        let endDateStr = new Date();
-        let min = endDateStr.getMinutes();
-        endDateStr.setMinutes(min + minute);
-        endDateStr.toLocaleString();
-        timeDown(endDateStr);
-    } else {
-        alert(`${chrome.i18n.getMessage("timeTaskLived")}`);
-    }
-}
-
-// 倒计时
-function timeDown(endDateStr) {
-    //结束时间
-    let endDate = new Date(endDateStr);
-    //当前时间
-    let nowDate = new Date();
-    //相差的总秒数
-    let totalSeconds = parseInt((endDate - nowDate) / 1000);
-    //天数
-    let days = Math.floor(totalSeconds / (60 * 60 * 24));
-    //取模（余数）
-    let modulo = totalSeconds % (60 * 60 * 24);
-    //小时数
-    let hours = Math.floor(modulo / (60 * 60));
-    modulo = modulo % (60 * 60);
-    //分钟
-    let minutes = Math.floor(modulo / 60);
-    //秒
-    let seconds = modulo % 60;
-    surplusTime = `${chrome.i18n.getMessage("surplusTime")}${days}${chrome.i18n.getMessage("days")}${hours}${chrome.i18n.getMessage("hours")}${minutes}${chrome.i18n.getMessage("minutes")}${seconds}${chrome.i18n.getMessage("seconds")}`;
-    //延迟一秒执行自己
-    timeoutId = setTimeout(function () {
-        timeDown(endDateStr);
-    }, 1000)
-    chrome.contextMenus.update("1", {title: surplusTime}, function callback() {
-    })
-}
-
-// 判断是否int
-function isInt(i) {
-    return typeof i == "number" && !(i % 1) && !isNaN(i);
 }
 
 // 日期格式化
@@ -791,25 +652,7 @@ function dateFormat(fmt, date) {
     return fmt;
 }
 
-// 关闭当前tab
-function closeCurrentTab() {
-    chrome.tabs.query({active: true, currentWindow: true}, function (tabsArr) {
-        chrome.storage.local.set({'xCommandUrl': tabsArr[0].url});
-        chrome.tabs.remove(tabsArr[0].id, function () {
-        });
-    });
-}
-
-// 重新打开最后一次关闭的tab
-function restartLastClosedTab() {
-    chrome.storage.local.get('xCommandUrl', function (storage) {
-        if (storage.xCommandUrl) {
-            chrome.tabs.create({index: 0, url: storage.xCommandUrl});
-        }
-    });
-}
-
-// 用分片的思想去存storage，因为sync的总量太小了，只有102400byte=8k，所以改成local，有5m。
+// 用分片的思路去存storage
 function saveShardings(tabGroup, type) {
     let tabGroupStr;
     if (type === "object") {
@@ -837,7 +680,7 @@ function saveShardings(tabGroup, type) {
 
 }
 
-// 获取storage里的数据
+// 获取storage里的标签相关数据
 function getShardings(cb) {
     chrome.storage.local.get(null, function (items) {
         let tabGroupsStr = "";
@@ -861,12 +704,6 @@ function getShardings(cb) {
         cb(items)
     });
 }
-
-// 持续监听通知框的按钮点击事件，点了就清除通知框
-chrome.notifications.onButtonClicked.addListener(function callback(notificationId, buttonIndex) {
-    chrome.notifications.clear(notificationId, function callback() {
-    });
-});
 
 // 持续监听，假如锁屏或者睡眠就清空定时任务，激活再重新定时任务
 chrome.idle.onStateChanged.addListener(function (newState) {
@@ -941,15 +778,13 @@ chrome.commands.onCommand.addListener(function (command) {
 chrome.storage.onChanged.addListener(function (changes, areaName) {
     let flag = false;
     console.log(changes)
+    console.log(areaName)
     for (let key in changes) {
         if (key.indexOf("tabGroups") !== -1) {
             console.log(key)
             if (key.indexOf("tabGroups_num") === -1) {
                 flag = true;
             }
-        }
-        if (key.indexOf("taskList") !== -1) {
-            flag = true;
         }
     }
     if (areaName === "local" && flag) {
@@ -966,130 +801,117 @@ chrome.storage.onChanged.addListener(function (changes, areaName) {
     }
 });
 
+// Add a listener to create the initial context menu items,
+// context menu items only need to be created at runtime.onInstalled
+chrome.runtime.onInstalled.addListener(async () => {
+    // 任何网页创建右键菜单，发送当前tab
+    chrome.contextMenus.create({
+        id: "rightClickSendCurrentTab", title: `${chrome.i18n.getMessage("sendCurrentTab")}`
+    });
 
-chrome.contextMenus.create({
-    id: "1", title: `${chrome.i18n.getMessage("remindStatus")}`, contexts: ["browser_action"]
+    // 打开后台管理页
+    chrome.contextMenus.create({
+        id: "showAllTabs", title: `${chrome.i18n.getMessage("showAllTabs")}`, contexts: ["action"]
+    });
+
+    // 发送所有标签
+    chrome.contextMenus.create({
+        id: "sendAllTabs", title: `${chrome.i18n.getMessage("sendAllTabs")}`, contexts: ["action"]
+    });
+
+    // 发送当前标签
+    chrome.contextMenus.create({
+        id: "sendCurrentTab", title: `${chrome.i18n.getMessage("sendCurrentTab")}`, contexts: ["action"]
+    });
+
+    // 发送其他标签
+    chrome.contextMenus.create({
+        id: "sendOtherTabs", title: `${chrome.i18n.getMessage("sendOtherTabs")}`, contexts: ["action"]
+    });
+
 });
 
-chrome.contextMenus.create({
-    id: "3", title: `${chrome.i18n.getMessage("tabsMenu")}`, contexts: ["browser_action"]
-});
+// 持续监听菜单栏的点击
+chrome.contextMenus.onClicked.addListener(function (info, tab) {
+    console.log(info, tab);
+    switch (info.menuItemId) {
+        case "rightClickSendCurrentTab":
+            chrome.storage.local.get(function (storage) {
+                chrome.tabs.query({
+                    url: ["https://*/*", "http://*/*"], highlighted: true, currentWindow: true
+                }, function (tabsArr) {
+                    let opts = storage.options
+                    let openBackgroundAfterSendTab = "yes"
+                    if (opts) {
+                        openBackgroundAfterSendTab = opts.openBackgroundAfterSendTab || "yes"
+                    }
+                    if (tabsArr.length > 0) {
+                        saveTabs(tabsArr);
+                        if (openBackgroundAfterSendTab === "yes") {
+                            openBackgroundPage();
+                        }
+                        closeTabs(tabsArr);
+                    } else {
+                        if (openBackgroundAfterSendTab === "yes") {
+                            openBackgroundPage();
+                        }
+                    }
 
-chrome.contextMenus.create({
-    id: "4", title: `${chrome.i18n.getMessage("showAllTabs")}`, contexts: ["browser_action"], onclick: function () {
-        openBackgroundPage();
-    }, parentId: "3"
-});
-
-chrome.contextMenus.create({
-    id: "5", title: `${chrome.i18n.getMessage("sendAllTabs")}`, contexts: ["browser_action"], onclick: function () {
-        chrome.tabs.query({url: ["https://*/*", "http://*/*"], currentWindow: true}, function (req) {
-            if (req.length > 0) {
-                saveTabs(req);
-                openBackgroundPage();
-                closeTabs(req);
-            } else {
-                openBackgroundPage();
-            }
-        });
-    }, parentId: "3"
-});
-
-
-chrome.contextMenus.create({
-    id: "6", title: `${chrome.i18n.getMessage("sendCurrentTab")}`, contexts: ["browser_action"], onclick: function () {
-        chrome.storage.local.get(function (storage) {
-            let opts = storage.options
-            let openBackgroundAfterSendTab = "yes"
-            if (opts) {
-                openBackgroundAfterSendTab = opts.openBackgroundAfterSendTab || "yes"
-            }
-            chrome.tabs.query({
-                url: ["https://*/*", "http://*/*"], highlighted: true, currentWindow: true
-            }, function (req) {
+                });
+            });
+            break
+        case 'showAllTabs':
+            openBackgroundPage();
+            break;
+        case 'sendAllTabs':
+            chrome.tabs.query({url: ["https://*/*", "http://*/*"], currentWindow: true}, function (req) {
                 if (req.length > 0) {
                     saveTabs(req);
-                    if (openBackgroundAfterSendTab === "yes") {
-                        openBackgroundPage();
-                    }
+                    openBackgroundPage();
                     closeTabs(req);
                 } else {
-                    if (openBackgroundAfterSendTab === "yes") {
-                        openBackgroundPage();
-                    }
+                    openBackgroundPage();
                 }
             });
-        })
-    }, parentId: "3"
+            break;
+        case 'sendCurrentTab':
+            chrome.storage.local.get(function (storage) {
+                let opts = storage.options
+                let openBackgroundAfterSendTab = "yes"
+                if (opts) {
+                    openBackgroundAfterSendTab = opts.openBackgroundAfterSendTab || "yes"
+                }
+                chrome.tabs.query({
+                    url: ["https://*/*", "http://*/*"], highlighted: true, currentWindow: true
+                }, function (req) {
+                    if (req.length > 0) {
+                        saveTabs(req);
+                        if (openBackgroundAfterSendTab === "yes") {
+                            openBackgroundPage();
+                        }
+                        closeTabs(req);
+                    } else {
+                        if (openBackgroundAfterSendTab === "yes") {
+                            openBackgroundPage();
+                        }
+                    }
+                });
+            });
+            break;
+        case 'sendOtherTabs':
+            chrome.tabs.query({url: ["https://*/*", "http://*/*"], active: false, currentWindow: true}, function (req) {
+                if (req.length > 0) {
+                    saveTabs(req);
+                    openBackgroundPage();
+                    closeTabs(req);
+                } else {
+                    openBackgroundPage();
+                }
+            });
+            break;
+        default:
+            break;
+    }
 });
-
-
-chrome.contextMenus.create({
-    id: "7", title: `${chrome.i18n.getMessage("sendOtherTabs")}`, contexts: ["browser_action"], onclick: function () {
-        chrome.tabs.query({url: ["https://*/*", "http://*/*"], active: false, currentWindow: true}, function (req) {
-            if (req.length > 0) {
-                saveTabs(req);
-                openBackgroundPage();
-                closeTabs(req);
-            } else {
-                openBackgroundPage();
-            }
-        });
-    }, parentId: "3"
-});
-
-
-chrome.contextMenus.create({
-    id: "8", title: `${chrome.i18n.getMessage("remindMenu")}`, contexts: ["browser_action"]
-});
-
-chrome.contextMenus.create({
-    id: "9",
-    title: `${chrome.i18n.getMessage("fiveMinuteRemind")}`,
-    contexts: ["browser_action"],
-    onclick: function () {
-        remind(5);
-    },
-    parentId: "8"
-});
-
-
-chrome.contextMenus.create({
-    id: "10",
-    title: `${chrome.i18n.getMessage("tenMinuteRemind")}`,
-    contexts: ["browser_action"],
-    onclick: function () {
-        remind(10);
-    },
-    parentId: "8"
-});
-
-
-chrome.contextMenus.create({
-    id: "11",
-    title: `${chrome.i18n.getMessage("fortyMinuteRemind")}`,
-    contexts: ["browser_action"],
-    onclick: function () {
-        remind(40);
-    },
-    parentId: "8"
-});
-
-
-chrome.contextMenus.create({
-    id: "12",
-    title: `${chrome.i18n.getMessage("customMinuteRemind")}`,
-    contexts: ["browser_action"],
-    onclick: function () {
-        let minute = prompt(`${chrome.i18n.getMessage("pleaseInputCustomMinute")}`, 120);
-        if (!isInt(parseInt(minute.trim()))) {
-            alert(`${chrome.i18n.getMessage("inputNumber")}`)
-        } else {
-            remind(Number(minute.trim()));
-        }
-    },
-    parentId: "8"
-});
-
 
 

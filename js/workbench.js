@@ -21,19 +21,23 @@
     let endTime;
     // 定义一个桌面通知框id
     let notificationId;
-    // 是否锁屏或睡眠了
-    let isLock = false;
+    // 定义2种已使用状态标识变量
+    let isStateOne = true;
 
     document.addEventListener('DOMContentLoaded', function () {
         console.log("load完workbench了");
 
-        chrome.storage.local.get(null, function (items) {
-            console.log(items)
-            let script1 = document.createElement('script');
-            script1.src = "js/axios.min.js";
-            document.head.appendChild(script1);
-        })
+        // 获取本机storage
+        chrome.storage.local.get(function (storage) {
+            console.log(storage);
+        });
 
+        // 获取可同步storage
+        chrome.storage.sync.get(function (storage) {
+            console.log(storage);
+        });
+
+        // 获取全部定时任务alarm
         chrome.alarms.getAll(function (alarms) {
             console.log(alarms)
         });
@@ -170,8 +174,9 @@ https://www.google.com | Google
         chrome.storage.local.get(null, function (items) {
             // 一load完就算一下storage占用了多少空间
             chrome.storage.local.getBytesInUse(null, function (bytes) {
+                isStateOne = false
                 console.log("total is " + bytes / 1024 / 1024 + "mb");
-                document.getElementById('usage').innerHTML = `${chrome.i18n.getMessage("usedSpace")}${Math.round(bytes / 1024 / 1024 * 100) / 100}mb/5mb`;
+                document.getElementById('usage').innerHTML = `${chrome.i18n.getMessage("usedSpace")}${Math.round(bytes / 1024 / 1024 * 100) / 100}mb / 10mb`;
             });
 
             // 处理是否拖曳标签组和标签
@@ -554,6 +559,24 @@ https://www.google.com | Google
             });
         });
 
+        // 控制2种已使用状态的切换
+        document.getElementById('usage').addEventListener('click', function () {
+            if (isStateOne) {
+                chrome.storage.local.getBytesInUse(null, function (bytes) {
+                    console.log("total is " + bytes / 1024 / 1024 + "mb");
+                    document.getElementById('usage').innerHTML = `${chrome.i18n.getMessage("usedSpace")}${Math.round(bytes / 1024 / 1024 * 100) / 100}mb / 10mb`;
+                });
+                isStateOne = false
+            } else {
+                chrome.storage.local.getBytesInUse(null, function (bytes) {
+                    console.log("total is " + bytes / 1024 / 1024 + "mb");
+                    document.getElementById('usage').innerHTML = `${chrome.i18n.getMessage("usedSpace")}${Math.round(bytes / 1024 / 1024 * 100) / 100} %`;
+                });
+                isStateOne = true
+            }
+        });
+
+
         // 响应推送到github的gist的动作
         document.getElementById('pushToGithubGist').addEventListener('click', function () {
             let confirm = prompt(`${chrome.i18n.getMessage("confirmKey")}`, `${chrome.i18n.getMessage("confirmValue")}`);
@@ -587,6 +610,7 @@ https://www.google.com | Google
                 });
             } else {
                 console.log("no");
+                showAlert(`${chrome.i18n.getMessage("showError")}`, `${chrome.i18n.getMessage("importTextareaTip")}`)
             }
         });
 
@@ -623,6 +647,7 @@ https://www.google.com | Google
                 });
             } else {
                 console.log("no");
+                showAlert(`${chrome.i18n.getMessage("showError")}`, `${chrome.i18n.getMessage("importTextareaTip")}`)
             }
         });
 
@@ -659,6 +684,7 @@ https://www.google.com | Google
                 });
             } else {
                 console.log("no");
+                showAlert(`${chrome.i18n.getMessage("showError")}`, `${chrome.i18n.getMessage("importTextareaTip")}`)
             }
         });
 
@@ -696,6 +722,7 @@ https://www.google.com | Google
                 });
             } else {
                 console.log("no");
+                showAlert(`${chrome.i18n.getMessage("showError")}`, `${chrome.i18n.getMessage("importTextareaTip")}`)
             }
         });
 
@@ -921,42 +948,6 @@ https://www.google.com | Google
         chrome.storage.local.set({handleGistStatus: gistStatusMap});
     }
 
-    // 检查跟github的通讯是否正常
-    function checkGitHubStatus() {
-        $.ajax({
-            type: "GET", url: gitHubApiUrl, success: function (data, status) {
-                if (status === "success") {
-                    console.log("跟github通讯正常！");
-                    document.getElementById('githubStatus').innerHTML = `${chrome.i18n.getMessage("githubApiStatusSuccess")}`;
-                } else {
-                    document.getElementById('githubStatus').innerHTML = `${chrome.i18n.getMessage("githubApiStatusFailed")}`;
-                }
-            }, error: function (xhr, errorText, errorType) {
-                document.getElementById('githubStatus').innerHTML = `${chrome.i18n.getMessage("githubApiStatusError")}`;
-            }, complete: function () {
-                //do something
-            }
-        })
-    }
-
-    // 检查跟gitee的通讯是否正常
-    function checkGiteeStatus() {
-        $.ajax({
-            type: "GET", url: "https://gitee.com/feature_notifications", success: function (data, status) {
-                if (status === "success") {
-                    console.log("跟gitee通讯正常！");
-                    document.getElementById('giteeStatus').innerHTML = `${chrome.i18n.getMessage("giteeApiStatusSuccess")}`;
-                } else {
-                    document.getElementById('giteeStatus').innerHTML = `${chrome.i18n.getMessage("giteeApiStatusFailed")}`;
-                }
-            }, error: function (xhr, errorText, errorType) {
-                document.getElementById('giteeStatus').innerHTML = `${chrome.i18n.getMessage("giteeApiStatusError")}`;
-            }, complete: function () {
-                //do something
-            }
-        })
-    }
-
     // 关闭当前tab
     function closeCurrentTab() {
         chrome.tabs.query({active: true, currentWindow: true}, function (tabsArr) {
@@ -1010,10 +1001,9 @@ https://www.google.com | Google
         handleGistLog.push(`${chrome.i18n.getMessage("directUpdate")}`)
         console.log("已经创建了gist，直接开始更新");
         let _content = JSON.stringify(content);
-        let js = generateJs(content)
         let data = {
             "description": "myCloudSkyMonster", "public": false, "files": {
-                "brower_Tabs.json": {"content": _content}, "brower_tasks.js": {"content": js}
+                "brower_Tabs.json": {"content": _content}
             }
         }
         $.ajax({
@@ -1024,7 +1014,6 @@ https://www.google.com | Google
             success: function (data, status) {
                 if (status === "success") {
                     console.log("更新成功！");
-                    chrome.storage.local.set({"taskJsUrl": data.files['brower_tasks.js'].raw_url})
                     handleGistLog.push(`${chrome.i18n.getMessage("updateSuccess")}`)
                 } else {
                     console.log("更新失败！");
@@ -1133,9 +1122,6 @@ https://www.google.com | Google
                     } else {
                         let content = data.files['brower_Tabs.json'].content
                         let _content = JSON.parse(content)
-                        chrome.storage.local.set({"taskJsUrl": _content.taskJsUrl, "taskList": _content.taskList});
-                        delete _content.taskJsUrl
-                        delete _content.taskList
                         saveShardings(_content.tabGroups, "object");
                         handleGistLog.push(`${chrome.i18n.getMessage("pullSuccess")}`);
                         pullFromGithubGistStatus = undefined;
@@ -1169,9 +1155,6 @@ https://www.google.com | Google
             success: function (data, status) {
                 if (status === "success") {
                     let _content = JSON.parse(data)
-                    chrome.storage.local.set({"taskJsUrl": _content.taskJsUrl, "taskList": _content.taskList});
-                    delete _content.taskJsUrl
-                    delete _content.taskList
                     saveShardings(_content.tabGroups, "object");
                     handleGistLog.push(`${chrome.i18n.getMessage("pullSuccess")}`);
                 } else {
@@ -1203,28 +1186,6 @@ https://www.google.com | Google
                 if (status === "success") {
                     let content = data.files['brower_Tabs.json'].content
                     let _content = JSON.parse(content)
-                    let taskGroups = _content.taskList
-                    if (taskGroups) {
-                        chrome.alarms.clearAll(function (wasCleared) {
-                            console.log(wasCleared)
-                            for (let i = 0; i < taskGroups.length; i++) {
-                                if (taskGroups[i].isOpen) {
-                                    chrome.alarms.create(taskGroups[i].functionName, {
-                                        delayInMinutes: parseInt(taskGroups[i].rate),
-                                        periodInMinutes: parseInt(taskGroups[i].rate)
-                                    });
-                                }
-                            }
-                            // 创建定时同步gitee任务
-                            chrome.alarms.create("checkAutoSyncGitee", {delayInMinutes: 70, periodInMinutes: 70});
-                            // 创建定时同步github任务
-                            chrome.alarms.create("checkAutoSyncGithub", {delayInMinutes: 90, periodInMinutes: 90});
-
-                        });
-                    }
-                    chrome.storage.local.set({"taskJsUrl": _content.taskJsUrl, "taskList": _content.taskList});
-                    delete _content.taskJsUrl
-                    delete _content.taskList
                     saveShardings(_content.tabGroups, "object");
                     handleGistLog.push(`${chrome.i18n.getMessage("pullSuccess")}`)
                 } else {
@@ -1457,29 +1418,6 @@ https://www.google.com | Google
         });
     }
 
-    // 生成js
-    function generateJs(content) {
-        let result = ""
-        let myRun = "console.log('load完任务了'); function myRun(functionName) {"
-        let functionJs = ""
-        let alarmJs = "chrome.alarms.onAlarm.addListener(function (alarm) {"
-        let taskList = content.taskList
-        if (taskList) {
-            for (let i = 0; i < taskList.length; i++) {
-                let script = taskList[i].script + ";"
-                let functionName = taskList[i].functionName
-                let jsContent = " if(functionName === '" + functionName + "'){" + functionName + "();}"
-                let jsContent2 = " if(alarm.name === '" + functionName + "'){" + functionName + "();}"
-                myRun += jsContent
-                functionJs += script
-                alarmJs += jsContent2
-            }
-        }
-        result = myRun + "}" + functionJs + alarmJs + "});"
-        console.log(result)
-        return result;
-    }
-
     // 创建github的gist
     function createGithubGist(content) {
         console.log("还没有创建gist,开始创建");
@@ -1527,10 +1465,9 @@ https://www.google.com | Google
         handleGistLog.push(`${chrome.i18n.getMessage("startCreateGiteeGist")}`)
         pushToGiteeGistStatus = `${chrome.i18n.getMessage("startCreateGiteeGist")}`;
         let _content = JSON.stringify(content);
-        let js = generateJs(content)
         let data = {
             "description": "myCloudSkyMonster", "public": false, "files": {
-                "brower_Tabs.json": {"content": _content}, "brower_tasks.js": {"content": js}
+                "brower_Tabs.json": {"content": _content}
             }
         }
         $.ajax({
@@ -1543,7 +1480,7 @@ https://www.google.com | Google
                 if (status === "success") {
                     console.log("创建成功！");
                     chrome.storage.local.set({
-                        "taskJsUrl": data.files['brower_tasks.js'].raw_url, "giteeGistId": data.id
+                        "giteeGistId": data.id
                     })
                     handleGistLog.push(`${chrome.i18n.getMessage("createSuccess")}`)
                 } else {
@@ -2188,26 +2125,6 @@ https://www.google.com | Google
         });
     }
 
-
-    // 简单的消息通知
-    function tip(info) {
-        info = info || '';
-        let ele = document.createElement('div');
-        ele.id = 'descDiv';
-        ele.className = 'chrome-plugin-simple-tip';
-        ele.style.top = '20px';
-        ele.style.left = '500px';
-        ele.innerHTML = `<div>${info}</div>`;
-        document.body.appendChild(ele);
-        ele.classList.add('animated');
-        setTimeout(() => {
-            ele.style.top = '-100px';
-            setTimeout(() => {
-                ele.remove();
-            }, 400);
-        }, 3000);
-    }
-
     // 统一的弹窗提示
     function showAlert(title, message) {
         let modalHtml = `
@@ -2238,11 +2155,6 @@ https://www.google.com | Google
         $('#alertModal').modal('show');
     }
 
-    // 判断是否int
-    function isInt(i) {
-        return typeof i == "number" && !(i % 1) && !isNaN(i);
-    }
-
     // 刷新当前页
     function refresh() {
         chrome.tabs.query({active: true, currentWindow: true}, function (tabsArr) {
@@ -2250,53 +2162,5 @@ https://www.google.com | Google
             });
         });
     }
-
-    // 重新加载自定义的任务js
-    function reloadAbleJSFn(id, newJS) {
-        setTimeout(function () {
-            let oldjs = document.getElementById(id);
-            if (oldjs) oldjs.parentNode.removeChild(oldjs);
-            let scriptObj = document.createElement("script");
-            scriptObj.src = newJS;
-            scriptObj.type = "text/javascript";
-            scriptObj.id = id;
-            document.head.appendChild(scriptObj);
-            console.log('执行完成');
-        }, 2000);
-    }
-
-    // 持续监听，假如锁屏或者睡眠就清空定时任务，激活再重新定时任务
-    chrome.idle.onStateChanged.addListener(function (newState) {
-        console.log(newState)
-        if (newState === "active") {
-            if (isLock) {
-                chrome.storage.local.get(null, function (items) {
-                    let taskList = items.taskList
-                    for (let i = 0; i < taskList.length; i++) {
-                        if (taskList[i].isOpen) {
-                            chrome.alarms.create(taskList[i].functionName, {
-                                delayInMinutes: parseInt(taskList[i].rate), periodInMinutes: parseInt(taskList[i].rate)
-                            });
-                        }
-                    }
-                    // 创建定时同步gitee任务
-                    chrome.alarms.create("checkAutoSyncGitee", {delayInMinutes: 70, periodInMinutes: 70});
-                    // 创建定时同步github任务
-                    chrome.alarms.create("checkAutoSyncGithub", {delayInMinutes: 90, periodInMinutes: 90});
-
-                })
-                isLock = false;
-            }
-        }
-        if (newState === "locked") {
-            isLock = true;
-            chrome.alarms.clearAll(function (wasCleared) {
-                console.log(wasCleared)
-            });
-        }
-        chrome.alarms.getAll(function (alarms) {
-            console.log(alarms)
-        });
-    });
 
 }(m));

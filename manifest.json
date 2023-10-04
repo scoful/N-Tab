@@ -1,12 +1,10 @@
 {
     "version": "2.0.5",
     "name": "cloudSkyMonster",
-    "manifest_version": 2,
+    "manifest_version": 3,
     "description": "__MSG_pluginDesc__",
     "background": {
-        "scripts": [
-            "js/background.js"
-        ]
+        "service_worker": "js/background.js"
     },
     "icons": {
         "48": "images/48.png",
@@ -14,7 +12,6 @@
         "128": "images/128.png"
     },
     "permissions": [
-        "<all_urls>",
         "tabs",
         "contextMenus",
         "storage",
@@ -23,11 +20,15 @@
         "idle",
         "alarms",
         "cookies",
-        "webRequest",
-        "webRequestBlocking"
+        "webRequest"
     ],
-    "content_security_policy": "script-src 'self' https://api.github.com https://gitee.com https://hm.baidu.com 'unsafe-eval' https://hmcdn.baidu.com; object-src 'self'",
-    "browser_action": {
+    "host_permissions": [
+        "<all_urls>"
+    ],
+    "content_security_policy": {
+      "sandbox": "sandbox allow-scripts; script-src 'self' https://api.github.com https://gitee.com https://hm.baidu.com 'unsafe-eval' https://hmcdn.baidu.com; object-src 'self'"
+    },
+    "action": {
         "default_icon": "images/96.png",
         "default_title": "cloudSkyMonster",
         "default_popup": "popup.html"

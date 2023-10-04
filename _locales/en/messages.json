@@ -20,29 +20,11 @@
 	"sendOtherTabs": {
 		"message": "send other tabs"
 	},
-	"fiveMinuteRemind": {
-		"message": "remind after 5 minute"
-	},
-	"tenMinuteRemind": {
-		"message": "remind after 10 minute"
-	},
-	"fortyMinuteRemind": {
-		"message": "remind after 40 minute"
-	},
-	"customMinuteRemind": {
-		"message": "remind after custom minute"
-	},
 	"cuttingLine": {
 		"message": "I am cutting line"
 	},
 	"deadLine": {
 		"message": "I am dead line"
-	},
-	"pleaseInputCustomMinute": {
-		"message": "Please input custom minute: "
-	},
-	"remindStatus": {
-		"message": "no time task now"
 	},
 	"optionsValue": {
 		"message": "Options"
@@ -332,17 +314,8 @@
 	"waitForMinutes": {
 		"message": "minute wait for"
 	},
-	"timeUpMessage": {
-		"message": " minute time up!"
-	},
 	"close": {
 		"message": "close"
-	},
-	"timeTaskLived": {
-		"message": "It's counting down! Please wait!"
-	},
-	"surplusTime": {
-		"message": ""
 	},
 	"days": {
 		"message": " day "
@@ -404,9 +377,6 @@
 	"nameThis": {
 		"message": "name group"
 	},
-	"addTask": {
-		"message": "add task"
-	},
 	"add": {
 		"message": "add"
 	},
@@ -415,9 +385,6 @@
 	},
 	"cancle": {
 		"message": "cancle"
-	},
-	"inputNumber": {
-		"message": "please input number！"
 	},
 	"refresh": {
 		"message": "refresh"

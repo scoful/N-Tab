@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function () {
             popup.addEventListener('mouseenter', function () {
                 clearTimeout(autoHideTimeout);
             });
-            // 鼠标离开弹窗，触发自动隐藏
+            // 鼠标离开弹窗，触发自动关闭
             popup.addEventListener('mouseleave', function () {
                 autoHidePopup();
             });
@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
-// 自动隐藏弹窗
+// 自动关闭弹窗
 function autoHidePopup() {
     autoHideTimeout = setTimeout(() => {
         hidePopup()
@@ -59,7 +59,7 @@ function autoHidePopup() {
 }
 
 
-// 隐藏弹窗
+// 关闭弹窗
 function hidePopup() {
     // 获取弹窗元素
     let popup = document.getElementById('descDiv');
