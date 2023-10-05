@@ -22,17 +22,17 @@ document.addEventListener('DOMContentLoaded', function () {
     // 点击弹窗外部关闭弹窗
     $(document).click(function () {
         hidePopup();
-        scrollTop = $(document).scrollTop();
-        scrollLeft = $(document).scrollLeft();
-        // console.log("x is " + pageX + ", y is " + pageY);
-        // console.log("scrollTop is " + scrollTop + ", scrollLeft is " + scrollLeft);
-        // console.log("x1 is " + parseInt(pageY - scrollTop) + ", y1 is " + parseInt(pageX - scrollLeft));
     });
 
     // 持续获取鼠标所在坐标
     $(document).mousemove(function (e) {
         pageX = e.pageX;
         pageY = e.pageY;
+        scrollTop = $(document).scrollTop();
+        scrollLeft = $(document).scrollLeft();
+        // console.log("x is " + pageX + ", y is " + pageY);
+        // console.log("scrollTop is " + scrollTop + ", scrollLeft is " + scrollLeft);
+        // console.log("x1 is " + parseInt(pageY - scrollTop) + ", y1 is " + parseInt(pageX - scrollLeft));
 
         // 获取弹窗元素
         let popup = document.getElementById('descDiv');
