@@ -8,8 +8,8 @@ let autoHideTimeout;
 document.addEventListener('DOMContentLoaded', function () {
     // 鼠标划词（双击取词或者滑动取词）
     $(document).mouseup(function (e) {
-        let txt;
-        txt = window.getSelection();
+        let txt = window.getSelection();
+        console.log(txt.toString())
         if (txt.toString().trim().length > 0) {
             chrome.storage.local.get('dragOpenTranslate', function (storage) {
                 if (storage.dragOpenTranslate) {
@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // 点击弹窗外部关闭弹窗
     $(document).click(function () {
-        deleteDiv();
+        hidePopup();
         scrollTop = $(document).scrollTop();
         scrollLeft = $(document).scrollLeft();
         // console.log("x is " + pageX + ", y is " + pageY);
@@ -67,6 +67,7 @@ function hidePopup() {
         popup.style.top = '-100px';
         setTimeout(() => {
             popup.remove();
+            // flag = false;
         }, 400);
     }
 }
@@ -85,23 +86,15 @@ chrome.runtime.onMessage.addListener(function (req, sender, sendRes) {
     switch (req.action) {
         case 'translateResult':
             sendRes('ok'); // acknowledge
-            tip(req.message);
+            if (req.message.trim().length > 0) {
+                tip(req.message);
+            }
             break;
         default:
             sendRes('nope'); // acknowledge
             break;
     }
 });
-
-// 删除生成的div
-function deleteDiv() {
-    if (!typeof (document.getElementById("descDiv"))) {
-        document.getElementById("descDiv").className = "";
-    }
-    let my = document.getElementById("descDiv");
-    if (my != null) my.parentNode.removeChild(my);
-    clearTimeout(autoHideTimeout);
-}
 
 // 简单的消息通知
 function tip(info) {
@@ -113,6 +106,5 @@ function tip(info) {
     ele.style.left = pageX + 'px';
     ele.innerHTML = `<div>${info}</div>`;
     document.body.appendChild(ele);
-    ele.classList.add('animated');
     autoHidePopup()
 }
