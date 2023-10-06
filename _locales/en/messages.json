@@ -357,25 +357,25 @@
 		"message": "back to top"
 	},
 	"restoreGroup": {
-		"message": "restore group"
+		"message": "Restore Group"
 	},
 	"deleteAll": {
-		"message": "delete group"
+		"message": "Delete Group"
 	},
 	"importTextareaTip": {
 		"message": "please input the content right format."
 	},
 	"unLock": {
-		"message": "cancle lock"
+		"message": "Cancle Lock"
 	},
 	"lock": {
-		"message": "lock"
+		"message": "Lock"
 	},
 	"toTop": {
-		"message": "to top"
+		"message": "To Top"
 	},
 	"nameThis": {
-		"message": "name group"
+		"message": "Name Group"
 	},
 	"add": {
 		"message": "add"
@@ -409,5 +409,11 @@
 	},
 	"input": {
 		"message": "Please input "
+	},
+	"existed": {
+		"message": "All : "
+	},
+	"group": {
+		"message": " group"
 	}
 }

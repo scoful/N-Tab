@@ -100,7 +100,7 @@ ul {
 }
 
 .delete-link:before {
-    content: "X";
+    content: "✖";
 }
 
 *:hover > .delete-link {

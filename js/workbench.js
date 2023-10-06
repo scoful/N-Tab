@@ -60,7 +60,7 @@
                         <li class="active home"><a href="#">${chrome.i18n.getMessage("home")}</a></li>
                         <li class="home">
                             <a href="#">
-                                <span id="totals"></span>${chrome.i18n.getMessage("totals")}
+                                <span id="totals"></span>
                             </a>
                         </li>
                         <li class="dropdown">
@@ -1631,7 +1631,7 @@ https://www.google.com | Google
             for (i = 0; i < bridge.length; i += 1) {
                 total += bridge[i].tabs.length;
             }
-            document.getElementById('totals').innerHTML = total;
+            document.getElementById('totals').innerHTML = `${chrome.i18n.getMessage("existed")}${i+1}${chrome.i18n.getMessage("group")} / ${total}${chrome.i18n.getMessage("totals")}`;
             let titleClass, tabClass;
             if (storage.dragType === "dragTitle") {
                 titleClass = ".my-handle"

@@ -409,5 +409,11 @@
 	},
 	"input": {
 		"message": "请输入"
+	},
+	"existed": {
+		"message": "已存："
+	},
+	"group": {
+		"message": "组"
 	}
 }
