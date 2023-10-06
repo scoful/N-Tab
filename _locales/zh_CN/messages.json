@@ -330,7 +330,7 @@
 		"message": "秒"
 	},
 	"sourceCode": {
-		"message": "对本项目的源码有兴趣的话欢迎移步star-> "
+		"message": "对本项目的源码有兴趣的话欢迎移步star："
 	},
 	"usedSpace": {
 		"message": "已使用："
@@ -415,5 +415,8 @@
 	},
 	"group": {
 		"message": "组"
+	},
+	"contract": {
+		"message": "有问题可直接联系微信：scoful 请注明来处和来意哦~"
 	}
 }

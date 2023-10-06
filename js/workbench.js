@@ -159,7 +159,7 @@ https://www.google.com | Google
             <div class="blog-footer">
             <p>${chrome.i18n.getMessage("sourceCode")}<a
                     href="https://github.com/scoful/cloudSkyMonster">GitHub</a>.</p>
-            <p>有问题可直接联系微信：scoful 请注明来处和来意哦~</p>
+            <p>${chrome.i18n.getMessage("contract")}</p>
             <hr>
             </div>
         </div>
@@ -1631,7 +1631,7 @@ https://www.google.com | Google
             for (i = 0; i < bridge.length; i += 1) {
                 total += bridge[i].tabs.length;
             }
-            document.getElementById('totals').innerHTML = `${chrome.i18n.getMessage("existed")}${i+1}${chrome.i18n.getMessage("group")} / ${total}${chrome.i18n.getMessage("totals")}`;
+            document.getElementById('totals').innerHTML = `${chrome.i18n.getMessage("existed")}${i}${chrome.i18n.getMessage("group")} / ${total}${chrome.i18n.getMessage("totals")}`;
             let titleClass, tabClass;
             if (storage.dragType === "dragTitle") {
                 titleClass = ".my-handle"
