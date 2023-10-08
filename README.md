@@ -88,9 +88,9 @@
 
 
 
-![微信赞赏码](http://ww1.sinaimg.cn/large/692b2078gy1gbslrzhjmfj20gh0ettca.jpg)
+![微信赞赏码](https://image.baidu.com/search/down?url=http://ww1.sinaimg.cn/large/692b2078gy1gbslrzhjmfj20gh0ettca.jpg)
 
-![支付宝收款码](http://ww1.sinaimg.cn/large/692b2078gy1gbslud4dosj20c30enju7.jpg)
+![支付宝收款码](https://image.baidu.com/search/down?url=http://ww1.sinaimg.cn/large/692b2078gy1gbslud4dosj20c30enju7.jpg)
 
 
 ------
