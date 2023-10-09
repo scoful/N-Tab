@@ -1958,9 +1958,9 @@ https://www.google.com | Google
             if (storage.gistLog) {
                 bridge = storage.gistLog;
                 console.log(bridge)
-                document.getElementById('totals').innerHTML = bridge.length;
+                document.getElementById('totals').innerHTML = `${bridge.length}${chrome.i18n.getMessage("totals")}`;
             } else {
-                document.getElementById('totals').innerHTML = 0;
+                document.getElementById('totals').innerHTML = `0${chrome.i18n.getMessage("totals")}`;
             }
             let logs = {}, // to-be module
                 logGroups = bridge || [];
