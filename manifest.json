@@ -18,9 +18,7 @@
         "unlimitedStorage",
         "notifications",
         "idle",
-        "alarms",
-        "cookies",
-        "webRequest"
+        "alarms"
     ],
     "host_permissions": [
         "<all_urls>"
