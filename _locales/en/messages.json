@@ -418,5 +418,8 @@
 	},
 	"contract": {
 		"message": "If you have any questions, you can directly contact WeChat : scoful. Please state your source and purpose~"
+	},
+	"donate": {
+		"message": "Buy Me A Coffee"
 	}
 }

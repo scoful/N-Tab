@@ -418,5 +418,8 @@
 	},
 	"contract": {
 		"message": "有问题可直接联系微信：scoful 请注明来处和来意哦~"
+	},
+	"donate": {
+		"message": "多谢投喂"
 	}
 }
