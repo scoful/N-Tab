@@ -33,7 +33,9 @@
 
 ## 安装方法
 
-1. 下载[最新的crx或zip](https://github.com/scoful/cloudSkyMonster/releases)文件，右键选择解压缩到文件名，不要解压缩到当前目录，或者直接下载源码；
+0. 直接在Chrome插件商店下载安装，[地址](https://chrome.google.com/webstore/detail/cloudskymonster/niahhcandihcfbamcfhikgojghnnfjan)
+
+1. 或者直接下载[最新的crx或zip](https://github.com/scoful/cloudSkyMonster/releases)文件，右键选择解压缩到文件名，不要解压缩到当前目录，或者直接下载源码；
 
 2. 打开Chrome浏览器或其他支持Chrome内核的浏览器，找到并点开“扩展程序”项；
 
