@@ -600,10 +600,16 @@ function saveTabGroup(tabGroup) {
 
 // 打开background页
 function openBackgroundPage() {
+    let pinnedTabsCount = 0
+    // 查询当前窗口的所有标签页
+    chrome.tabs.query({currentWindow: true}, function (tabs) {
+        // 统计固定标签的数量
+        pinnedTabsCount = tabs.filter(tab => tab.pinned).length;
+    });
     chrome.tabs.query({url: "chrome-extension://*/workbench.html*", currentWindow: true}, function (tab) {
         if (tab.length >= 1) {
             chrome.tabs.move(tab[0].id, {index: 0}, function callback() {
-                chrome.tabs.highlight({tabs: 0}, function callback() {
+                chrome.tabs.highlight({tabs: pinnedTabsCount}, function callback() {
                 });
             });
             chrome.tabs.reload(tab[0].id, {}, function (tab) {
@@ -741,7 +747,10 @@ chrome.alarms.onAlarm.addListener(function (alarm) {
 // 持续监听是否按了manifest设置的快捷键
 chrome.commands.onCommand.addListener(function (command) {
     if (command === "toggle-feature-save-all") {
-        chrome.tabs.query({url: ["https://*/*", "http://*/*"], currentWindow: true}, function (tabsArr) {
+        chrome.tabs.query({url: ["https://*/*", "http://*/*"], currentWindow: true}, function (tabs) {
+            var tabsArr = tabs.filter(function (tab) {
+                return !tab.pinned;
+            });
             saveTabs(tabsArr);
             openBackgroundPage();
             closeTabs(tabsArr);
@@ -751,7 +760,10 @@ chrome.commands.onCommand.addListener(function (command) {
         chrome.storage.local.get(function (storage) {
             chrome.tabs.query({
                 url: ["https://*/*", "http://*/*"], highlighted: true, currentWindow: true
-            }, function (tabsArr) {
+            }, function (tabs) {
+                var tabsArr = tabs.filter(function (tab) {
+                    return !tab.pinned;
+                });
                 let opts = storage.options
                 let openBackgroundAfterSendTab = "yes"
                 if (opts) {
@@ -839,7 +851,10 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
             chrome.storage.local.get(function (storage) {
                 chrome.tabs.query({
                     url: ["https://*/*", "http://*/*"], highlighted: true, currentWindow: true
-                }, function (tabsArr) {
+                }, function (tabs) {
+                    var tabsArr = tabs.filter(function (tab) {
+                        return !tab.pinned;
+                    });
                     let opts = storage.options
                     let openBackgroundAfterSendTab = "yes"
                     if (opts) {
@@ -864,7 +879,10 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
             openBackgroundPage();
             break;
         case 'sendAllTabs':
-            chrome.tabs.query({url: ["https://*/*", "http://*/*"], currentWindow: true}, function (req) {
+            chrome.tabs.query({url: ["https://*/*", "http://*/*"], currentWindow: true}, function (tabs) {
+                var req = tabs.filter(function (tab) {
+                    return !tab.pinned;
+                });
                 if (req.length > 0) {
                     saveTabs(req);
                     openBackgroundPage();
@@ -883,7 +901,11 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
                 }
                 chrome.tabs.query({
                     url: ["https://*/*", "http://*/*"], highlighted: true, currentWindow: true
-                }, function (req) {
+                }, function (tabs) {
+                    console.log(tabs)
+                    var req = tabs.filter(function (tab) {
+                        return !tab.pinned;
+                    });
                     if (req.length > 0) {
                         saveTabs(req);
                         if (openBackgroundAfterSendTab === "yes") {
@@ -899,7 +921,10 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
             });
             break;
         case 'sendOtherTabs':
-            chrome.tabs.query({url: ["https://*/*", "http://*/*"], active: false, currentWindow: true}, function (req) {
+            chrome.tabs.query({url: ["https://*/*", "http://*/*"], highlighted: false, currentWindow: true}, function (tabs) {
+                var req = tabs.filter(function (tab) {
+                    return !tab.pinned;
+                });
                 if (req.length > 0) {
                     saveTabs(req);
                     openBackgroundPage();
