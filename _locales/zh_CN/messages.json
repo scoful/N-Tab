@@ -421,5 +421,8 @@
 	},
 	"donate": {
 		"message": "多谢投喂"
+	},
+	"cannotDelete": {
+		"message": "锁定状态下不能删除"
 	}
 }

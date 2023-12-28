@@ -1655,12 +1655,6 @@ https://www.google.com | Google
 
             function saveTabGroups(json) {
                 saveShardings(json, "object");
-                let i;
-                let total = 0;
-                for (i = 0; i < json.length; i += 1) {
-                    total += json[i].tabs.length;
-                }
-                document.getElementById('totals').innerHTML = total;
             }
 
             // model entity
@@ -1839,7 +1833,11 @@ https://www.google.com | Google
                         }
                     }, `${chrome.i18n.getMessage("restoreGroup")}`), m('span.delete-all', {
                         onclick: function () {
-                            tabs.vm.rmGroup(i);
+                            if (isLock) {
+                                showAlert(`${chrome.i18n.getMessage("showError")}`, `${chrome.i18n.getMessage("cannotDelete")}`)
+                            } else {
+                                tabs.vm.rmGroup(i);
+                            }
                         }
                     }, `${chrome.i18n.getMessage("deleteAll")}`), m('span.about-lock', {
                         onclick: function () {

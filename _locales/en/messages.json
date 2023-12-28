@@ -421,5 +421,8 @@
 	},
 	"donate": {
 		"message": "Buy Me A Coffee"
+	},
+	"cannotDelete": {
+		"message": "Cannot delete while in locked state."
 	}
 }
