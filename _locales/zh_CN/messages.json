@@ -426,6 +426,12 @@
 		"message": "多谢投喂"
 	},
 	"cannotDelete": {
-		"message": "锁定状态下不能删除"
+		"message": "锁定状态下不能删除！"
+	},
+	"confirm": {
+		"message": "请确认"
+	},
+	"confirmation": {
+		"message": "您确定要删除吗？"
 	}
 }

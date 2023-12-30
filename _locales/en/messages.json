@@ -427,5 +427,11 @@
 	},
 	"cannotDelete": {
 		"message": "Cannot delete while in locked state."
+	},
+	"confirm": {
+		"message": "Confirm Deletion"
+	},
+	"confirmation": {
+		"message": "Are you sure you want to delete this item?"
 	}
 }

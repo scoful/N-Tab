@@ -1911,7 +1911,9 @@ https://www.google.com | Google
                             if (isLock) {
                                 showAlert(`${chrome.i18n.getMessage("showError")}`, `${chrome.i18n.getMessage("cannotDelete")}`)
                             } else {
-                                tabs.vm.rmGroup(i);
+                                showConfirmation(`${chrome.i18n.getMessage("confirm")}`, `${chrome.i18n.getMessage("confirmation")}`, function () {
+                                    tabs.vm.rmGroup(i);
+                                });
                             }
                         }
                     }, `${chrome.i18n.getMessage("deleteAll")}`), m('span.about-lock', {
@@ -2233,6 +2235,42 @@ https://www.google.com | Google
         document.body.appendChild(modalContainer);
 
         $('#alertModal').modal('show');
+    }
+
+    // 统一的2次确认弹窗
+    function showConfirmation(title, message, onConfirm) {
+        let modalHtml = `
+        <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="confirmationModalLabel">${title}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                ${message}
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="confirmButton">确认</button>
+              </div>
+            </div>
+          </div>
+        </div>
+            `;
+
+        let modalContainer = document.createElement('div');
+        modalContainer.innerHTML = modalHtml;
+        document.body.appendChild(modalContainer);
+
+        $('#confirmationModal').modal('show');
+
+        $('#confirmButton').on('click', function () {
+            $('#confirmationModal').modal('hide');
+            onConfirm();
+        });
     }
 
     // 刷新当前页
