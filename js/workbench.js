@@ -1828,7 +1828,10 @@ https://www.google.com | Google
                     // console.log(tabs.vm.list);
                     // console.log(group.tabs());
                     // console.log(i);
-                    // group
+                    // 如果标签组是空的，就自动删了
+                    if (group.tabs().length === 0) {
+                        tabs.vm.rmGroup(i);
+                    }
                     let isLock = group.isLock()
                     let isPined = group.isPined()
                     let deleteLinkClass, lockStatus, lockImgClass, lockClass = ""
