@@ -22,6 +22,10 @@
 2. 经过4年时间自用，敢保证永不丢失数据，速度超快，可存储数据超多，绝对是效率提升工具！
 3. 说说OneTab插件，刚开始使用的童鞋估计都会跟我一样感觉相见恨晚，惊叹怎么那么好用呢！特别是对于那些喜欢开很多tab但是就不想关的童鞋，鼠标一点就所有tab全部关闭并收集到后台管理页了，方便后面慢慢看，简直不要太舒服。但是呢，如果长时间使用，有几率触发bug，所有保存的tab的记录都不见了。找不回来的那种痛！本人经历了至少三次了Orz:sob:！OneTab的数据是存储在浏览器的storage里的，丢了后真的就找不回来了，~~而且OneTab已经好久好久没更新了，作者也联系不上~~，已经有更新了，但还不如不更新，会有同步bug，直接丢失所有数据。痛定思痛，本插件实现了类似OneTab的功能，并且利用了GitHub和Gitee的gist来**实时**远程保存，本地+远程=双保存双保险，妈妈再也不用担心我丢了收集了好久的数据了。那些历史久远的，想等等再看，然后几年都没去看的那些网址:flushed:，一切都有记录在案。甚至可以帮助回忆某年某日做了什么，为什么会打开这些网址！
 
+## 支持多款浏览器
+- 谷歌 Chrome 浏览器：[Chrome商店](https://chrome.google.com/webstore/detail/cloudskymonster/niahhcandihcfbamcfhikgojghnnfjan)
+- 微软 Edge 浏览器：[Edge商店](https://microsoftedge.microsoft.com/addons/detail/cloudskymonster/hfinincbgekmplkkhnpaodhconghkboh)
+
 
 ## 快速使用
 
@@ -31,6 +35,7 @@
 - 在任何打开的网页，按快捷键Ctrl+Q，可以**发送所有标签**
 - 在任何打开的网页，按快捷键Alt+Q，可以**发送当前标签**
 - 如需要定时同步功能，请配置GitHub或Gitee的token，可二选一或全配置
+- 关于暗黑模式，折腾了一下发现，Chrome浏览器自带的暗黑模式效果就很不错，就没有另外添加了。[暗黑模式开启方法](#暗黑模式开启方法)
 
 
 
@@ -64,7 +69,7 @@
     - 支持查看跟gist操作有关的log记录，日志记录只保存最新100条
     - 支持单击标签组显示的**标签个数**时，收起或展开效果
     - 支持**锁定或解锁整个标签组**，即锁定后标签组和标签不能删除，不能拖曳，但能被占位
-    - 支持快速上浮某个标签组到顶部
+    - 支持置顶某个标签组到顶部
     - 支持命名标签组
 
 
@@ -73,7 +78,9 @@
 
 ## 安装方法
 
-1. 下载[最新的crx或zip](https://github.com/scoful/cloudSkyMonster/releases)文件，右键选择解压缩到文件名，不要解压缩到当前目录，或者直接下载源码；
+0. 直接在Chrome插件商店下载安装，[地址](https://chrome.google.com/webstore/detail/cloudskymonster/niahhcandihcfbamcfhikgojghnnfjan)
+
+1. 或者直接下载[最新的crx或zip](https://github.com/scoful/cloudSkyMonster/releases)文件，右键选择解压缩到文件名，不要解压缩到当前目录，或者直接下载源码；
 
 2. 打开Chrome浏览器或其他支持Chrome内核的浏览器，找到并点开“扩展程序”项；
 
@@ -103,6 +110,15 @@
 - 右上角选择Generate new token (classic)，输入一个看起来有意义能明白啥用途的名字，比如： my-onetab-syncing-settings ，注意只勾选gist(可Ctrl+F搜索一下)，其他的不要勾选，
 - 提交后，输入密码，生成后，要把显示的token另外找地方备份记录一下，只有在第一次创建的时候才会显示的，错过了只能重来。
 
+## 暗黑模式开启方法
+### (可选)Win10本身变成暗黑模式
+- Windows 设置--个性化--颜色--选择颜色(自定义)--选择默认应用模式(暗)--这就是系统级别的暗黑模式，所有支持暗黑模式的软件都会自动变成暗黑模式
+  ![看图](https://fc.sinaimg.cn/large/692b2078gy1hinyo92ny3j20xk0qp49l.jpg)
+
+### 只是网页内容变成暗黑模式
+- 打开Chrome浏览器，输入 **Chrome://flags**，在搜索框输入**Auto Dark Mode for Web Contents**，在找到的设置右边改成**Enabled**
+- 重启Chrome浏览器，这样本插件就自动变成暗黑模式了！
+  ![看图2](https://fc.sinaimg.cn/large/692b2078gy1hinyqnta4aj20xs0ihqdw.jpg)
 
 ## 使用方法
 1. 打开某个网页，文字翻译，用法如下：
@@ -231,9 +247,9 @@
 
 
 
-![微信赞赏码](http://ww1.sinaimg.cn/large/692b2078gy1gbslrzhjmfj20gh0ettca.jpg)
+![微信赞赏码](http://fc.sinaimg.cn/large/692b2078gy1gbslrzhjmfj20gh0ettca.jpg)
 
-![支付宝收款码](http://ww1.sinaimg.cn/large/692b2078gy1gbslud4dosj20c30enju7.jpg)
+![支付宝收款码](http://fc.sinaimg.cn/large/692b2078gy1gbslud4dosj20c30enju7.jpg)
 
 
 ------
