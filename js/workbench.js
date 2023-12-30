@@ -105,7 +105,14 @@
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
                                 aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-heart"></span> ${chrome.i18n.getMessage("donate")}<span class="caret"></span></a>
                             <ul id="others" class="dropdown-menu">
-                                <li id="showLog"><img src="http://fc.sinaimg.cn/large/692b2078gy1gbslrzhjmfj20gh0ettca.jpg"></li>
+                                <li>
+                                    <img src="https://fc.sinaimg.cn/large/692b2078gy1gbslrzhjmfj20gh0ettca.jpg">
+                                </li>
+                                <li role="separator" class="divider"></li>
+                                <li>
+                                    <img src="https://fc.sinaimg.cn/large/692b2078gy1hlbzrivgaxj20bf0ccdhu.jpg">
+                                </li>
+                                    
                             </ul>
                         </li>
                     </ul>
