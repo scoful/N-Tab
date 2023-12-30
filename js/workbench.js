@@ -1924,7 +1924,7 @@ https://www.google.com | Google
                         onclick: function () {
                             tabs.vm.updateGroup(i, {toTop: !isPined})
                         }
-                    }, pinStatus), m('span.about-top', {
+                    }, pinStatus), m('span.about-name', {
                         onclick: function () {
                             let val = $("#groupTitle" + i).html();
                             $("#groupTitle" + i).slideToggle(100);

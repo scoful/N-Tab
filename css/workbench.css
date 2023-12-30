@@ -27,7 +27,7 @@
 }
 
 .restore-all {
-    margin-left: 5px;
+    margin-left: 20px;
     cursor: pointer;
     color: #234da7;
 }
@@ -38,7 +38,7 @@
 }
 
 .delete-all {
-    margin-left: 5px;
+    margin-left: 20px;
     cursor: pointer;
     color: #234da7;
 }
@@ -49,7 +49,7 @@
 }
 
 .about-lock {
-    margin-left: 5px;
+    margin-left: 20px;
     cursor: pointer;
     color: #234da7;
 }
@@ -60,12 +60,23 @@
 }
 
 .about-top {
-    margin-left: 5px;
+    margin-left: 20px;
     cursor: pointer;
     color: #234da7;
 }
 
 .about-top:hover {
+    color: #234da7;
+    text-decoration: underline;
+}
+
+.about-name {
+    margin-left: 20px;
+    cursor: pointer;
+    color: #234da7;
+}
+
+.about-name:hover {
     color: #234da7;
     text-decoration: underline;
 }
