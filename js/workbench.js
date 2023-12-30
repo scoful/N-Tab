@@ -135,11 +135,11 @@ https://www.google.com | Google
                 <div id="importDefault" class="hide">
                     <span>${chrome.i18n.getMessage("hideShowImportDefaultFunction")}</span>
                     <textarea id="importDefaultTextarea" style="width: 100%; height: 200px; margin-top:5px">
-标签组名 | 锁定
+标签组名 | 锁定 | 置顶
 https://www.baidu.com | BaiDu
 https://www.google.com | Google
 
- | 解锁
+ | 解锁 | 不置顶
 https://www.baidu.com | BaiDu
 https://www.google.com | Google
 </textarea>
@@ -462,7 +462,20 @@ https://www.google.com | Google
                 let tabsArr = [];
                 for (let i = 0; i < content.length; i++) {
                     if (content[i] === "") {
-                        tabGroups.push(makeTabGroup(tabsArr));
+                        // 判断是否有置顶，有置顶的话，新元素要放到所有置顶后面
+                        let flag = false
+                        for (let i = 0; i < tabGroups.length; i++) {
+                            const currentElement = tabGroups[i];
+                            if (currentElement.isPined === undefined || currentElement.isPined === false) {
+                                tabGroups.splice(i, 0, makeTabGroup(tabsArr));
+                                flag = true
+                                break;
+                            }
+                        }
+                        // 如果所有元素都是已固定的，则将新元素添加到数组末尾
+                        if (!flag) {
+                            tabGroups.push(makeTabGroup(tabsArr));
+                        }
                         tabsArr.length = 0;
                         continue;
                     }
@@ -499,10 +512,12 @@ https://www.google.com | Google
                 }
                 let content = importDefaultTextarea.split("\n");
                 let tabsArr = [];
+                let _isPined = '不置顶'
                 for (let i = 0; i < content.length; i++) {
                     if (content[i] === "") {
                         console.log(tabsArr[0])
                         let isLock = false
+                        let isPined = false
                         let groupTitle = ""
                         if (tabsArr[0] !== undefined) {
                             let _isLock = tabsArr[0].title
@@ -512,10 +527,29 @@ https://www.google.com | Google
                             if (_isLock === '解锁') {
                                 isLock = false
                             }
+                            if (_isPined === '置顶') {
+                                isPined = true
+                            }
+                            if (_isPined === '不置顶') {
+                                isPined = false
+                            }
                             groupTitle = tabsArr[0].url
                         }
                         tabsArr.splice(0, 1)
-                        tabGroups.push(makeTabGroup(tabsArr, isLock, groupTitle));
+                        // 判断是否有置顶，有置顶的话，新元素要放到所有置顶后面
+                        let flag = false
+                        for (let i = 0; i < tabGroups.length; i++) {
+                            const currentElement = tabGroups[i];
+                            if (currentElement.isPined === undefined || currentElement.isPined === false) {
+                                tabGroups.splice(i, 0, makeTabGroup(tabsArr, isLock, groupTitle, isPined));
+                                flag = true
+                                break;
+                            }
+                        }
+                        // 如果所有元素都是已固定的，则将新元素添加到数组末尾
+                        if (!flag) {
+                            tabGroups.push(makeTabGroup(tabsArr, isLock, groupTitle, isPined));
+                        }
                         tabsArr.length = 0;
                         continue;
                     }
@@ -526,6 +560,9 @@ https://www.google.com | Google
                     }
                     let tab = {"title": title, "url": lineList[0]}
                     tabsArr.push(tab);
+                    if (lineList.length > 2) {
+                        _isPined = lineList[2]
+                    }
                 }
                 saveShardings(tabGroups, "object");
                 refresh()
@@ -548,13 +585,17 @@ https://www.google.com | Google
                 let exportTextarea = "";
                 for (let i = 0; i < tabGroups.length; i++) {
                     let isLock = tabGroups[i].isLock ? "锁定" : "解锁"
+                    let isPined = "不置顶"
+                    if (tabGroups[i].isPined !== undefined) {
+                        isPined = tabGroups[i].isPined ? "置顶" : "不置顶"
+                    }
                     let groupTitle = tabGroups[i].groupTitle
                     console.log(typeof (groupTitle))
                     console.log(groupTitle)
                     if (groupTitle === "undefined" || typeof (groupTitle) === "undefined") {
                         groupTitle = ""
                     }
-                    let groupInfo = groupTitle + " | " + isLock + "\n"
+                    let groupInfo = groupTitle + " | " + isLock + " | " + isPined + "\n"
                     exportTextarea += groupInfo
                     for (let j = 0; j < tabGroups[i].tabs.length; j++) {
                         let line = tabGroups[i].tabs[j].url + " | " + tabGroups[i].tabs[j].title + "\n"
@@ -1552,11 +1593,12 @@ https://www.google.com | Google
         tabGroup.tabs = res;
         tabGroup.isLock = false;
         tabGroup.groupTitle = '';
+        tabGroup.isPined = false;
         return tabGroup;
     }
 
     // from the array of Tab objects it makes an object with date and the array
-    function makeTabGroup(tabsArr, isLock, groupTitle) {
+    function makeTabGroup(tabsArr, isLock, groupTitle, isPined) {
         let date;
         date = dateFormat("YYYY-mm-dd HH:MM:SS", new Date());
         let tabGroup = {
@@ -1566,6 +1608,7 @@ https://www.google.com | Google
         tabGroup.tabs = res;
         tabGroup.isLock = isLock;
         tabGroup.groupTitle = groupTitle;
+        tabGroup.isPined = isPined;
         return tabGroup;
     }
 
@@ -1665,6 +1708,7 @@ https://www.google.com | Google
                 this.tabs = m.prop(data.tabs);
                 this.isLock = m.prop(data.isLock);
                 this.groupTitle = m.prop(data.groupTitle)
+                this.isPined = m.prop(data.isPined)
             };
 
             // alias for Array
@@ -1708,7 +1752,20 @@ https://www.google.com | Google
                         }
                         if (toTop !== undefined) {
                             if (toTop) {
+                                tabGroups[index].isPined = toTop
                                 tabs.vm.moveGroup(index, 0)
+                                showAllTabs();
+                            } else {
+                                let count = 0;
+                                for (let i = 0; i < tabGroups.length; i++) {
+                                    const currentElement = tabGroups[i];
+                                    if (currentElement.isPined === undefined || currentElement.isPined === false) {
+                                        break;
+                                    }
+                                    count++;
+                                }
+                                tabGroups[index].isPined = toTop
+                                tabs.vm.moveGroup(index, count - 1)
                                 showAllTabs();
                             }
                         }
@@ -1766,6 +1823,7 @@ https://www.google.com | Google
                     // console.log(i);
                     // group
                     let isLock = group.isLock()
+                    let isPined = group.isPined()
                     let deleteLinkClass, lockStatus, lockImgClass, lockClass = ""
                     if (isLock) {
                         deleteLinkClass = ".no-delete-link"
@@ -1777,6 +1835,14 @@ https://www.google.com | Google
                         lockStatus = `${chrome.i18n.getMessage("lock")}`
                         lockImgClass = ".no-lock-img"
                     }
+                    let pinStatus, pinImgClass = ""
+                    if (isPined) {
+                        pinStatus = `${chrome.i18n.getMessage("noToTop")}`
+                        pinImgClass = ".pin-img"
+                    } else {
+                        pinStatus = `${chrome.i18n.getMessage("toTop")}`
+                        pinImgClass = ".no-pin-img"
+                    }
                     let groupTitle = group.groupTitle()
 
                     return m('div.tabs' + titleClass + lockClass, {
@@ -1787,6 +1853,8 @@ https://www.google.com | Google
                         onclick: function () {
                             tabs.vm.rmGroup(i);
                         }
+                    }), m('img' + pinImgClass, {
+                        src: "/images/pin.png"
                     }), ' ', m('span.group-amount', {
                         onclick: function () {
                             $("#tabs_" + i).slideToggle();
@@ -1845,9 +1913,9 @@ https://www.google.com | Google
                         }
                     }, lockStatus), m('span.about-top', {
                         onclick: function () {
-                            tabs.vm.updateGroup(i, {toTop: true})
+                            tabs.vm.updateGroup(i, {toTop: !isPined})
                         }
-                    }, `${chrome.i18n.getMessage("toTop")}`), m('span.about-top', {
+                    }, pinStatus), m('span.about-top', {
                         onclick: function () {
                             let val = $("#groupTitle" + i).html();
                             $("#groupTitle" + i).slideToggle(100);

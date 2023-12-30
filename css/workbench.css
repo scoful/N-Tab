@@ -149,6 +149,15 @@ ul {
     display: none;
 }
 
+.pin-img {
+    height: 25px;
+}
+
+.no-pin-img {
+    height: 25px;
+    display: none;
+}
+
 .group-title-input {
     width: 75px;
     overflow: hidden;

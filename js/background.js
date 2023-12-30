@@ -567,6 +567,7 @@ function makeTabGroup(tabsArr) {
     tabGroup.tabs = res;
     tabGroup.isLock = false;
     tabGroup.groupTitle = '';
+    tabGroup.isPined = false;
     return tabGroup;
 }
 
@@ -589,7 +590,20 @@ function saveTabGroup(tabGroup) {
                 saveShardings([tabGroup], "object");
             } else {
                 let newArr = callback.tabGroups;
-                newArr.unshift(tabGroup);
+                // 判断是否有置顶，有置顶的话，新元素要放到所有置顶后面
+                let flag = false
+                for (let i = 0; i < newArr.length; i++) {
+                    const currentElement = newArr[i];
+                    if (currentElement.isPined === undefined || currentElement.isPined === false) {
+                        newArr.splice(i, 0, tabGroup);
+                        flag = true
+                        break;
+                    }
+                }
+                // 如果所有元素都是已固定的，则将新元素添加到数组末尾
+                if (!flag) {
+                    newArr.push(tabGroup);
+                }
                 saveShardings(newArr, "object");
             }
         } else {
@@ -747,7 +761,9 @@ chrome.alarms.onAlarm.addListener(function (alarm) {
 // 持续监听是否按了manifest设置的快捷键
 chrome.commands.onCommand.addListener(function (command) {
     if (command === "toggle-feature-save-all") {
-        chrome.tabs.query({url: ["https://*/*", "http://*/*"], currentWindow: true}, function (tabs) {
+        chrome.tabs.query({
+            url: ["https://*/*", "http://*/*", "chrome://*/*", "file://*/*"], currentWindow: true
+        }, function (tabs) {
             var tabsArr = tabs.filter(function (tab) {
                 return !tab.pinned;
             });
@@ -759,7 +775,7 @@ chrome.commands.onCommand.addListener(function (command) {
     if (command === "toggle-feature-save-current") {
         chrome.storage.local.get(function (storage) {
             chrome.tabs.query({
-                url: ["https://*/*", "http://*/*"], highlighted: true, currentWindow: true
+                url: ["https://*/*", "http://*/*", "chrome://*/*", "file://*/*"], highlighted: true, currentWindow: true
             }, function (tabs) {
                 var tabsArr = tabs.filter(function (tab) {
                     return !tab.pinned;
@@ -850,7 +866,9 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
         case "rightClickSendCurrentTab":
             chrome.storage.local.get(function (storage) {
                 chrome.tabs.query({
-                    url: ["https://*/*", "http://*/*"], highlighted: true, currentWindow: true
+                    url: ["https://*/*", "http://*/*", "chrome://*/*", "file://*/*"],
+                    highlighted: true,
+                    currentWindow: true
                 }, function (tabs) {
                     var tabsArr = tabs.filter(function (tab) {
                         return !tab.pinned;
@@ -879,7 +897,9 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
             openBackgroundPage();
             break;
         case 'sendAllTabs':
-            chrome.tabs.query({url: ["https://*/*", "http://*/*"], currentWindow: true}, function (tabs) {
+            chrome.tabs.query({
+                url: ["https://*/*", "http://*/*", "chrome://*/*", "file://*/*"], currentWindow: true
+            }, function (tabs) {
                 var req = tabs.filter(function (tab) {
                     return !tab.pinned;
                 });
@@ -900,7 +920,9 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
                     openBackgroundAfterSendTab = opts.openBackgroundAfterSendTab || "yes"
                 }
                 chrome.tabs.query({
-                    url: ["https://*/*", "http://*/*"], highlighted: true, currentWindow: true
+                    url: ["https://*/*", "http://*/*", "chrome://*/*", "file://*/*"],
+                    highlighted: true,
+                    currentWindow: true
                 }, function (tabs) {
                     console.log(tabs)
                     var req = tabs.filter(function (tab) {
@@ -921,7 +943,11 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
             });
             break;
         case 'sendOtherTabs':
-            chrome.tabs.query({url: ["https://*/*", "http://*/*"], highlighted: false, currentWindow: true}, function (tabs) {
+            chrome.tabs.query({
+                url: ["https://*/*", "http://*/*", "chrome://*/*", "file://*/*"],
+                highlighted: false,
+                currentWindow: true
+            }, function (tabs) {
                 var req = tabs.filter(function (tab) {
                     return !tab.pinned;
                 });

@@ -372,7 +372,10 @@
 		"message": "锁定该组"
 	},
 	"toTop": {
-		"message": "上浮该组"
+		"message": "置顶该组"
+	},
+	"noToTop": {
+		"message": "取消置顶"
 	},
 	"nameThis": {
 		"message": "命名该组"
