@@ -623,8 +623,7 @@ function openBackgroundPage() {
     chrome.tabs.query({url: "chrome-extension://*/workbench.html*", currentWindow: true}, function (tab) {
         if (tab.length >= 1) {
             chrome.tabs.move(tab[0].id, {index: 0}, function callback() {
-                chrome.tabs.highlight({tabs: pinnedTabsCount}, function callback() {
-                });
+                chrome.tabs.update(tab[0].id, {highlighted: true});
             });
             chrome.tabs.reload(tab[0].id, {}, function (tab) {
             });
