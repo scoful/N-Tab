@@ -18,7 +18,8 @@
         "unlimitedStorage",
         "notifications",
         "idle",
-        "alarms"
+        "alarms",
+        "commands"
     ],
     "host_permissions": [
         "<all_urls>"
