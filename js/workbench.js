@@ -1943,12 +1943,18 @@ https://www.google.com | Google
                         }, group.tabs().map(function (tab, ii) {
                             return m('li.li-hover.li-standard', [m('span' + deleteLinkClass, {
                                 onclick: function () {
-                                    tabs.vm.rmTab(i, ii);
+                                    if (isLock) {
+                                        showAlert(`${chrome.i18n.getMessage("showError")}`, `${chrome.i18n.getMessage("cannotDelete")}`)
+                                    } else {
+                                        tabs.vm.rmTab(i, ii);
+                                    }
                                 }
                             }), m('span.link', {
                                 title: tab.title + "\n" + tab.url, onclick: function () {
                                     if (opts.deleteTabOnOpen === 'yes') {
-                                        tabs.vm.rmTab(i, ii);
+                                        if (!isLock) {
+                                            tabs.vm.rmTab(i, ii);
+                                        }
                                     }
                                     chrome.tabs.create({
                                         url: tab.url, active: false
