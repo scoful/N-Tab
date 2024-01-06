@@ -1,6 +1,6 @@
 {
     "version": "3.0.4",
-    "name": "cloudSkyMonster",
+    "name": "N-Tab",
     "manifest_version": 3,
     "description": "__MSG_pluginDesc__",
     "background": {
@@ -29,7 +29,7 @@
     },
     "action": {
         "default_icon": "images/96.png",
-        "default_title": "cloudSkyMonster",
+        "default_title": "N-Tab",
         "default_popup": "popup.html"
     },
     "content_scripts": [

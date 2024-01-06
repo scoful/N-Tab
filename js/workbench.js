@@ -53,7 +53,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="home navbar-brand" href="#">CloudSkyMonster</a>
+                    <a class="home navbar-brand" href="#">N-Tab</a>
                 </div>
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
