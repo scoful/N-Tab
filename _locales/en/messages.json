@@ -433,5 +433,11 @@
 	},
 	"confirmation": {
 		"message": "Are you sure you want to delete this item?"
+	},
+	"sendLeftTabs": {
+		"message": "Send All tabs on the left"
+	},
+	"sendRightTabs": {
+		"message": "Send All tabs on the right"
 	}
 }

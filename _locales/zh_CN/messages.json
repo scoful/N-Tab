@@ -30,7 +30,7 @@
 		"message": "查看配置"
 	},
 	"restoreKey": {
-		"message": "点击“打开整组”或点击单个标签时："
+		"message": "点击 “打开整组” 或点击 单个标签 时："
 	},
 	"restoreValueDelete": {
 		"message": "打开标签并将其从标签列表中删除"
@@ -39,7 +39,7 @@
 		"message": "打开标签但不将其从标签列表中删除"
 	},
 	"openBackgroundAfterSendTab": {
-		"message": "点击“发送当前标签”或“发送所有标签”或“发送其他标签”后："
+		"message": "点击 “发送当前标签” 或 “发送所有标签” 或 “发送其他标签” 后："
 	},
 	"openBackgroundAfterSendTabYes": {
 		"message": "打开后台页"
@@ -433,5 +433,11 @@
 	},
 	"confirmation": {
 		"message": "您确定要删除吗？"
+	},
+	"sendLeftTabs": {
+		"message": "发送左侧所有标签"
+	},
+	"sendRightTabs": {
+		"message": "发送右侧所有标签"
 	}
 }

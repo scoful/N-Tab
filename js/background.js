@@ -831,29 +831,34 @@ chrome.storage.onChanged.addListener(function (changes, areaName) {
 // Add a listener to create the initial context menu items,
 // context menu items only need to be created at runtime.onInstalled
 chrome.runtime.onInstalled.addListener(async () => {
-    // 任何网页创建右键菜单，发送当前tab
+    // 发送当前标签
     chrome.contextMenus.create({
-        id: "rightClickSendCurrentTab", title: `${chrome.i18n.getMessage("sendCurrentTab")}`
+        id: "sendCurrentTab", title: `${chrome.i18n.getMessage("sendCurrentTab")}`, contexts: ["all"]
     });
 
     // 打开后台管理页
     chrome.contextMenus.create({
-        id: "showAllTabs", title: `${chrome.i18n.getMessage("showAllTabs")}`, contexts: ["action"]
+        id: "showAllTabs", title: `${chrome.i18n.getMessage("showAllTabs")}`, contexts: ["all"]
     });
 
     // 发送所有标签
     chrome.contextMenus.create({
-        id: "sendAllTabs", title: `${chrome.i18n.getMessage("sendAllTabs")}`, contexts: ["action"]
-    });
-
-    // 发送当前标签
-    chrome.contextMenus.create({
-        id: "sendCurrentTab", title: `${chrome.i18n.getMessage("sendCurrentTab")}`, contexts: ["action"]
+        id: "sendAllTabs", title: `${chrome.i18n.getMessage("sendAllTabs")}`, contexts: ["all"]
     });
 
     // 发送其他标签
     chrome.contextMenus.create({
-        id: "sendOtherTabs", title: `${chrome.i18n.getMessage("sendOtherTabs")}`, contexts: ["action"]
+        id: "sendOtherTabs", title: `${chrome.i18n.getMessage("sendOtherTabs")}`, contexts: ["all"]
+    });
+
+    // 发送左侧标签页
+    chrome.contextMenus.create({
+        id: "sendLeftTabs", title: `${chrome.i18n.getMessage("sendLeftTabs")}`, contexts: ["all"]
+    });
+
+    // 发送右侧标签页
+    chrome.contextMenus.create({
+        id: "sendRightTabs", title: `${chrome.i18n.getMessage("sendRightTabs")}`, contexts: ["all"]
     });
 
 });
@@ -862,7 +867,7 @@ chrome.runtime.onInstalled.addListener(async () => {
 chrome.contextMenus.onClicked.addListener(function (info, tab) {
     console.log(info, tab);
     switch (info.menuItemId) {
-        case "rightClickSendCurrentTab":
+        case "sendCurrentTab":
             chrome.storage.local.get(function (storage) {
                 chrome.tabs.query({
                     url: ["https://*/*", "http://*/*", "chrome://*/*", "file://*/*"],
@@ -911,7 +916,7 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
                 }
             });
             break;
-        case 'sendCurrentTab':
+        case 'sendLeftTabs':
             chrome.storage.local.get(function (storage) {
                 let opts = storage.options
                 let openBackgroundAfterSendTab = "yes"
@@ -919,14 +924,46 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
                     openBackgroundAfterSendTab = opts.openBackgroundAfterSendTab || "yes"
                 }
                 chrome.tabs.query({
-                    url: ["https://*/*", "http://*/*", "chrome://*/*", "file://*/*"],
-                    highlighted: true,
-                    currentWindow: true
+                    url: ["https://*/*", "http://*/*", "chrome://*/*", "file://*/*"], currentWindow: true
                 }, function (tabs) {
-                    console.log(tabs)
-                    var req = tabs.filter(function (tab) {
-                        return !tab.pinned;
-                    });
+                    let req = []
+                    for (let i = 0; i < tabs.length; i++) {
+                        if (tabs[i].active) {
+                            break;
+                        }
+                        req.push(tabs[i]);
+                    }
+                    if (req.length > 0) {
+                        saveTabs(req);
+                        if (openBackgroundAfterSendTab === "yes") {
+                            openBackgroundPage();
+                        }
+                        closeTabs(req);
+                    } else {
+                        if (openBackgroundAfterSendTab === "yes") {
+                            openBackgroundPage();
+                        }
+                    }
+                });
+            });
+            break;
+        case 'sendRightTabs':
+            chrome.storage.local.get(function (storage) {
+                let opts = storage.options
+                let openBackgroundAfterSendTab = "yes"
+                if (opts) {
+                    openBackgroundAfterSendTab = opts.openBackgroundAfterSendTab || "yes"
+                }
+                chrome.tabs.query({
+                    url: ["https://*/*", "http://*/*", "chrome://*/*", "file://*/*"], currentWindow: true
+                }, function (tabs) {
+                    let req = []
+                    for (let i = tabs.length - 1; i >= 0; i--) {
+                        if (tabs[i].active) {
+                            break;
+                        }
+                        req.push(tabs[i]);
+                    }
                     if (req.length > 0) {
                         saveTabs(req);
                         if (openBackgroundAfterSendTab === "yes") {
@@ -942,21 +979,32 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
             });
             break;
         case 'sendOtherTabs':
-            chrome.tabs.query({
-                url: ["https://*/*", "http://*/*", "chrome://*/*", "file://*/*"],
-                highlighted: false,
-                currentWindow: true
-            }, function (tabs) {
-                var req = tabs.filter(function (tab) {
-                    return !tab.pinned;
-                });
-                if (req.length > 0) {
-                    saveTabs(req);
-                    openBackgroundPage();
-                    closeTabs(req);
-                } else {
-                    openBackgroundPage();
+            chrome.storage.local.get(function (storage) {
+                let opts = storage.options
+                let openBackgroundAfterSendTab = "yes"
+                if (opts) {
+                    openBackgroundAfterSendTab = opts.openBackgroundAfterSendTab || "yes"
                 }
+                chrome.tabs.query({
+                    url: ["https://*/*", "http://*/*", "chrome://*/*", "file://*/*"],
+                    highlighted: false,
+                    currentWindow: true
+                }, function (tabs) {
+                    var req = tabs.filter(function (tab) {
+                        return !tab.pinned;
+                    });
+                    if (req.length > 0) {
+                        saveTabs(req);
+                        if (openBackgroundAfterSendTab === "yes") {
+                            openBackgroundPage();
+                        }
+                        closeTabs(req);
+                    } else {
+                        if (openBackgroundAfterSendTab === "yes") {
+                            openBackgroundPage();
+                        }
+                    }
+                });
             });
             break;
         default:
