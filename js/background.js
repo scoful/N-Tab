@@ -633,6 +633,16 @@ function openBackgroundPage() {
     });
 }
 
+// 暗地里刷新background页
+function reloadBackgroundPage() {
+    chrome.tabs.query({url: "chrome-extension://*/workbench.html*", currentWindow: true}, function (tab) {
+        if (tab.length >= 1) {
+            chrome.tabs.reload(tab[0].id, {}, function (tab) {
+            });
+        }
+    });
+}
+
 // close all the tabs in the provided array of Tab objects
 function closeTabs(tabsArr) {
     let tabsToClose = [], i;
@@ -760,15 +770,26 @@ chrome.alarms.onAlarm.addListener(function (alarm) {
 // 持续监听是否按了manifest设置的快捷键
 chrome.commands.onCommand.addListener(function (command) {
     if (command === "toggle-feature-save-all") {
-        chrome.tabs.query({
-            url: ["https://*/*", "http://*/*", "chrome://*/*", "file://*/*"], currentWindow: true
-        }, function (tabs) {
-            var tabsArr = tabs.filter(function (tab) {
-                return !tab.pinned;
+        chrome.storage.local.get(function (storage) {
+            chrome.tabs.query({
+                url: ["https://*/*", "http://*/*", "chrome://*/*", "file://*/*"], currentWindow: true
+            }, function (tabs) {
+                var tabsArr = tabs.filter(function (tab) {
+                    return !tab.pinned;
+                });
+                let opts = storage.options
+                let openBackgroundAfterSendTab = "yes"
+                if (opts) {
+                    openBackgroundAfterSendTab = opts.openBackgroundAfterSendTab || "yes"
+                }
+                saveTabs(tabsArr);
+                if (openBackgroundAfterSendTab === "yes") {
+                    openBackgroundPage();
+                } else {
+                    reloadBackgroundPage()
+                }
+                closeTabs(tabsArr);
             });
-            saveTabs(tabsArr);
-            openBackgroundPage();
-            closeTabs(tabsArr);
         });
     }
     if (command === "toggle-feature-save-current") {
@@ -788,11 +809,15 @@ chrome.commands.onCommand.addListener(function (command) {
                     saveTabs(tabsArr);
                     if (openBackgroundAfterSendTab === "yes") {
                         openBackgroundPage();
+                    } else {
+                        reloadBackgroundPage()
                     }
                     closeTabs(tabsArr);
                 } else {
                     if (openBackgroundAfterSendTab === "yes") {
                         openBackgroundPage();
+                    } else {
+                        reloadBackgroundPage()
                     }
                 }
             });
@@ -886,11 +911,15 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
                         saveTabs(tabsArr);
                         if (openBackgroundAfterSendTab === "yes") {
                             openBackgroundPage();
+                        } else {
+                            reloadBackgroundPage()
                         }
                         closeTabs(tabsArr);
                     } else {
                         if (openBackgroundAfterSendTab === "yes") {
                             openBackgroundPage();
+                        } else {
+                            reloadBackgroundPage()
                         }
                     }
 
@@ -901,19 +930,34 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
             openBackgroundPage();
             break;
         case 'sendAllTabs':
-            chrome.tabs.query({
-                url: ["https://*/*", "http://*/*", "chrome://*/*", "file://*/*"], currentWindow: true
-            }, function (tabs) {
-                var req = tabs.filter(function (tab) {
-                    return !tab.pinned;
-                });
-                if (req.length > 0) {
-                    saveTabs(req);
-                    openBackgroundPage();
-                    closeTabs(req);
-                } else {
-                    openBackgroundPage();
+            chrome.storage.local.get(function (storage) {
+                let opts = storage.options
+                let openBackgroundAfterSendTab = "yes"
+                if (opts) {
+                    openBackgroundAfterSendTab = opts.openBackgroundAfterSendTab || "yes"
                 }
+                chrome.tabs.query({
+                    url: ["https://*/*", "http://*/*", "chrome://*/*", "file://*/*"], currentWindow: true
+                }, function (tabs) {
+                    var req = tabs.filter(function (tab) {
+                        return !tab.pinned;
+                    });
+                    if (req.length > 0) {
+                        saveTabs(req);
+                        if (openBackgroundAfterSendTab === "yes") {
+                            openBackgroundPage();
+                        } else {
+                            reloadBackgroundPage()
+                        }
+                        closeTabs(req);
+                    } else {
+                        if (openBackgroundAfterSendTab === "yes") {
+                            openBackgroundPage();
+                        } else {
+                            reloadBackgroundPage()
+                        }
+                    }
+                });
             });
             break;
         case 'sendLeftTabs':
@@ -926,22 +970,29 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
                 chrome.tabs.query({
                     url: ["https://*/*", "http://*/*", "chrome://*/*", "file://*/*"], currentWindow: true
                 }, function (tabs) {
+                    var reqs = tabs.filter(function (tab) {
+                        return !tab.pinned;
+                    });
                     let req = []
-                    for (let i = 0; i < tabs.length; i++) {
-                        if (tabs[i].active) {
+                    for (let i = 0; i < reqs.length; i++) {
+                        if (reqs[i].active) {
                             break;
                         }
-                        req.push(tabs[i]);
+                        req.push(reqs[i]);
                     }
                     if (req.length > 0) {
                         saveTabs(req);
                         if (openBackgroundAfterSendTab === "yes") {
                             openBackgroundPage();
+                        } else {
+                            reloadBackgroundPage()
                         }
                         closeTabs(req);
                     } else {
                         if (openBackgroundAfterSendTab === "yes") {
                             openBackgroundPage();
+                        } else {
+                            reloadBackgroundPage()
                         }
                     }
                 });
@@ -968,11 +1019,15 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
                         saveTabs(req);
                         if (openBackgroundAfterSendTab === "yes") {
                             openBackgroundPage();
+                        } else {
+                            reloadBackgroundPage()
                         }
                         closeTabs(req);
                     } else {
                         if (openBackgroundAfterSendTab === "yes") {
                             openBackgroundPage();
+                        } else {
+                            reloadBackgroundPage()
                         }
                     }
                 });
@@ -997,11 +1052,15 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
                         saveTabs(req);
                         if (openBackgroundAfterSendTab === "yes") {
                             openBackgroundPage();
+                        } else {
+                            reloadBackgroundPage()
                         }
                         closeTabs(req);
                     } else {
                         if (openBackgroundAfterSendTab === "yes") {
                             openBackgroundPage();
+                        } else {
+                            reloadBackgroundPage()
                         }
                     }
                 });
