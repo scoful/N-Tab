@@ -95,6 +95,10 @@ ul {
     padding-bottom: 3px;
 }
 
+.strikethrough {
+    text-decoration: line-through;
+}
+
 .delete-link {
     font-size: 70%;
     font-weight: bold;

@@ -33,7 +33,7 @@
 		"message": "点击 “打开整组” 或点击 单个标签 时："
 	},
 	"restoreValueDelete": {
-		"message": "打开标签并将其从标签列表中删除"
+		"message": "打开标签并将其从标签列表中删除（当标签组锁定时，不会删除）"
 	},
 	"restoreValueLive": {
 		"message": "打开标签但不将其从标签列表中删除"
@@ -428,16 +428,34 @@
 	"cannotDelete": {
 		"message": "锁定状态下不能删除！"
 	},
+	"cannotRecover": {
+		"message": "锁定状态下不能还原！"
+	},
 	"confirm": {
 		"message": "请确认"
 	},
-	"confirmation": {
+	"confirmationDel": {
 		"message": "您确定要删除吗？"
+	},
+	"confirmationRecover": {
+		"message": "您确定要还原吗？"
 	},
 	"sendLeftTabs": {
 		"message": "发送左侧所有标签"
 	},
 	"sendRightTabs": {
 		"message": "发送右侧所有标签"
+	},
+	"showBaks": {
+		"message": "查看回收站"
+	},
+	"deleted": {
+		"message": "已删："
+	},
+	"recover": {
+		"message": "还原整组"
+	},
+	"noDelTabs": {
+		"message": "回收站空空如也！"
 	}
 }

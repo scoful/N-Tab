@@ -13,6 +13,8 @@
     let handleGistLog = [];
     let sortableTitle;
     let sortableTabList = [];
+    let sortableDelTitle;
+    let sortableDelTabList = [];
     // 定义一个n次循环定时器
     let intervalId;
     let usedSeconds;
@@ -87,6 +89,7 @@
                             <ul id="others" class="dropdown-menu">
                                 <li id="showLog"><a href="#">${chrome.i18n.getMessage("showLog")}</a></li>
                                 <li id="showOptions"><a href="#">${chrome.i18n.getMessage("optionsValue")}</a></li>
+                                <li id="showBaks"><a href="#">${chrome.i18n.getMessage("showBaks")}</a></li>
                                 <li role="separator" class="divider"></li>
                                 <li id="openImportOnetab"><a href="#">${chrome.i18n.getMessage("hideShowImportOnetabFunction")}</a></li>
                                 <li id="openImportDefault"><a href="#">${chrome.i18n.getMessage("hideShowImportDefaultFunction")}</a></li>
@@ -166,6 +169,7 @@ https://www.google.com | Google
                 </div>
                 <div id="tabGroups"></div>
                 <div id="logs"></div>
+                <div id="tabGroupsBak"></div>
                 <div id="options" class="div-top"></div>
             </div>
             <a href="#top" class="btn btn-primary fixed-bottom-right">${chrome.i18n.getMessage("backToTop")}</a>
@@ -381,6 +385,7 @@ https://www.google.com | Google
         document.getElementById('openImportOnetab').addEventListener('click', function () {
             $("#logs").addClass("hide");
             $("#tabGroups").addClass("hide");
+            $("#tabGroupsBak").addClass("hide");
             $("#options").addClass("hide");
             $("#importDefault").addClass("hide")
             $("#exportDefault").addClass("hide")
@@ -391,6 +396,7 @@ https://www.google.com | Google
         document.getElementById('openImportDefault').addEventListener('click', function () {
             $("#logs").addClass("hide");
             $("#tabGroups").addClass("hide");
+            $("#tabGroupsBak").addClass("hide");
             $("#options").addClass("hide");
             $("#importOneTab").addClass("hide")
             $("#exportDefault").addClass("hide")
@@ -401,6 +407,7 @@ https://www.google.com | Google
         document.getElementById('openExport').addEventListener('click', function () {
             $("#logs").addClass("hide");
             $("#tabGroups").addClass("hide");
+            $("#tabGroupsBak").addClass("hide");
             $("#options").addClass("hide");
             $("#importOneTab").addClass("hide")
             $("#importDefault").addClass("hide")
@@ -411,6 +418,7 @@ https://www.google.com | Google
         // 打开 日志页
         document.getElementById('showLog').addEventListener('click', function () {
             $("#tabGroups").addClass("hide")
+            $("#tabGroupsBak").addClass("hide")
             $("#options").addClass("hide")
             $("#importOneTab").addClass("hide")
             $("#importDefault").addClass("hide")
@@ -427,6 +435,7 @@ https://www.google.com | Google
                 $("#logs").addClass("hide");
                 $("#options").addClass("hide");
                 $("#importOneTab").addClass("hide")
+                $("#tabGroupsBak").addClass("hide")
                 $("#importDefault").addClass("hide")
                 $("#exportDefault").addClass("hide")
                 $("#tabGroups").removeClass("hide");
@@ -439,12 +448,19 @@ https://www.google.com | Google
         document.getElementById('showOptions').addEventListener('click', function () {
             $("#logs").addClass("hide");
             $("#tabGroups").addClass("hide");
+            $("#tabGroupsBak").addClass("hide");
             $("#importOneTab").addClass("hide")
             $("#importDefault").addClass("hide")
             $("#exportDefault").addClass("hide")
             $("#options").removeClass("hide");
             // 展示配置
             showOptions();
+        });
+
+        // 打开 回收站页
+        document.getElementById('showBaks').addEventListener('click', function () {
+            // 展示回收站页
+            showAllDelTabs();
         });
 
         // 把从onetab导出的数据导入
@@ -625,7 +641,7 @@ https://www.google.com | Google
             } else {
                 chrome.storage.local.getBytesInUse(null, function (bytes) {
                     console.log("total is " + bytes / 1024 / 1024 + "mb");
-                    document.getElementById('usage').innerHTML = `${chrome.i18n.getMessage("usedSpace")}${Math.round(bytes / 1024 / 1024 * 100) / 100} %`;
+                    document.getElementById('usage').innerHTML = `${chrome.i18n.getMessage("usedSpace")}${Math.round(bytes / 1024 / 1024 * 100) / 100 / 10 * 100} %`;
                 });
                 isStateOne = true
             }
@@ -1178,6 +1194,7 @@ https://www.google.com | Google
                         let content = data.files['brower_Tabs.json'].content
                         let _content = JSON.parse(content)
                         saveShardings(_content.tabGroups, "object");
+                        saveShardings(_content.delTabGroups, "del");
                         handleGistLog.push(`${chrome.i18n.getMessage("pullSuccess")}`);
                         pullFromGithubGistStatus = undefined;
                     }
@@ -1211,6 +1228,7 @@ https://www.google.com | Google
                 if (status === "success") {
                     let _content = JSON.parse(data)
                     saveShardings(_content.tabGroups, "object");
+                    saveShardings(_content.delTabGroups, "del");
                     handleGistLog.push(`${chrome.i18n.getMessage("pullSuccess")}`);
                 } else {
                     alert("根据rawUrl拉取gist失败了");
@@ -1242,6 +1260,7 @@ https://www.google.com | Google
                     let content = data.files['brower_Tabs.json'].content
                     let _content = JSON.parse(content)
                     saveShardings(_content.tabGroups, "object");
+                    saveShardings(_content.delTabGroups, "del");
                     handleGistLog.push(`${chrome.i18n.getMessage("pullSuccess")}`)
                 } else {
                     alert("根据gistId拉取gist失败了");
@@ -1630,6 +1649,14 @@ https://www.google.com | Google
                     delete items["tabGroups_" + i]
                 }
             }
+            let delTabGroupsStr = "";
+            if (items.del_tabGroups_num >= 1) {
+                // 把分片数据组成字符串
+                for (let i = 0; i < items.del_tabGroups_num; i++) {
+                    delTabGroupsStr += items["del_tabGroups_" + i];
+                    delete items["del_tabGroups_" + i]
+                }
+            }
             delete items.tabGroups_num
             delete items.gistLog
             delete items.handleGistStatus
@@ -1639,6 +1666,9 @@ https://www.google.com | Google
             delete items.githubGistToken
             if (tabGroupsStr.length > 0) {
                 items["tabGroups"] = JSON.parse(tabGroupsStr)
+            }
+            if (delTabGroupsStr.length > 0) {
+                items["delTabGroups"] = JSON.parse(delTabGroupsStr)
             }
             cb(items)
         });
@@ -1651,24 +1681,90 @@ https://www.google.com | Google
             tabGroupStr = JSON.stringify(tabGroup);
         } else if (type === "string") {
             tabGroupStr = tabGroup;
+        } else if (type === "del") {
+            tabGroupStr = JSON.stringify(tabGroup);
         }
         let length = tabGroupStr.length;
         let sliceLength = 102400;
         let tabGroupSlices = {}; // 保存分片数据
         let i = 0; // 分片序号
 
+        // 前缀
+        let prefix = "tabGroups_"
+        if (type === "del") {
+            prefix = "del_tabGroups_"
+        }
         // 分片保存数据
         while (length > 0) {
-            tabGroupSlices["tabGroups_" + i] = tabGroupStr.substr(i * sliceLength, sliceLength);
+            tabGroupSlices[prefix + i] = tabGroupStr.substr(i * sliceLength, sliceLength);
             length -= sliceLength;
             i++;
         }
 
         // 保存分片数量
-        tabGroupSlices["tabGroups_num"] = i;
+        tabGroupSlices[prefix + "num"] = i;
 
         // 写入Storage
         chrome.storage.local.set(tabGroupSlices);
+    }
+
+    // saves array (of Tab objects) to localStorage
+    function saveDefaultTabGroup(tabGroup, type) {
+        getShardings(function (callback) {
+            if (callback || typeof callback != 'undefined' || callback !== undefined) {
+                if (!callback.tabGroups || typeof callback.tabGroups == 'undefined') {
+                    saveShardings([tabGroup], type);
+                } else {
+                    let newArr = callback.tabGroups;
+                    // 判断是否有置顶，有置顶的话，新元素要放到所有置顶后面
+                    let flag = false
+                    for (let i = 0; i < newArr.length; i++) {
+                        const currentElement = newArr[i];
+                        if (currentElement.isPined === undefined || currentElement.isPined === false) {
+                            newArr.splice(i, 0, tabGroup);
+                            flag = true
+                            break;
+                        }
+                    }
+                    // 如果所有元素都是已固定的，则将新元素添加到数组末尾
+                    if (!flag) {
+                        newArr.push(tabGroup);
+                    }
+                    saveShardings(newArr, type);
+                }
+            } else {
+                saveShardings([tabGroup], type);
+            }
+        })
+    }
+
+    function saveDelTabGroup(tabGroup, type) {
+        getShardings(function (callback) {
+            if (callback || typeof callback != 'undefined' || callback !== undefined) {
+                if (!callback.delTabGroups || typeof callback.delTabGroups == 'undefined') {
+                    saveShardings([tabGroup], type);
+                } else {
+                    let newArr = callback.delTabGroups;
+                    // 判断是否有置顶，有置顶的话，新元素要放到所有置顶后面
+                    let flag = false
+                    for (let i = 0; i < newArr.length; i++) {
+                        const currentElement = newArr[i];
+                        if (currentElement.isPined === undefined || currentElement.isPined === false) {
+                            newArr.splice(i, 0, tabGroup);
+                            flag = true
+                            break;
+                        }
+                    }
+                    // 如果所有元素都是已固定的，则将新元素添加到数组末尾
+                    if (!flag) {
+                        newArr.push(tabGroup);
+                    }
+                    saveShardings(newArr, type);
+                }
+            } else {
+                saveShardings([tabGroup], type);
+            }
+        })
     }
 
     // 展示保存的所有url
@@ -1707,6 +1803,10 @@ https://www.google.com | Google
                 saveShardings(json, "object");
             }
 
+            function saveDelTabGroups(json) {
+                saveDelTabGroup(json, "del");
+            }
+
             // model entity
             // 'data' is meant to be a tab group object from localStorage
             tabs.TabGroup = function (data) {
@@ -1730,9 +1830,11 @@ https://www.google.com | Google
 
                     vm.rmGroup = function (groupIndex) {
                         // remove from localStorage
-                        tabGroups.splice(groupIndex, 1);
+                        let delTabGroups = tabGroups.splice(groupIndex, 1);
                         // save
                         saveTabGroups(tabGroups);
+                        // save all deleted tab groups
+                        saveDelTabGroups(...delTabGroups)
                         showAllTabs();
                     };
 
@@ -1784,9 +1886,11 @@ https://www.google.com | Google
                     };
 
                     vm.rmTab = function (groupIndex, index) {
-                        tabGroups[groupIndex].tabs.splice(index, 1);
+                        let delTabs = tabGroups[groupIndex].tabs.splice(index, 1);
                         // save
                         saveTabGroups(tabGroups);
+                        // save deleted tabs
+                        saveDelTabGroups(makeTabGroup(delTabs))
                         showAllTabs();
                     };
 
@@ -1861,7 +1965,13 @@ https://www.google.com | Google
                         src: "/images/lock.png"
                     }), m('span' + deleteLinkClass, {
                         onclick: function () {
-                            tabs.vm.rmGroup(i);
+                            if (isLock) {
+                                showAlert(`${chrome.i18n.getMessage("showError")}`, `${chrome.i18n.getMessage("cannotDelete")}`)
+                            } else {
+                                showConfirmation(`${chrome.i18n.getMessage("confirm")}`, `${chrome.i18n.getMessage("confirmationDel")}`, function () {
+                                    tabs.vm.rmGroup(i);
+                                });
+                            }
                         }
                     }), m('img' + pinImgClass, {
                         src: "/images/pin.png"
@@ -1900,9 +2010,10 @@ https://www.google.com | Google
                             // reason this goes first and not after is because it doesn't work otherwise
                             // I imagine it's because you changed tab and stuff
                             if (opts.deleteTabOnOpen === 'yes') {
-                                tabs.vm.rmGroup(i);
+                                if (!isLock) {
+                                    tabs.vm.rmGroup(i);
+                                }
                             }
-
                             for (j = 0; j < group.tabs().length; j += 1) {
                                 chrome.tabs.create({
                                     url: group.tabs()[j].url
@@ -1914,7 +2025,7 @@ https://www.google.com | Google
                             if (isLock) {
                                 showAlert(`${chrome.i18n.getMessage("showError")}`, `${chrome.i18n.getMessage("cannotDelete")}`)
                             } else {
-                                showConfirmation(`${chrome.i18n.getMessage("confirm")}`, `${chrome.i18n.getMessage("confirmation")}`, function () {
+                                showConfirmation(`${chrome.i18n.getMessage("confirm")}`, `${chrome.i18n.getMessage("confirmationDel")}`, function () {
                                     tabs.vm.rmGroup(i);
                                 });
                             }
@@ -2002,6 +2113,12 @@ https://www.google.com | Google
             }
 
             if (storage.dragType === "dragUrls") {
+                if (sortableTabList.length > 0) {
+                    let j;
+                    for (j = 0; j < sortableTabList.length; j += 1) {
+                        sortableTabList[j].option("disabled", false);
+                    }
+                }
                 let j;
                 if (typeof (sortableTitle) != "undefined") {
                     sortableTitle.option("disabled", true);
@@ -2130,8 +2247,8 @@ https://www.google.com | Google
                     <p>${chrome.i18n.getMessage("restoreKey")}</p>
                 </div>
                 <div class="choices">
-                    <p><label for="deleteTabOnOpen"><input type="radio" name="deleteTabOnOpen" value="yes">${chrome.i18n.getMessage("restoreValueDelete")}</label></p>
-                    <p><label for="deleteTabOnOpen"><input type="radio" name="deleteTabOnOpen" value="no">${chrome.i18n.getMessage("restoreValueLive")}</label></p>
+                    <p><label for="deleteTabOnOpen"><input type="radio" name="deleteTabOnOpen" value="yes"><span class="radio-label">${chrome.i18n.getMessage("restoreValueDelete")}</span></label></p>
+                    <p><label for="deleteTabOnOpen"><input type="radio" name="deleteTabOnOpen" value="no"><span class="radio-label">${chrome.i18n.getMessage("restoreValueLive")}</span></label></p>
                 </div>
             </div>
             <hr>
@@ -2140,8 +2257,8 @@ https://www.google.com | Google
                     <p>${chrome.i18n.getMessage("openBackgroundAfterSendTab")}</p>
                 </div>
                 <div class="choices">
-                    <p><label for="openBackgroundAfterSendTab"><input type="radio" name="openBackgroundAfterSendTab" value="yes">${chrome.i18n.getMessage("openBackgroundAfterSendTabYes")}</label></p>
-                    <p><label for="openBackgroundAfterSendTab"><input type="radio" name="openBackgroundAfterSendTab" value="no">${chrome.i18n.getMessage("openBackgroundAfterSendTabNo")}</label></p>
+                    <p><label for="openBackgroundAfterSendTab"><input type="radio" name="openBackgroundAfterSendTab" value="yes"><span class="radio-label">${chrome.i18n.getMessage("openBackgroundAfterSendTabYes")}</span></label></p>
+                    <p><label for="openBackgroundAfterSendTab"><input type="radio" name="openBackgroundAfterSendTab" value="no"><span class="radio-label">${chrome.i18n.getMessage("openBackgroundAfterSendTabNo")}</span></label></p>
                 </div>
             </div>
             <hr>
@@ -2172,6 +2289,16 @@ https://www.google.com | Google
             <button id="save">${chrome.i18n.getMessage("saveButtonValue")}</button>
             <div id="saved">${chrome.i18n.getMessage("savedValue")}</div>
         `
+        // 给所有radio绑定一次性选择事件
+        document.addEventListener('click', function (event) {
+            if (event.target.classList.contains('radio-label')) {
+                const input = event.target.parentNode.querySelector('input[type="radio"]');
+                if (!input.checked) {
+                    input.checked = true;
+                }
+            }
+        });
+
         // 保存配置
         document.getElementById('save').addEventListener('click', function () {
             let deleteTabOnOpen = document.querySelector('input[name="deleteTabOnOpen"]:checked').value;
@@ -2287,6 +2414,413 @@ https://www.google.com | Google
         chrome.tabs.query({active: true, currentWindow: true}, function (tabsArr) {
             chrome.tabs.reload(tabsArr[0].id, {}, function (tab) {
             });
+        });
+    }
+
+    // 展示回收站内容
+    function showAllDelTabs() {
+        $("#tabGroups").addClass("hide")
+        $("#options").addClass("hide")
+        $("#importOneTab").addClass("hide")
+        $("#importDefault").addClass("hide")
+        $("#exportDefault").addClass("hide")
+        $("#logs").addClass("hide")
+        $("#tabGroupsBak").removeClass("hide")
+        chrome.storage.local.get(function (storage) {
+            let del_bridge = [];
+            if (storage.del_tabGroups_num) {
+                let tabGroupsStr = "";
+                // 把分片数据组成字符串
+                for (let i = 0; i < storage.del_tabGroups_num; i++) {
+                    tabGroupsStr += storage["del_tabGroups_" + i];
+                }
+                del_bridge = JSON.parse(tabGroupsStr);
+            }
+            let i;
+            let total = 0;
+            for (i = 0; i < del_bridge.length; i += 1) {
+                total += del_bridge[i].tabs.length;
+            }
+            document.getElementById('totals').innerHTML = `${chrome.i18n.getMessage("deleted")}${i}${chrome.i18n.getMessage("group")} / ${total}${chrome.i18n.getMessage("totals")}`;
+            let titleClass, tabClass;
+            if (storage.dragType === "dragTitle") {
+                titleClass = ".my-handle"
+                tabClass = ""
+            } else {
+                titleClass = ""
+                tabClass = ".my-handle"
+            }
+            let tabs = {}, // to-be module
+                tabGroups = del_bridge || [], // tab groups
+                opts = storage.options || {
+                    deleteTabOnOpen: 'no'
+                };
+
+            function saveTabGroups(json) {
+                saveShardings(json, "del");
+            }
+
+            function saveDefaultTabGroups(json) {
+                saveDefaultTabGroup(json, "object");
+            }
+
+
+            // model entity
+            // 'data' is meant to be a tab group object from localStorage
+            tabs.TabGroup = function (data) {
+                this.date = m.prop(data.date);
+                this.id = m.prop(data.id);
+                this.tabs = m.prop(data.tabs);
+                this.isLock = m.prop(data.isLock);
+                this.groupTitle = m.prop(data.groupTitle)
+                this.isPined = m.prop(data.isPined)
+            };
+
+            // alias for Array
+            tabs.TabGroupsList = Array;
+
+            // view-model
+            tabs.vm = new function () {
+                let vm = {};
+                vm.init = function () {
+                    // list of tab groups
+                    vm.list = new tabs.TabGroupsList();
+
+                    vm.rmGroup = function (groupIndex) {
+                        // remove from localStorage
+                        tabGroups.splice(groupIndex, 1);
+                        // save
+                        saveTabGroups(tabGroups);
+                        showAllDelTabs();
+                    };
+
+                    vm.recoverGroup = function (groupIndex) {
+                        // remove from localStorage
+                        let defaultTabGroup = tabGroups.splice(groupIndex, 1);
+                        // save
+                        saveTabGroups(tabGroups);
+                        saveDefaultTabGroups(...defaultTabGroup)
+                        showAllDelTabs();
+                    }
+
+                    vm.moveGroup = function (index, tindex) {
+                        if (index > tindex) {
+                            tabGroups.splice(tindex, 0, tabGroups[index]);
+                            tabGroups.splice(index + 1, 1);
+                            saveTabGroups(tabGroups);
+                        } else {
+                            tabGroups.splice(tindex + 1, 0, tabGroups[index]);
+                            tabGroups.splice(index, 1);
+                            saveTabGroups(tabGroups);
+                        }
+                    };
+
+                    vm.updateGroup = function (index, groupInfo) {
+                        let isLock = groupInfo.isLock
+                        let toTop = groupInfo.toTop
+                        let groupTitle = groupInfo.groupTitle
+                        if (isLock !== undefined) {
+                            tabGroups[index].isLock = isLock
+                            saveTabGroups(tabGroups);
+                            showAllDelTabs();
+                        }
+                        if (toTop !== undefined) {
+                            if (toTop) {
+                                tabGroups[index].isPined = toTop
+                                tabs.vm.moveGroup(index, 0)
+                                showAllDelTabs();
+                            } else {
+                                let count = 0;
+                                for (let i = 0; i < tabGroups.length; i++) {
+                                    const currentElement = tabGroups[i];
+                                    if (currentElement.isPined === undefined || currentElement.isPined === false) {
+                                        break;
+                                    }
+                                    count++;
+                                }
+                                tabGroups[index].isPined = toTop
+                                tabs.vm.moveGroup(index, count - 1)
+                                showAllDelTabs();
+                            }
+                        }
+                        if (groupTitle !== undefined) {
+                            tabGroups[index].groupTitle = groupTitle
+                            saveTabGroups(tabGroups);
+                            showAllDelTabs();
+                        }
+                    };
+
+                    vm.rmTab = function (groupIndex, index) {
+                        let delTabs = tabGroups[groupIndex].tabs.splice(index, 1);
+                        // save
+                        saveTabGroups(tabGroups);
+                        showAllDelTabs();
+                    };
+
+                    vm.moveTab = function (groupIndex, index, tgroupIndex, tindex) {
+                        if (groupIndex === tgroupIndex) {
+                            if (index > tindex) {
+                                tabGroups[groupIndex].tabs.splice(tindex, 0, tabGroups[groupIndex].tabs[index]);
+                                tabGroups[groupIndex].tabs.splice(index + 1, 1);
+                                saveTabGroups(tabGroups);
+                            } else {
+                                tabGroups[groupIndex].tabs.splice(tindex + 1, 0, tabGroups[groupIndex].tabs[index]);
+                                tabGroups[groupIndex].tabs.splice(index, 1);
+                                saveTabGroups(tabGroups);
+                            }
+                        } else {
+                            tabGroups[tgroupIndex].tabs.splice(tindex, 0, tabGroups[groupIndex].tabs[index]);
+                            tabGroups[groupIndex].tabs.splice(index, 1);
+                            saveTabGroups(tabGroups);
+                        }
+                    };
+                };
+                return vm;
+            };
+
+            tabs.controller = function () {
+                let i;
+                tabs.vm.init();
+                for (i = 0; i < tabGroups.length; i += 1) {
+                    tabs.vm.list.push(new tabs.TabGroup(tabGroups[i]));
+                }
+            };
+
+            tabs.view = function () {
+                if (tabs.vm.list.length === 0) {
+                    return m('div', [m('div.jumbotron', [m('div', {style: "text-align:center; margin-bottom:50px"}, `${chrome.i18n.getMessage("noDelTabs")}`)])])
+                }
+                // foreach tab group
+                return tabs.vm.list.map(function (group, i) {
+                    // console.log(tabs.vm.list);
+                    // console.log(group.tabs());
+                    // console.log(i);
+                    // 如果标签组是空的，就自动删了
+                    if (group.tabs().length === 0) {
+                        tabs.vm.rmGroup(i);
+                    }
+                    let isLock = group.isLock()
+                    let isPined = group.isPined()
+                    let deleteLinkClass, lockStatus, lockImgClass, lockClass = ""
+                    if (isLock) {
+                        deleteLinkClass = ".no-delete-link"
+                        lockStatus = `${chrome.i18n.getMessage("unLock")}`
+                        lockImgClass = ".lock-img"
+                        lockClass = ".filtered"
+                    } else {
+                        deleteLinkClass = ".delete-link"
+                        lockStatus = `${chrome.i18n.getMessage("lock")}`
+                        lockImgClass = ".no-lock-img"
+                    }
+                    let pinStatus, pinImgClass = ""
+                    if (isPined) {
+                        pinStatus = `${chrome.i18n.getMessage("noToTop")}`
+                        pinImgClass = ".pin-img"
+                    } else {
+                        pinStatus = `${chrome.i18n.getMessage("toTop")}`
+                        pinImgClass = ".no-pin-img"
+                    }
+                    let groupTitle = group.groupTitle()
+
+                    return m('div.tabs' + titleClass + lockClass, {
+                        id: i
+                    }, [m('div.group-title', [m('img' + lockImgClass, {
+                        src: "/images/lock.png"
+                    }), m('span' + deleteLinkClass, {
+                        onclick: function () {
+                            if (isLock) {
+                                showAlert(`${chrome.i18n.getMessage("showError")}`, `${chrome.i18n.getMessage("cannotDelete")}`)
+                            } else {
+                                showConfirmation(`${chrome.i18n.getMessage("confirm")}`, `${chrome.i18n.getMessage("confirmationDel")}`, function () {
+                                    tabs.vm.rmGroup(i);
+                                });
+                            }
+                        }
+                    }), m('img' + pinImgClass, {
+                        src: "/images/pin.png"
+                    }), ' ', m('span.group-amount', {
+                        onclick: function () {
+                            $("#del_tabs_" + i).slideToggle();
+                        }
+                    }, group.tabs().length + `${chrome.i18n.getMessage("tabsNo")}`), ' ', m('span.group-name', {
+                        id: "del_groupTitle" + i, onclick: function () {
+                            let val = $("#del_groupTitle" + i).html();
+                            $("#del_groupTitle" + i).slideToggle(100);
+                            $("#del_groupTitleInput" + i).slideToggle(1000);
+                            setTimeout(function () {
+                                $("#del_groupTitleInput" + i).focus();
+                            }, 100);
+                            $("#del_groupTitleInput" + i).val(val)
+                        }
+                    }, groupTitle), ' ', m('input.group-title-input', {
+                        id: "del_groupTitleInput" + i, style: "display:none", onchange: function () {
+                            let val = $("#del_groupTitleInput" + i).val()
+                            $("#del_groupTitle" + i).html(val)
+                            $("#del_groupTitle" + i).slideToggle(1000);
+                            $("#del_groupTitleInput" + i).slideToggle(100);
+                            tabs.vm.updateGroup(i, {groupTitle: val})
+                        }, onblur: function () {
+                            let val = $("#del_groupTitleInput" + i).val()
+                            $("#del_groupTitle" + i).html(val)
+                            $("#del_groupTitle" + i).slideToggle(1000);
+                            $("#del_groupTitleInput" + i).slideToggle(100);
+                            tabs.vm.updateGroup(i, {groupTitle: val})
+                        }
+                    }), m('span.group-date', moment(group.date()).format('YYYY-MM-DD HH:mm:ss')), ' ', m('span.restore-all', {
+                        onclick: function () {
+                            let j;
+
+                            // reason this goes first and not after is because it doesn't work otherwise
+                            // I imagine it's because you changed tab and stuff
+                            if (opts.deleteTabOnOpen === 'yes') {
+                                if (!isLock) {
+                                    tabs.vm.rmGroup(i);
+                                }
+                            }
+                            for (j = 0; j < group.tabs().length; j += 1) {
+                                chrome.tabs.create({
+                                    url: group.tabs()[j].url
+                                });
+                            }
+                        }
+                    }, `${chrome.i18n.getMessage("restoreGroup")}`), m('span.delete-all', {
+                        onclick: function () {
+                            if (isLock) {
+                                showAlert(`${chrome.i18n.getMessage("showError")}`, `${chrome.i18n.getMessage("cannotDelete")}`)
+                            } else {
+                                showConfirmation(`${chrome.i18n.getMessage("confirm")}`, `${chrome.i18n.getMessage("confirmationDel")}`, function () {
+                                    tabs.vm.rmGroup(i);
+                                });
+                            }
+                        }
+                    }, `${chrome.i18n.getMessage("deleteAll")}`), m('span.about-lock', {
+                        onclick: function () {
+                            tabs.vm.updateGroup(i, {isLock: !isLock})
+                        }
+                    }, lockStatus), m('span.about-top', {
+                        onclick: function () {
+                            tabs.vm.updateGroup(i, {toTop: !isPined})
+                        }
+                    }, pinStatus), m('span.about-name', {
+                        onclick: function () {
+                            let val = $("#del_groupTitle" + i).html();
+                            $("#del_groupTitle" + i).slideToggle(100);
+                            $("#del_groupTitleInput" + i).slideToggle(1000);
+                            setTimeout(function () {
+                                $("#del_groupTitleInput" + i).focus();
+                            }, 100);
+                            $("#del_groupTitleInput" + i).val(val)
+                        }
+                    }, `${chrome.i18n.getMessage("nameThis")}`), m('span.about-name', {
+                        onclick: function () {
+                            if (isLock) {
+                                showAlert(`${chrome.i18n.getMessage("showError")}`, `${chrome.i18n.getMessage("cannotRecover")}`)
+                            } else {
+                                showConfirmation(`${chrome.i18n.getMessage("confirm")}`, `${chrome.i18n.getMessage("confirmationRecover")}`, function () {
+                                    tabs.vm.recoverGroup(i);
+                                });
+                            }
+                        }
+                    }, `${chrome.i18n.getMessage("recover")}`)]), // foreach tab
+                        m('ul' + tabClass + lockClass, {
+                            id: "del_tabs_" + i
+                        }, group.tabs().map(function (tab, ii) {
+                            return m('li.li-hover.li-standard.strikethrough', [m('span' + deleteLinkClass, {
+                                onclick: function () {
+                                    if (isLock) {
+                                        showAlert(`${chrome.i18n.getMessage("showError")}`, `${chrome.i18n.getMessage("cannotDelete")}`)
+                                    } else {
+                                        tabs.vm.rmTab(i, ii);
+                                    }
+                                }
+                            }), m('span.link', {
+                                title: tab.title + "\n" + tab.url, onclick: function () {
+                                    if (opts.deleteTabOnOpen === 'yes') {
+                                        if (!isLock) {
+                                            tabs.vm.rmTab(i, ii);
+                                        }
+                                    }
+                                    chrome.tabs.create({
+                                        url: tab.url, active: false
+                                    });
+                                }
+                            }, tab.title)]);
+                        }))]);
+                });
+            };
+
+
+            // init the app
+            m.module(document.getElementById('tabGroupsBak'), {controller: tabs.controller, view: tabs.view});
+
+            // 以下是超级拖曳的相关代码
+            if (storage.dragType === "dragTitle") {
+                if (sortableDelTabList.length > 0) {
+                    let j;
+                    for (j = 0; j < sortableDelTabList.length; j += 1) {
+                        sortableDelTabList[j].option("disabled", true);
+                    }
+                }
+                if (typeof (sortableDelTitle) != "undefined") {
+                    sortableDelTitle.option("disabled", false);
+                } else {
+                    sortableDelTitle = Sortable.create(document.getElementById("tabGroupsBak"), {
+                        group: {
+                            name: "tabGroupsBak", pull: false, put: false
+                        }, scroll: true, easing: "cubic-bezier(1, 0, 0, 1)", animation: 150, //动画参数
+                        ghostClass: 'ghost', filter: '.filtered', onEnd: function (evt) { //拖拽完毕之后发生该事件
+                            // console.log(evt)
+                            // console.log(evt.item);
+                            // console.log(evt.to);
+                            // console.log(evt.from);
+                            // console.log(evt.oldIndex);
+                            // console.log(evt.newIndex);
+                            // console.log(evt.oldDraggableIndex);
+                            // console.log(evt.newDraggableIndex);
+                            tabs.vm.moveGroup(evt.oldIndex, evt.newIndex);
+                            showAllDelTabs();
+                        }
+                    });
+                }
+
+            }
+
+            if (storage.dragType === "dragUrls") {
+                if (sortableDelTabList.length > 0) {
+                    let j;
+                    for (j = 0; j < sortableDelTabList.length; j += 1) {
+                        sortableDelTabList[j].option("disabled", false);
+                    }
+                }
+                let j;
+                if (typeof (sortableDelTitle) != "undefined") {
+                    sortableDelTitle.option("disabled", true);
+                }
+                sortableDelTabList.length = 0;
+                for (j = 0; j < del_bridge.length; j += 1) {
+                    let sortableTab = Sortable.create(document.getElementById("del_tabs_" + j), {
+                        group: {
+                            name: "tabs", pull: true, put: true
+                        }, easing: "cubic-bezier(1, 0, 0, 1)", scroll: true, swapThreshold: 0.65, animation: 150, //动画参数
+                        filter: '.filtered', onEnd: function (evt) {
+                            // console.log(evt)
+                            // console.log(evt.item);
+                            // console.log(evt.to);
+                            // console.log(evt.from);
+                            // console.log(evt.oldIndex);
+                            // console.log(evt.newIndex);
+                            // console.log(evt.oldDraggableIndex);
+                            // console.log(evt.newDraggableIndex);
+                            // console.log("从" + evt.from.parentNode.id + "的" + evt.oldIndex + "到" + evt.to.parentNode.id + "的" + evt.newIndex)
+                            tabs.vm.moveTab(evt.from.parentNode.id, evt.oldIndex, evt.to.parentNode.id, evt.newIndex)
+                            showAllDelTabs();
+                        }
+                    })
+                    sortableDelTabList.push(sortableTab);
+                }
+
+            }
+
         });
     }
 

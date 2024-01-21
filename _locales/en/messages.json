@@ -33,7 +33,7 @@
 		"message": "On clicking \"Restore group\" or restoring a single tab:"
 	},
 	"restoreValueDelete": {
-		"message": " Delete opened links from tab groups"
+		"message": " Delete opened links from tab groups(When the tag group is locked, do not delete)"
 	},
 	"restoreValueLive": {
 		"message": "  Leave the links alone"
@@ -428,16 +428,34 @@
 	"cannotDelete": {
 		"message": "Cannot delete while in locked state."
 	},
+	"cannotRecover": {
+		"message": "Cannot recover while in locked state."
+	},
 	"confirm": {
 		"message": "Confirm Deletion"
 	},
-	"confirmation": {
+	"confirmationDel": {
 		"message": "Are you sure you want to delete this item?"
+	},
+	"confirmationRecover": {
+		"message": "Are you sure you want to recover this item?"
 	},
 	"sendLeftTabs": {
 		"message": "Send All tabs on the left"
 	},
 	"sendRightTabs": {
 		"message": "Send All tabs on the right"
+	},
+	"showBaks": {
+		"message": "Recycle Bin"
+	},
+	"deleted": {
+		"message": "Deleted : "
+	},
+	"recover": {
+		"message": "Recover Group"
+	},
+	"noDelTabs": {
+		"message": "No tab groups have been deleted yet, or you deleted them all..."
 	}
 }
