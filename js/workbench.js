@@ -55,7 +55,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="home navbar-brand" href="#">N-Tab</a>
+                    <a class="home navbar-brand">N-Tab</a>
                 </div>
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
@@ -193,8 +193,8 @@ https://www.google.com | Google
             // 一load完就算一下storage占用了多少空间
             chrome.storage.local.getBytesInUse(null, function (bytes) {
                 isStateOne = false
-                console.log("total is " + bytes / 1024 / 1024 + "mb");
-                document.getElementById('usage').innerHTML = `${chrome.i18n.getMessage("usedSpace")}${Math.round(bytes / 1024 / 1024 * 100) / 100}mb / 10mb`;
+                console.log("total is " + (bytes / 1024 / 1024).toFixed(2) + "mb");
+                document.getElementById('usage').innerHTML = `${chrome.i18n.getMessage("usedSpace")}${(bytes / 1024 / 1024).toFixed(2)}mb / 10mb`;
             });
 
             // 处理是否拖曳标签组和标签
@@ -463,7 +463,7 @@ https://www.google.com | Google
             showAllDelTabs();
         });
 
-        // 把从onetab导出的数据导入
+        // 把从onetab导出的数据导入，不管插件原先是否有数据，有置顶，全部追加到最后
         document.getElementById('importOnetabMode').addEventListener('click', function () {
             chrome.storage.local.get(null, function (items) {
                 let tabGroupsStr = "";
@@ -484,21 +484,9 @@ https://www.google.com | Google
                 let content = importOnetabTextarea.split("\n");
                 let tabsArr = [];
                 for (let i = 0; i < content.length; i++) {
+                    // 空行说明是一组标签的结束
                     if (content[i] === "") {
-                        // 判断是否有置顶，有置顶的话，新元素要放到所有置顶后面
-                        let flag = false
-                        for (let i = 0; i < tabGroups.length; i++) {
-                            const currentElement = tabGroups[i];
-                            if (currentElement.isPined === undefined || currentElement.isPined === false) {
-                                tabGroups.splice(i, 0, makeTabGroup(tabsArr));
-                                flag = true
-                                break;
-                            }
-                        }
-                        // 如果所有元素都是已固定的，则将新元素添加到数组末尾
-                        if (!flag) {
-                            tabGroups.push(makeTabGroup(tabsArr));
-                        }
+                        tabGroups.push(makeTabGroup(tabsArr));
                         tabsArr.length = 0;
                         continue;
                     }
@@ -515,7 +503,7 @@ https://www.google.com | Google
             });
         });
 
-        // 把从本插件导出的数据导入
+        // 把从本插件导出的数据导入，假如导入数据有置顶，就置顶到最上，其他数据追加到最后
         document.getElementById('importDefaultMode').addEventListener('click', function () {
             chrome.storage.local.get(null, function (items) {
                 let tabGroupsStr = "";
@@ -559,18 +547,10 @@ https://www.google.com | Google
                             groupTitle = tabsArr[0].url
                         }
                         tabsArr.splice(0, 1)
-                        // 判断是否有置顶，有置顶的话，新元素要放到所有置顶后面
-                        let flag = false
-                        for (let i = 0; i < tabGroups.length; i++) {
-                            const currentElement = tabGroups[i];
-                            if (currentElement.isPined === undefined || currentElement.isPined === false) {
-                                tabGroups.splice(i, 0, makeTabGroup(tabsArr, isLock, groupTitle, isPined));
-                                flag = true
-                                break;
-                            }
-                        }
-                        // 如果所有元素都是已固定的，则将新元素添加到数组末尾
-                        if (!flag) {
+                        // 判断导入的数据是否有置顶，有置顶的话，要置顶到最上面，其他数据追加到最后
+                        if (isPined) {
+                            tabGroups.splice(0, 0, makeTabGroup(tabsArr, isLock, groupTitle, isPined));
+                        } else {
                             tabGroups.push(makeTabGroup(tabsArr, isLock, groupTitle, isPined));
                         }
                         tabsArr.length = 0;
@@ -634,14 +614,14 @@ https://www.google.com | Google
         document.getElementById('usage').addEventListener('click', function () {
             if (isStateOne) {
                 chrome.storage.local.getBytesInUse(null, function (bytes) {
-                    console.log("total is " + bytes / 1024 / 1024 + "mb");
-                    document.getElementById('usage').innerHTML = `${chrome.i18n.getMessage("usedSpace")}${Math.round(bytes / 1024 / 1024 * 100) / 100}mb / 10mb`;
+                    console.log("total is " + (bytes / 1024 / 1024).toFixed(2) + "mb");
+                    document.getElementById('usage').innerHTML = `${chrome.i18n.getMessage("usedSpace")}${(bytes / 1024 / 1024).toFixed(2)}mb / 10mb`;
                 });
                 isStateOne = false
             } else {
                 chrome.storage.local.getBytesInUse(null, function (bytes) {
-                    console.log("total is " + bytes / 1024 / 1024 + "mb");
-                    document.getElementById('usage').innerHTML = `${chrome.i18n.getMessage("usedSpace")}${Math.round(bytes / 1024 / 1024 * 100) / 100 / 10 * 100} %`;
+                    console.log("total is " + (bytes / 1024 / 1024).toFixed(2) + "mb");
+                    document.getElementById('usage').innerHTML = `${chrome.i18n.getMessage("usedSpace")}${((bytes / 1024 / 1024) / 10 * 100).toFixed(2)} %`;
                 });
                 isStateOne = true
             }
