@@ -55,12 +55,12 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="home navbar-brand">N-Tab</a>
+                    <a class="navbar-brand" href="#home">N-Tab</a>
                 </div>
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
-                        <li class="active home"><a href="#">${chrome.i18n.getMessage("home")}</a></li>
-                        <li class="home">
+                        <li class="active"><a href="#home">${chrome.i18n.getMessage("home")}</a></li>
+                        <li>
                             <a href="#">
                                 <span id="totals"></span>
                             </a>
@@ -87,12 +87,12 @@
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
                                 aria-haspopup="true" aria-expanded="false">${chrome.i18n.getMessage("otherFunction")}<span class="caret"></span></a>
                             <ul id="others" class="dropdown-menu">
-                                <li id="showLog"><a href="#">${chrome.i18n.getMessage("showLog")}</a></li>
-                                <li id="showOptions"><a href="#">${chrome.i18n.getMessage("optionsValue")}</a></li>
+                                <li id="showLog"><a href="#logs">${chrome.i18n.getMessage("showLog")}</a></li>
+                                <li id="showOptions"><a href="#options">${chrome.i18n.getMessage("optionsValue")}</a></li>
                                 <li role="separator" class="divider"></li>
-                                <li id="openImportOnetab"><a href="#">${chrome.i18n.getMessage("hideShowImportOnetabFunction")}</a></li>
-                                <li id="openImportDefault"><a href="#">${chrome.i18n.getMessage("hideShowImportDefaultFunction")}</a></li>
-                                <li id="openExport"><a href="#">${chrome.i18n.getMessage("hideShowExportFunction")}</a></li>
+                                <li id="openImportOnetab"><a href="#importOnetab">${chrome.i18n.getMessage("hideShowImportOnetabFunction")}</a></li>
+                                <li id="openImportDefault"><a href="#importDefault">${chrome.i18n.getMessage("hideShowImportDefaultFunction")}</a></li>
+                                <li id="openExport"><a href="#export">${chrome.i18n.getMessage("hideShowExportFunction")}</a></li>
                                 <li role="separator" class="divider"></li>
                                 <li><a href="#">${chrome.i18n.getMessage("dragTitle")} <input id="dragTitle" data-size="mini" type="checkbox"></a></li>
                                 <li><a href="#">${chrome.i18n.getMessage("dragTabs")} <input id="dragUrls" data-size="mini" type="checkbox"></a></li>
@@ -101,10 +101,10 @@
                             </ul>
                         </li>
                         <li>
-                            <a><span id="showBaks">${chrome.i18n.getMessage("showBaks")}</span></a>
+                            <a href="#baks"><span id="showBaks">${chrome.i18n.getMessage("showBaks")}</span></a>
                         </li>
-                        <li class="home">
-                            <a href="#"><span id="usage"></span></a>
+                        <li>
+                            <a><span id="usage"></span></a>
                         </li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
@@ -383,88 +383,6 @@ https://www.google.com | Google
         // 展示所有标签
         showAllTabs();
 
-        // 打开 导入oneTab的url功能
-        document.getElementById('openImportOnetab').addEventListener('click', function () {
-            $("#logs").addClass("hide");
-            $("#tabGroups").addClass("hide");
-            $("#tabGroupsBak").addClass("hide");
-            $("#options").addClass("hide");
-            $("#importDefault").addClass("hide")
-            $("#exportDefault").addClass("hide")
-            $("#importOneTab").removeClass("hide")
-        });
-
-        // 打开 导入默认格式的url功能
-        document.getElementById('openImportDefault').addEventListener('click', function () {
-            $("#logs").addClass("hide");
-            $("#tabGroups").addClass("hide");
-            $("#tabGroupsBak").addClass("hide");
-            $("#options").addClass("hide");
-            $("#importOneTab").addClass("hide")
-            $("#exportDefault").addClass("hide")
-            $("#importDefault").removeClass("hide")
-        });
-
-        // 打开 导出默认格式的url功能
-        document.getElementById('openExport').addEventListener('click', function () {
-            $("#logs").addClass("hide");
-            $("#tabGroups").addClass("hide");
-            $("#tabGroupsBak").addClass("hide");
-            $("#options").addClass("hide");
-            $("#importOneTab").addClass("hide")
-            $("#importDefault").addClass("hide")
-            $("#exportDefault").removeClass("hide")
-            $('#exportTextarea').val("");
-        });
-
-        // 打开 日志页
-        document.getElementById('showLog').addEventListener('click', function () {
-            $("#tabGroups").addClass("hide")
-            $("#tabGroupsBak").addClass("hide")
-            $("#options").addClass("hide")
-            $("#importOneTab").addClass("hide")
-            $("#importDefault").addClass("hide")
-            $("#exportDefault").addClass("hide")
-            $("#logs").removeClass("hide")
-            // 展示Log
-            showAllLogs();
-        });
-
-        // 打开 首页
-        let allHomeClass = document.getElementsByClassName('home')
-        for (let i = 0; i < allHomeClass.length; i++) {
-            allHomeClass[i].addEventListener('click', function () {
-                $("#logs").addClass("hide");
-                $("#options").addClass("hide");
-                $("#importOneTab").addClass("hide")
-                $("#tabGroupsBak").addClass("hide")
-                $("#importDefault").addClass("hide")
-                $("#exportDefault").addClass("hide")
-                $("#tabGroups").removeClass("hide");
-                // 展示所有标签
-                showAllTabs();
-            });
-        }
-
-        // 打开 配置页
-        document.getElementById('showOptions').addEventListener('click', function () {
-            $("#logs").addClass("hide");
-            $("#tabGroups").addClass("hide");
-            $("#tabGroupsBak").addClass("hide");
-            $("#importOneTab").addClass("hide")
-            $("#importDefault").addClass("hide")
-            $("#exportDefault").addClass("hide")
-            $("#options").removeClass("hide");
-            // 展示配置
-            showOptions();
-        });
-
-        // 打开 回收站页
-        document.getElementById('showBaks').addEventListener('click', function () {
-            // 展示回收站页
-            showAllDelTabs();
-        });
-
         // 把从onetab导出的数据导入，不管插件原先是否有数据，有置顶，全部追加到最后
         document.getElementById('importOnetabMode').addEventListener('click', function () {
             chrome.storage.local.get(null, function (items) {
@@ -629,7 +547,6 @@ https://www.google.com | Google
             }
         });
 
-
         // 响应推送到github的gist的动作
         document.getElementById('pushToGithubGist').addEventListener('click', function () {
             let confirm = prompt(`${chrome.i18n.getMessage("confirmKey")}`, `${chrome.i18n.getMessage("confirmValue")}`);
@@ -741,7 +658,6 @@ https://www.google.com | Google
             }
         });
 
-
         // 响应从gitee的gist拉取的动作
         document.getElementById('pullFromGiteeGist').addEventListener('click', function () {
             let confirm = prompt(`${chrome.i18n.getMessage("confirmKey")}`, `${chrome.i18n.getMessage("confirmValue")}`);
@@ -807,6 +723,79 @@ https://www.google.com | Google
             }
         });
 
+        // 监听 hash 的变化事件
+        window.addEventListener("hashchange", function () {
+            // 获取当前 hash
+            const currentHash = window.location.hash;
+            // 根据不同的 hash 值显示对应的内容
+            switch (currentHash) {
+                case "#home": //打开 首页
+                    $("#logs").addClass("hide");
+                    $("#options").addClass("hide");
+                    $("#importOneTab").addClass("hide")
+                    $("#tabGroupsBak").addClass("hide")
+                    $("#importDefault").addClass("hide")
+                    $("#exportDefault").addClass("hide")
+                    $("#tabGroups").removeClass("hide");
+                    // 展示所有标签
+                    showAllTabs();
+                    break;
+                case "#logs": //打开 日志页
+                    $("#tabGroups").addClass("hide")
+                    $("#tabGroupsBak").addClass("hide")
+                    $("#options").addClass("hide")
+                    $("#importOneTab").addClass("hide")
+                    $("#importDefault").addClass("hide")
+                    $("#exportDefault").addClass("hide")
+                    $("#logs").removeClass("hide")
+                    // 展示Log
+                    showAllLogs();
+                    break;
+                case "#options": //打开 配置页
+                    $("#logs").addClass("hide");
+                    $("#tabGroups").addClass("hide");
+                    $("#tabGroupsBak").addClass("hide");
+                    $("#importOneTab").addClass("hide")
+                    $("#importDefault").addClass("hide")
+                    $("#exportDefault").addClass("hide")
+                    $("#options").removeClass("hide");
+                    // 展示配置
+                    showOptions();
+                    break;
+                case "#importOnetab": //打开 导入oneTab的url功能
+                    $("#logs").addClass("hide");
+                    $("#tabGroups").addClass("hide");
+                    $("#tabGroupsBak").addClass("hide");
+                    $("#options").addClass("hide");
+                    $("#importDefault").addClass("hide")
+                    $("#exportDefault").addClass("hide")
+                    $("#importOneTab").removeClass("hide")
+                    break;
+                case "#importDefault": //打开 导入默认格式的url功能
+                    $("#logs").addClass("hide");
+                    $("#tabGroups").addClass("hide");
+                    $("#tabGroupsBak").addClass("hide");
+                    $("#options").addClass("hide");
+                    $("#importOneTab").addClass("hide")
+                    $("#exportDefault").addClass("hide")
+                    $("#importDefault").removeClass("hide")
+                    break;
+                case "#export": //打开 导出默认格式的url功能
+                    $("#logs").addClass("hide");
+                    $("#tabGroups").addClass("hide");
+                    $("#tabGroupsBak").addClass("hide");
+                    $("#options").addClass("hide");
+                    $("#importOneTab").addClass("hide")
+                    $("#importDefault").addClass("hide")
+                    $("#exportDefault").removeClass("hide")
+                    $('#exportTextarea').val("");
+                    break;
+                case "#baks": //打开 回收站
+                    // 展示回收站页
+                    showAllDelTabs();
+                    break;
+            }
+        });
 
     });
 
