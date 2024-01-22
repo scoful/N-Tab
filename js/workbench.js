@@ -783,6 +783,20 @@ https://www.google.com | Google
             });
         });
 
+        // 监听 Bootstrap Modal 的 hidden.bs.modal 事件，不然会导致数据不更新，一直只显示第一次的数据
+        $(document).on('hidden.bs.modal', '#alertModal', function (e) {
+            // 获取 Modal 元素
+            const modal = document.getElementById('alertModal');
+
+            // 移除 Modal 元素
+            if (modal) {
+                modal.remove();
+            }
+        });
+
+// 关闭 Modal
+        $('#your-modal-id').modal('hide');
+
 
     });
 
@@ -2691,7 +2705,7 @@ https://www.google.com | Google
                             }, 100);
                             $("#del_groupTitleInput" + i).val(val)
                         }
-                    }, `${chrome.i18n.getMessage("nameThis")}`), m('span.about-name', {
+                    }, `${chrome.i18n.getMessage("nameThis")}`), m('span.about-recover', {
                         onclick: function () {
                             if (isLock) {
                                 showAlert(`${chrome.i18n.getMessage("showError")}`, `${chrome.i18n.getMessage("cannotRecover")}`)

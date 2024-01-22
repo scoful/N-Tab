@@ -81,6 +81,17 @@
     text-decoration: underline;
 }
 
+.about-recover {
+    margin-left: 20px;
+    cursor: pointer;
+    color: #234da7;
+}
+
+.about-recover:hover {
+    color: #234da7;
+    text-decoration: underline;
+}
+
 ul {
     margin-left: 2em;
 }
