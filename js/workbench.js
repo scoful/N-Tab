@@ -193,8 +193,8 @@ https://www.google.com | Google
             // 一load完就算一下storage占用了多少空间
             chrome.storage.local.getBytesInUse(null, function (bytes) {
                 isStateOne = false
-                console.log("total is " + (bytes / 1024 / 1024).toFixed(2) + "mb");
-                document.getElementById('usage').innerHTML = `${chrome.i18n.getMessage("usedSpace")}${(bytes / 1024 / 1024).toFixed(2)}mb / 10mb`;
+                console.log("total is " + (bytes / 1024 / 1024).toFixed(3) + "mb");
+                document.getElementById('usage').innerHTML = `${chrome.i18n.getMessage("usedSpace")}${(bytes / 1024 / 1024).toFixed(3)}mb / 10mb`;
             });
 
             // 处理是否拖曳标签组和标签
@@ -614,13 +614,13 @@ https://www.google.com | Google
         document.getElementById('usage').addEventListener('click', function () {
             if (isStateOne) {
                 chrome.storage.local.getBytesInUse(null, function (bytes) {
-                    console.log("total is " + (bytes / 1024 / 1024).toFixed(2) + "mb");
-                    document.getElementById('usage').innerHTML = `${chrome.i18n.getMessage("usedSpace")}${(bytes / 1024 / 1024).toFixed(2)}mb / 10mb`;
+                    console.log("total is " + (bytes / 1024 / 1024).toFixed(3) + "mb");
+                    document.getElementById('usage').innerHTML = `${chrome.i18n.getMessage("usedSpace")}${(bytes / 1024 / 1024).toFixed(3)}mb / 10mb`;
                 });
                 isStateOne = false
             } else {
                 chrome.storage.local.getBytesInUse(null, function (bytes) {
-                    console.log("total is " + (bytes / 1024 / 1024).toFixed(2) + "mb");
+                    console.log("total is " + (bytes / 1024 / 1024).toFixed(3) + "mb");
                     document.getElementById('usage').innerHTML = `${chrome.i18n.getMessage("usedSpace")}${((bytes / 1024 / 1024) / 10 * 100).toFixed(2)} %`;
                 });
                 isStateOne = true
