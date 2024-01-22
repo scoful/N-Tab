@@ -89,7 +89,6 @@
                             <ul id="others" class="dropdown-menu">
                                 <li id="showLog"><a href="#">${chrome.i18n.getMessage("showLog")}</a></li>
                                 <li id="showOptions"><a href="#">${chrome.i18n.getMessage("optionsValue")}</a></li>
-                                <li id="showBaks"><a href="#">${chrome.i18n.getMessage("showBaks")}</a></li>
                                 <li role="separator" class="divider"></li>
                                 <li id="openImportOnetab"><a href="#">${chrome.i18n.getMessage("hideShowImportOnetabFunction")}</a></li>
                                 <li id="openImportDefault"><a href="#">${chrome.i18n.getMessage("hideShowImportDefaultFunction")}</a></li>
@@ -100,6 +99,9 @@
                                 <li role="separator" class="divider"></li>
                                 <li><a href="#">${chrome.i18n.getMessage("dragOpenTranslate")} <input id="dragOpenTranslate" data-size="mini" type="checkbox"></a></li>
                             </ul>
+                        </li>
+                        <li>
+                            <a><span id="showBaks">${chrome.i18n.getMessage("showBaks")}</span></a>
                         </li>
                         <li class="home">
                             <a href="#"><span id="usage"></span></a>
