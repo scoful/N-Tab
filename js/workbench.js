@@ -1601,7 +1601,7 @@ https://www.google.com | Google
         }).toLowerCase();
     };
 
-    // from the array of Tab objects it makes an object with date and the array
+    // 生成数据结构
     function makeTabGroup(tabsArr) {
         let date;
         date = dateFormat("YYYY-mm-dd HH:MM:SS", new Date());
@@ -1616,7 +1616,7 @@ https://www.google.com | Google
         return tabGroup;
     }
 
-    // from the array of Tab objects it makes an object with date and the array
+    // 生成数据结构
     function makeTabGroup(tabsArr, isLock, groupTitle, isPined) {
         let date;
         date = dateFormat("YYYY-mm-dd HH:MM:SS", new Date());
@@ -1631,7 +1631,7 @@ https://www.google.com | Google
         return tabGroup;
     }
 
-    // 获取local storage
+    // 获取存在local storage的数据，组成输出
     function getShardings(cb) {
         chrome.storage.local.get(null, function (items) {
             let tabGroupsStr = "";
@@ -1651,6 +1651,7 @@ https://www.google.com | Google
                 }
             }
             delete items.tabGroups_num
+            delete items.del_tabGroups_num
             delete items.gistLog
             delete items.handleGistStatus
             delete items.giteeGistId
@@ -1667,7 +1668,7 @@ https://www.google.com | Google
         });
     }
 
-    // 保存local storage
+    // 保存数据到local storage
     function saveShardings(tabGroup, type) {
         let tabGroupStr;
         if (type === "object") {
@@ -1677,31 +1678,37 @@ https://www.google.com | Google
         } else if (type === "del") {
             tabGroupStr = JSON.stringify(tabGroup);
         }
-        let length = tabGroupStr.length;
-        let sliceLength = 102400;
-        let tabGroupSlices = {}; // 保存分片数据
-        let i = 0; // 分片序号
+        if (tabGroupStr && tabGroupStr !== 'null' && tabGroupStr !== 'undefined') {
+            // 字符串有值的逻辑
+            let length = tabGroupStr.length;
+            let sliceLength = 102400;
+            let tabGroupSlices = {}; // 保存分片数据
+            let i = 0; // 分片序号
 
-        // 前缀
-        let prefix = "tabGroups_"
-        if (type === "del") {
-            prefix = "del_tabGroups_"
+            // 前缀
+            let prefix = "tabGroups_"
+            if (type === "del") {
+                prefix = "del_tabGroups_"
+            }
+            // 分片保存数据
+            while (length > 0) {
+                tabGroupSlices[prefix + i] = tabGroupStr.substr(i * sliceLength, sliceLength);
+                length -= sliceLength;
+                i++;
+            }
+
+            // 保存分片数量
+            tabGroupSlices[prefix + "num"] = i;
+
+            // 写入Storage
+            chrome.storage.local.set(tabGroupSlices);
+        } else {
+            // 字符串为空或为 null 或 undefined 的逻辑
+            console.log('为空或为null/undefined');
         }
-        // 分片保存数据
-        while (length > 0) {
-            tabGroupSlices[prefix + i] = tabGroupStr.substr(i * sliceLength, sliceLength);
-            length -= sliceLength;
-            i++;
-        }
-
-        // 保存分片数量
-        tabGroupSlices[prefix + "num"] = i;
-
-        // 写入Storage
-        chrome.storage.local.set(tabGroupSlices);
     }
 
-    // saves array (of Tab objects) to localStorage
+    // 保存正常的tabGroup
     function saveDefaultTabGroup(tabGroup, type) {
         getShardings(function (callback) {
             if (callback || typeof callback != 'undefined' || callback !== undefined) {
@@ -1731,6 +1738,7 @@ https://www.google.com | Google
         })
     }
 
+    // 保存删除的tabGroup
     function saveDelTabGroup(tabGroup, type) {
         getShardings(function (callback) {
             if (callback || typeof callback != 'undefined' || callback !== undefined) {
