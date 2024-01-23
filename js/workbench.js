@@ -191,6 +191,7 @@ https://www.google.com | Google
             $(this).addClass("active").siblings().removeClass("active");
         })
 
+        // 初始化界面
         chrome.storage.local.get(null, function (items) {
             // 一load完就算一下storage占用了多少空间
             chrome.storage.local.getBytesInUse(null, function (bytes) {
@@ -380,6 +381,7 @@ https://www.google.com | Google
                 });
             }
         });
+
         // 展示所有标签
         showAllTabs();
 
@@ -727,6 +729,8 @@ https://www.google.com | Google
         window.addEventListener("hashchange", function () {
             // 获取当前 hash
             const currentHash = window.location.hash;
+            // 把当前 hash 清空，才可以再次触发 hashchange 事件，实现多次点击刷新的效果
+            window.location.hash = ""
             // 根据不同的 hash 值显示对应的内容
             switch (currentHash) {
                 case "#home": //打开 首页
