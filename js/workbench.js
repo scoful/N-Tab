@@ -1835,7 +1835,10 @@ https://www.google.com | Google
                         // save
                         saveTabGroups(tabGroups);
                         // save all deleted tab groups
-                        saveDelTabGroups(delTabGroups[0])
+                        // 如果是空组，就不发给回收站
+                        if (delTabGroups[0].tabs.length > 0) {
+                            saveDelTabGroups(delTabGroups[0])
+                        }
                         showAllTabs();
                     };
 
