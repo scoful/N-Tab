@@ -69,7 +69,6 @@ chrome.alarms.create("checkAutoSyncGitee", {delayInMinutes: 70, periodInMinutes:
 // 创建定时同步github任务，至于是否真的同步，要看设置
 chrome.alarms.create("checkAutoSyncGithub", {delayInMinutes: 90, periodInMinutes: 90});
 
-
 // 检查是否同步github的gist
 function checkAutoSyncGithub() {
     console.log("检查github是否同步")
@@ -157,7 +156,6 @@ function startPushToGiteeGist() {
         }
     });
 }
-
 
 // 推送到github的gist
 function pushToGithubGist() {
@@ -336,7 +334,6 @@ function updateGithubGist(content) {
         });
 }
 
-
 // 更新gitee的gist
 function updateGiteeGist(content) {
     console.log("更新gitee的gist")
@@ -377,7 +374,6 @@ function updateGiteeGist(content) {
         });
 }
 
-
 // 构造操作gist的日志结构
 function setHandleGistLog(type, handleGistLog) {
     let handleGistLogMap = {id: genObjectId(), handleGistType: type, handleGistLogs: handleGistLog};
@@ -400,7 +396,6 @@ function setHandleGistLog(type, handleGistLog) {
         }
     });
 }
-
 
 // 操作gist的全局状态，1分钟自动解锁，防止死锁
 function setHandleGistStatus(status) {
@@ -527,7 +522,6 @@ chrome.runtime.onMessage.addListener(function (req, sender, sendRes) {
             break;
     }
 });
-
 
 // 向content-script主动发送消息
 function sendMessageToContentScript(action, message) {
@@ -688,25 +682,37 @@ function saveShardings(tabGroup, type) {
         tabGroupStr = JSON.stringify(tabGroup);
     } else if (type === "string") {
         tabGroupStr = tabGroup;
+    } else if (type === "del") {
+        tabGroupStr = JSON.stringify(tabGroup);
     }
-    let length = tabGroupStr.length;
-    let sliceLength = 102400;
-    let tabGroupSlices = {}; // 保存分片数据
-    let i = 0; // 分片序号
+    if (tabGroupStr && tabGroupStr !== 'null' && tabGroupStr !== 'undefined') {
+        // 字符串有值的逻辑
+        let length = tabGroupStr.length;
+        let sliceLength = 102400;
+        let tabGroupSlices = {}; // 保存分片数据
+        let i = 0; // 分片序号
 
-    // 分片保存数据
-    while (length > 0) {
-        tabGroupSlices["tabGroups_" + i] = tabGroupStr.substr(i * sliceLength, sliceLength);
-        length -= sliceLength;
-        i++;
+        // 前缀
+        let prefix = "tabGroups_"
+        if (type === "del") {
+            prefix = "del_tabGroups_"
+        }
+        // 分片保存数据
+        while (length > 0) {
+            tabGroupSlices[prefix + i] = tabGroupStr.substr(i * sliceLength, sliceLength);
+            length -= sliceLength;
+            i++;
+        }
+
+        // 保存分片数量
+        tabGroupSlices[prefix + "num"] = i;
+
+        // 写入Storage
+        chrome.storage.local.set(tabGroupSlices);
+    } else {
+        // 字符串为空或为 null 或 undefined 的逻辑
+        console.log('为空或为null/undefined');
     }
-
-    // 保存分片数量
-    tabGroupSlices["tabGroups_num"] = i;
-
-    // 写入Storage
-    chrome.storage.local.set(tabGroupSlices);
-
 }
 
 // 获取storage里的标签相关数据
@@ -720,7 +726,16 @@ function getShardings(cb) {
                 delete items["tabGroups_" + i]
             }
         }
+        let delTabGroupsStr = "";
+        if (items.del_tabGroups_num >= 1) {
+            // 把分片数据组成字符串
+            for (let i = 0; i < items.del_tabGroups_num; i++) {
+                delTabGroupsStr += items["del_tabGroups_" + i];
+                delete items["del_tabGroups_" + i]
+            }
+        }
         delete items.tabGroups_num
+        delete items.del_tabGroups_num
         delete items.gistLog
         delete items.handleGistStatus
         delete items.giteeGistId
@@ -729,6 +744,9 @@ function getShardings(cb) {
         delete items.githubGistToken
         if (tabGroupsStr.length > 0) {
             items["tabGroups"] = JSON.parse(tabGroupsStr)
+        }
+        if (delTabGroupsStr.length > 0) {
+            items["delTabGroups"] = JSON.parse(delTabGroupsStr)
         }
         cb(items)
     });
@@ -832,9 +850,9 @@ chrome.storage.onChanged.addListener(function (changes, areaName) {
     console.log(changes)
     console.log(areaName)
     for (let key in changes) {
-        if (key.indexOf("tabGroups") !== -1) {
+        if (key.indexOf("tabGroups") !== -1 || key.indexOf("del_tabGroups") !== -1) {
             console.log(key)
-            if (key.indexOf("tabGroups_num") === -1) {
+            if (key.indexOf("tabGroups_num") === -1 || key.indexOf("del_tabGroups_num") === -1) {
                 flag = true;
             }
         }
