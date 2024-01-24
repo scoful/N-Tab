@@ -30,6 +30,7 @@ chrome.runtime.onInstalled.addListener(function (details) {
     } else if (details.reason === 'update') {
         // 这里是插件更新时要执行的代码
         console.log('插件已被更新！');
+        setTimer('inTimeSync', 3 * 1000);
     }
 });
 
@@ -794,7 +795,7 @@ chrome.alarms.onAlarm.addListener(function (alarm) {
         checkAutoSyncGithub();
     }
     if (alarm.name === "inTimeSync") {
-        console.log("实时同步触发")
+        // console.log("实时同步触发")
         subtractAll()
 
         setTimer('inTimeSync', 3 * 1000);
@@ -1206,7 +1207,7 @@ async function add() {
 // 安全清零，清空storage连续变化导致的数字累加，并顺便推送到gist，相当于缓存了一部分后直接清空并推送
 async function subtractAll() {
     const current = safeOperation.getValue();
-    console.log('Current value:', current);
+    // console.log('Current value:', current);
     if (current > 0) {
         startPushToGiteeGist();
         await safeOperation.subtractAll();

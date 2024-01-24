@@ -1961,6 +1961,7 @@ https://www.google.com | Google
                     if (isPined) {
                         pinStatus = `${chrome.i18n.getMessage("noToTop")}`
                         pinImgClass = ".pin-img"
+                        lockClass = ".filtered"
                     } else {
                         pinStatus = `${chrome.i18n.getMessage("toTop")}`
                         pinImgClass = ".no-pin-img"
@@ -2624,6 +2625,7 @@ https://www.google.com | Google
                     if (isPined) {
                         pinStatus = `${chrome.i18n.getMessage("noToTop")}`
                         pinImgClass = ".pin-img"
+                        lockClass = ".filtered"
                     } else {
                         pinStatus = `${chrome.i18n.getMessage("toTop")}`
                         pinImgClass = ".no-pin-img"
