@@ -21,6 +21,17 @@ let githubIntervalId;
 let giteeIntervalId;
 let isLock = false;
 
+// 监听插件状态变化的事件
+chrome.runtime.onInstalled.addListener(function (details) {
+    if (details.reason === 'install') {
+        // 这里是插件第一次安装时要执行的代码
+        console.log('插件已被安装！');
+        setTimer('inTimeSync', 3 * 1000);
+    } else if (details.reason === 'update') {
+        // 这里是插件更新时要执行的代码
+        console.log('插件已被更新！');
+    }
+});
 
 // 获取tab数量并在popup上显示
 chrome.tabs.query({currentWindow: true}, function (tab) {
@@ -51,7 +62,6 @@ chrome.tabs.onCreated.addListener(function callback() {
         chrome.action.setBadgeBackgroundColor({color: "#0038a8"});
     });
 });
-
 
 // 获取本机storage
 chrome.storage.local.get(function (storage) {
@@ -783,6 +793,12 @@ chrome.alarms.onAlarm.addListener(function (alarm) {
         console.log("自动同步github")
         checkAutoSyncGithub();
     }
+    if (alarm.name === "inTimeSync") {
+        console.log("实时同步触发")
+        subtractAll()
+
+        setTimer('inTimeSync', 3 * 1000);
+    }
 });
 
 // 持续监听是否按了manifest设置的快捷键
@@ -859,11 +875,12 @@ chrome.storage.onChanged.addListener(function (changes, areaName) {
     }
     if (areaName === "local" && flag) {
         console.log("要同步")
-        chrome.storage.local.get(null, function (items) {
+        chrome.storage.local.get(null, async function (items) {
             let autoSync = items.autoSync
             if (autoSync === true) {
                 console.log("autoSync open")
-                startPushToGiteeGist();
+                // 有storage变化就安全数字+1，因为storage不知道底层是怎么实现的，一个set操作，可能会触发多次onChanged，会变相变成并发操作
+                await add()
             }
         });
     } else {
@@ -1089,4 +1106,116 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
     }
 });
 
+// 安全的数字操作类
+class SafeNumberOperation {
+    constructor() {
+        this.lock = new Lock();
+        this.value = 0;
+    }
 
+    // 安全+n
+    async add(amount) {
+        const unlock = await this.lock.acquire();
+
+        try {
+            this.value += amount;
+            return this.value;
+        } finally {
+            unlock();
+        }
+    }
+
+    // 安全-n
+    async subtract(amount) {
+        const unlock = await this.lock.acquire();
+
+        try {
+            this.value -= amount;
+            return this.value;
+        } finally {
+            unlock();
+        }
+    }
+
+    // 安全清零
+    async subtractAll() {
+        const unlock = await this.lock.acquire();
+
+        try {
+            const currentValue = this.value;
+            this.value = 0;  // Subtracting all numbers
+            return currentValue;
+        } finally {
+            unlock();
+        }
+    }
+
+    // 获取当前值
+    getValue() {
+        return this.value;
+    }
+}
+
+// 锁类
+class Lock {
+    constructor() {
+        this.isLocked = false;
+        this.waitQueue = [];
+    }
+
+    // 获取锁
+    async acquire() {
+        const acquirePromise = new Promise((resolve) => {
+            const tryAcquire = () => {
+                if (!this.isLocked) {
+                    this.isLocked = true;
+                    resolve(() => this.release());
+                } else {
+                    this.waitQueue.push(tryAcquire);
+                }
+            };
+
+            tryAcquire();
+        });
+
+        return await acquirePromise;
+    }
+
+    // 释放锁
+    release() {
+        this.isLocked = false;
+
+        if (this.waitQueue.length > 0) {
+            const nextAcquire = this.waitQueue.shift();
+            nextAcquire();
+        }
+    }
+}
+
+// new一个安全的数字操作类
+const safeOperation = new SafeNumberOperation();
+
+// 安全+1
+async function add() {
+    const result1 = await safeOperation.add(1);
+    console.log('After adding 1:', result1);
+
+    console.log('Current value:', safeOperation.getValue());
+}
+
+// 安全清零，清空storage连续变化导致的数字累加，并顺便推送到gist，相当于缓存了一部分后直接清空并推送
+async function subtractAll() {
+    const current = safeOperation.getValue();
+    console.log('Current value:', current);
+    if (current > 0) {
+        startPushToGiteeGist();
+        await safeOperation.subtractAll();
+        console.log('Current value after subtracting all:', safeOperation.getValue());
+    }
+}
+
+// 设置定时器
+function setTimer(key, delay) {
+    const nextAlarmTime = Date.now() + delay; // delay时间后触发，单位毫秒
+    chrome.alarms.create(key, {when: nextAlarmTime});
+}
