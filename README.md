@@ -64,6 +64,13 @@
 
 8. 2个同步平台，可以同时配置，也可以只配置1个，不冲突，假如选了自动同步，会自动无感知的**定时**同步到2个平台里（请先手动同步一次，通过查看日志，检查链路是否通顺），注意：Gitee特别设置了只要有修改就无感知自动**实时**同步，也就是说只要有修改，删除，移动等动作，就自动实时同步到Gitee，选Gitee更保险，真.理论上永不丢失数据。
 
+## 功能界面截图
+![1](https://fc.sinaimg.cn/large/692b2078gy1hm829xzkchj20zk0m87ai.jpg)
+![2](https://fc.sinaimg.cn/large/692b2078gy1hm82bvp9orj20zk0m8tez.jpg)
+![3](https://fc.sinaimg.cn/large/692b2078gy1hm82cacigij20zk0m844t.jpg)
+![4](https://fc.sinaimg.cn/large/692b2078gy1hm82collo7j20zk0m8tcn.jpg)
+![5](https://fc.sinaimg.cn/large/692b2078gy1hm82d5kv5xj20zk0m80yz.jpg)
+![6](https://fc.sinaimg.cn/large/692b2078gy1hm82dkg1oxj20zk0m8jwq.jpg)
 
 ## 获取token方法
 ### Gitee
