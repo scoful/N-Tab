@@ -117,12 +117,12 @@
 ## 暗黑模式开启方法
 ### (可选)Win10本身变成暗黑模式
 - Windows 设置--个性化--颜色--选择颜色(自定义)--选择默认应用模式(暗)--这就是系统级别的暗黑模式，所有支持暗黑模式的软件都会自动变成暗黑模式
-  ![看图](https://fc.sinaimg.cn/large/692b2078gy1hinyo92ny3j20xk0qp49l.jpg)
+  ![看图](https://scoful-picgo.oss-ap-southeast-1.aliyuncs.com/picgo/20240314115936.png)
 
 ### 只是网页内容变成暗黑模式
 - 打开Chrome浏览器，输入 **Chrome://flags**，在搜索框输入**Auto Dark Mode for Web Contents**，在找到的设置右边改成**Enabled**
 - 重启Chrome浏览器，这样本插件就自动变成暗黑模式了！
-  ![看图2](https://fc.sinaimg.cn/large/692b2078gy1hinyqnta4aj20xs0ihqdw.jpg)
+  ![看图2](https://scoful-picgo.oss-ap-southeast-1.aliyuncs.com/picgo/20240314120003.png)
 
 ## 使用方法
 1. 打开某个网页，文字翻译，用法如下：
@@ -256,9 +256,9 @@
 
 
 
-![微信赞赏码](https://fc.sinaimg.cn/large/692b2078gy1gbslrzhjmfj20gh0ettca.jpg)
+![微信赞赏码](https://scoful-picgo.oss-ap-southeast-1.aliyuncs.com/picgo/wx.jpg)
 
-![支付宝收款码](https://fc.sinaimg.cn/large/692b2078gy1hlbzrivgaxj20bf0ccdhu.jpg)
+![支付宝赞赏码](https://scoful-picgo.oss-ap-southeast-1.aliyuncs.com/picgo/zfb.jpg)
 
 
 ------

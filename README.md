@@ -66,12 +66,12 @@
 8. 2个同步平台，可以同时配置，也可以只配置1个，不冲突，假如选了自动同步，会自动无感知的**定时**同步到2个平台里（请先手动同步一次，通过查看日志，检查链路是否通顺），注意：Gitee特别设置了只要有修改就无感知自动**实时**同步，也就是说只要有修改，删除，移动等动作，就自动实时同步到Gitee，选Gitee更保险，真.理论上永不丢失数据。
 
 ## 功能界面截图
-- 后台管理页面截图 ![1](https://fc.sinaimg.cn/large/692b2078gy1hm829xzkchj20zk0m87ai.jpg)
-- 同步功能截图![2](https://fc.sinaimg.cn/large/692b2078gy1hm82bvp9orj20zk0m8tez.jpg)
-- 其他功能截图 ![3](https://fc.sinaimg.cn/large/692b2078gy1hm82cacigij20zk0m844t.jpg)
-- 回收站截图 ![4](https://fc.sinaimg.cn/large/692b2078gy1hm82collo7j20zk0m8tcn.jpg)
-- 暗黑模式截图 ![5](https://fc.sinaimg.cn/large/692b2078gy1hm82d5kv5xj20zk0m80yz.jpg)
-- 英文版截图 ![6](https://fc.sinaimg.cn/large/692b2078gy1hm82dkg1oxj20zk0m8jwq.jpg)
+- 后台管理页面截图 ![1](https://scoful-picgo.oss-ap-southeast-1.aliyuncs.com/picgo/11.png)
+- 同步功能截图![2](https://scoful-picgo.oss-ap-southeast-1.aliyuncs.com/picgo/22.png)
+- 其他功能截图 ![3](https://scoful-picgo.oss-ap-southeast-1.aliyuncs.com/picgo/33.png)
+- 回收站截图 ![4](https://scoful-picgo.oss-ap-southeast-1.aliyuncs.com/picgo/44.png)
+- 暗黑模式截图 ![5](https://scoful-picgo.oss-ap-southeast-1.aliyuncs.com/picgo/55.png)
+- 英文版截图 ![6](https://scoful-picgo.oss-ap-southeast-1.aliyuncs.com/picgo/11.png)
 
 ## 获取token方法
 ### Gitee
@@ -90,12 +90,12 @@
 ## 暗黑模式开启方法
 ### (可选)Win10本身变成暗黑模式
 - Windows 设置--个性化--颜色--选择颜色(自定义)--选择默认应用模式(暗)--这就是系统级别的暗黑模式，所有支持暗黑模式的软件都会自动变成暗黑模式
-![看图](https://fc.sinaimg.cn/large/692b2078gy1hinyo92ny3j20xk0qp49l.jpg)
+![看图](https://scoful-picgo.oss-ap-southeast-1.aliyuncs.com/picgo/20240314115936.png)
 
 ### 只是网页内容变成暗黑模式
 - 打开Chrome浏览器，输入 **Chrome://flags**，在搜索框输入**Auto Dark Mode for Web Contents**，在找到的设置右边改成**Enabled**
 - 重启Chrome浏览器，这样本插件就自动变成暗黑模式了！
-![看图2](https://fc.sinaimg.cn/large/692b2078gy1hinyqnta4aj20xs0ihqdw.jpg)
+![看图2](https://scoful-picgo.oss-ap-southeast-1.aliyuncs.com/picgo/20240314120003.png)
 
 ## To Do List
 
@@ -113,9 +113,9 @@
 
 
 
-![微信赞赏码](https://fc.sinaimg.cn/large/692b2078gy1gbslrzhjmfj20gh0ettca.jpg)
+![微信赞赏码](https://scoful-picgo.oss-ap-southeast-1.aliyuncs.com/picgo/wx.jpg)
 
-![支付宝赞赏码](https://fc.sinaimg.cn/large/692b2078gy1hlbzrivgaxj20bf0ccdhu.jpg)
+![支付宝赞赏码](https://scoful-picgo.oss-ap-southeast-1.aliyuncs.com/picgo/zfb.jpg)
 
 
 ------

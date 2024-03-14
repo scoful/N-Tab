@@ -111,11 +111,11 @@
                                 aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-heart"></span> ${chrome.i18n.getMessage("donate")}<span class="caret"></span></a>
                             <ul id="others" class="dropdown-menu">
                                 <li>
-                                    <img src="https://fc.sinaimg.cn/large/692b2078gy1gbslrzhjmfj20gh0ettca.jpg">
+                                    <img src="https://scoful-picgo.oss-ap-southeast-1.aliyuncs.com/picgo/wx.jpg">
                                 </li>
                                 <li role="separator" class="divider"></li>
                                 <li>
-                                    <img src="https://fc.sinaimg.cn/large/692b2078gy1hlbzrivgaxj20bf0ccdhu.jpg">
+                                    <img src="https://scoful-picgo.oss-ap-southeast-1.aliyuncs.com/picgo/zfb.jpg">
                                 </li>
                                     
                             </ul>
